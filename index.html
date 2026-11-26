@@ -237,6 +237,7 @@ en: {
   recTitle: 'Recurring', recIn: m => `Recurring costs in ${m}`,
   recHint: 'These are counted in every month automatically. Tap one under Transactions to skip it for a single month.',
   fixedCosts: 'Fixed costs', fixedEmpty: 'Rent, insurance, phone, subscriptions…', loans: 'Loans & credits', loansEmpty: 'Add a loan to see how much you still owe.',
+  instExtra: x => `+ ${x} instalments, not in budget`, instOnly: x => `${x} instalments · not counted in budgets`, loanCatNote: 'Loans and instalment plans always go into the Loans category and don\'t count against budgets.',
   finalPayment: 'Final payment', pausedMonths: 'Paused months', addPause: 'Pause', noPauses: 'No paused months.',
   pauseHint: 'No payment is due in a paused month and the plan moves back by one month. If there is an interest rate, interest keeps running during the pause.',
   finalHint: 'Leave "Final payment" empty if the last payment is the same as the others.',
@@ -309,6 +310,7 @@ de: {
   recTitle: 'Fixkosten', recIn: m => `Fixkosten im ${m}`,
   recHint: 'Diese Beträge werden jeden Monat automatisch eingerechnet. Tippe unter Buchungen darauf, um einen Monat auszusetzen.',
   fixedCosts: 'Laufende Kosten', fixedEmpty: 'Miete, Versicherung, Handy, Abos …', loans: 'Kredite & Darlehen', loansEmpty: 'Füge einen Kredit hinzu, um zu sehen, wie viel du noch schuldest.',
+  instExtra: x => `+ ${x} Raten, nicht im Budget`, instOnly: x => `${x} Raten · zählen nicht zum Budget`, loanCatNote: 'Kredite und Ratenkäufe landen immer in der Kategorie Kredite und zählen nicht zu den Budgets.',
   finalPayment: 'Schlussrate', pausedMonths: 'Pausierte Monate', addPause: 'Pausieren', noPauses: 'Keine Pausen.',
   pauseHint: 'In einem pausierten Monat ist keine Rate fällig, der Plan verschiebt sich um einen Monat. Gibt es einen Zinssatz, laufen die Zinsen in der Pause weiter.',
   finalHint: 'Lass „Schlussrate“ leer, wenn die letzte Rate genauso hoch ist wie die anderen.',
@@ -458,6 +460,9 @@ function migrate(d) {
     r.skips = r.skips || []; if (r.kind === 'loan' && !r.balanceFrom) r.balanceFrom = r.start;
     if (!r.groupId || !d.recGroups.some(g => g.id === r.groupId)) r.groupId = gKey(r.kind === 'loan' ? 'credit' : 'fixed');
   }
+  let lc = d.categories.find(c => c.key === 'loans' || c.name === 'Loans' || c.name === 'Kredite');
+  if (!lc && d.recurring.some(r => r.kind === 'loan')) { const def = DEFAULT_CATS.find(x => x.key === 'loans'); lc = { id: uid(), key: 'loans', name: def[LANG] || def.en, color: def.color, icon: def.icon, budget: 0 }; d.categories.push(lc); }
+  if (lc) for (const r of d.recurring) if (r.kind === 'loan') r.categoryId = lc.id;
   for (const c of d.categories) {
     const def = DEFAULT_CATS.find(x => x.key === c.key || x.en === c.name || x.de === c.name);
     if (def && !c.key && (def.en === c.name || def.de === c.name)) c.key = def.key;
@@ -641,6 +646,15 @@ function totals(m) {
   return { ...b, carry, left: r2(b.income + carry - b.spent) };
 }
 function catSpend(m) { const map = {}; for (const e of monthEntries(m)) map[e.categoryId] = r2((map[e.categoryId] || 0) + e.amount); return map; }
+// what counts against a category budget: everything except loan / instalment payments
+function budgetSpend(m) { const map = {}, inst = {};
+  for (const e of monthEntries(m)) { const t2 = e.type === 'rec' && e.kind === 'loan' ? inst : map; t2[e.categoryId] = r2((t2[e.categoryId] || 0) + e.amount); }
+  return { map, inst }; }
+function loansCatId() {
+  let c = catByKey('loans');
+  if (!c) { const def = DEFAULT_CATS.find(x => x.key === 'loans'); c = { id: uid(), key: 'loans', name: def[LANG] || def.en, color: def.color, icon: def.icon, budget: 0 }; S.categories.push(c); }
+  return c.id;
+}
 
 /* ================= rendering ================= */
 function avatarHTML(cls = '') {
@@ -687,14 +701,14 @@ function viewBudget() {
     if (due > 0) notes.push(t('dueSoon', money(due)));
   }
   if (!S.settings.income && !(m in S.incomeOverrides)) notes.push(t('noIncome'));
-  const spend = catSpend(m);
+  const bs = budgetSpend(m), spend = bs.map, inst = bs.inst, all = id => (spend[id] || 0) + (inst[id] || 0);
   const cats = S.categories.slice().sort((a, b) => {
-    const rank = c => c.budget ? 0 : spend[c.id] ? 1 : 2, ra = rank(a), rb = rank(b);
-    return ra - rb || (spend[b.id] || 0) - (spend[a.id] || 0);
+    const rank = c => c.budget ? 0 : all(c.id) ? 1 : 2, ra = rank(a), rb = rank(b);
+    return ra - rb || all(b.id) - all(a.id);
   });
   const orphan = Object.keys(spend).filter(id => !S.categories.some(c => c.id === id)).reduce((a, id) => a + spend[id], 0);
   const cards = cats.map(c => {
-    const s = spend[c.id] || 0, b = c.budget || 0, over = b && s > b + 0.004;
+    const s = spend[c.id] || 0, li = inst[c.id] || 0, b = c.budget || 0, over = b && s > b + 0.004;
     let sub, right;
     if (b) {
       sub = t('outOfAmt', money(s), moneyRound(b));
@@ -702,10 +716,11 @@ function viewBudget() {
       right = `<span class="mini ${over ? 'bad' : ''}"><i style="width:${over ? 100 : pct}%"></i></span>
         <span class="left ${over ? 'neg' : ''}">${over ? t('overAmt', moneyRound(-(s - b))) : t('leftAmt', moneyRound(b - s))}</span>`;
     } else {
-      sub = t('spentNoBudget', money(s));
-      right = `<span class="setb">${t('setBudget')}</span>`;
+      sub = !s && li ? esc(t('instOnly', money(li))) : t('spentNoBudget', money(s));
+      right = !s && li ? '' : `<span class="setb">${t('setBudget')}</span>`;
     }
-    return `<button class="ccard ${!b && !s ? 'dim' : ''}" data-act="editCat" data-id="${c.id}">
+    if (li && (s || b)) sub += `<div style="font-size:13px">${esc(t('instExtra', money(li)))}</div>`;
+    return `<button class="ccard ${!b && !s && !li ? 'dim' : ''}" data-act="editCat" data-id="${c.id}">
       <span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
       <span class="mid"><div class="nm">${esc(c.name)}</div><div class="sb num">${sub}</div></span>
       <span class="rt">${right}</span></button>`;
@@ -1039,7 +1054,8 @@ function recSheet(id, groupId) {
     </div>
     ${r && r.kind !== 'loan' ? `<div class="hint" data-only="fixed" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}    ${r ? `<div class="hint" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}
     <h3>${t('group')}</h3><div class="chips">${S.recGroups.map(x => `<button class="chip ${x.id === sheetState.group ? 'on' : ''}" data-act="pickGroup" data-id="${x.id}" style="padding-left:12px">${esc(x.name)}</button>`).join('')}</div>
-    <h3>${t('categoryLbl')}</h3>${chipsHTML(sheetState.cat, 'pickRecCat')}
+    <div data-only="fixed"><h3>${t('categoryLbl')}</h3>${chipsHTML(sheetState.cat, 'pickRecCat')}</div>
+    <div class="hint" data-only="loan" style="padding:12px 6px 0">${t('loanCatNote')}</div>
     ${r ? `<button class="btn danger" data-act="delRec">${r.kind === 'loan' ? t('deleteLoan') : t('deleteRec')}</button>` : ''}`);
   syncRecType(); renderPauses();
 }
@@ -1059,7 +1075,7 @@ function saveRec() {
   const kind = sheetState.type, name = $('#r-name').value.trim();
   const day = Math.min(31, Math.max(1, parseInt($('#r-day').value, 10) || 1));
   const old = sheetState.id ? S.recurring.find(x => x.id === sheetState.id) : null;
-  const base = { name, kind, day, categoryId: sheetState.cat, groupId: sheetState.group };
+  const base = { name, kind, day, categoryId: kind === 'loan' ? loansCatId() : sheetState.cat, groupId: sheetState.group };
   if (!name) return err(t('errName'));
   if (kind === 'fixed') {
     const amt = parseAmt($('#r-amt').value), start = $('#r-start').value, end = $('#r-end').value || null;
