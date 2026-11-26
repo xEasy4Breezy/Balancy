@@ -16,13 +16,13 @@
 <style>
 :root{
   --bg:#ffffff;--card:#ffffff;--ink:#1d1d1f;--muted:#76767c;--line:#ececee;--soft:#f3f3f5;
-  --inc:#dff3c3;--exp:#e7e8fc;--pill:#cdeca2;--pill-ink:#1d1d1f;
+  --inc:#dff3c3;--exp:#fde2df;--txin:#eef8e6;--txout:#fdf0ee;--pill:#cdeca2;--pill-ink:#1d1d1f;
   --ok:#22d65a;--bad:#e5241b;--accent:#3f8f5a;--danger:#d93a2b;--danger-soft:#fde8e6;
   --nav:#111112;--nav-ink:#ffffff;--r:24px;
 }
 @media (prefers-color-scheme:dark){
   :root{--bg:#0f0f10;--card:#18181a;--ink:#f4f4f5;--muted:#9b9ba2;--line:#29292d;--soft:#232326;
-  --inc:#2b3b1f;--exp:#26283f;--pill:#a9d873;--pill-ink:#111;--danger-soft:#3a1f1c;--nav:#000;}
+  --inc:#2b3b1f;--exp:#3d2421;--txin:#1f2b18;--txout:#2e1d1b;--pill:#a9d873;--pill-ink:#111;--danger-soft:#3a1f1c;--nav:#000;}
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
@@ -30,6 +30,8 @@ body{font:17px/1.35 ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont
   -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 input,select{font:inherit;font-size:16px;color:var(--ink)}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .num{font-variant-numeric:tabular-nums}
 header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(env(safe-area-inset-top) + 12px) 20px 10px}
 main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
@@ -99,6 +101,9 @@ main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;ma
 .card.pad{padding:16px}
 .item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
 .item:last-child{border-bottom:0}
+.item.out,.item.in{border-bottom:0;border-radius:16px;padding:10px 12px;margin:6px 0}
+.item.out{background:var(--txout)} .item.in{background:var(--txin)}
+.card:has(> .item.out, > .item.in){padding:4px 10px}
 .item .icon{width:42px;height:42px;border-radius:13px}
 .item .icon svg{width:22px;height:22px}
 .item .mid{flex:1;min-width:0}
@@ -108,7 +113,7 @@ main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;ma
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:7px;background:var(--soft);color:var(--muted);margin-left:6px;vertical-align:2px}
 .tag.g{background:var(--inc);color:var(--ink)}
 .strike{text-decoration:line-through;color:var(--muted)}
-.dayhead{font-size:13px;color:var(--muted);padding:14px 0 0;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.dayhead{font-size:13px;color:var(--muted);padding:14px 2px 0;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 .empty{text-align:center;color:var(--muted);padding:26px 10px}
 .row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);gap:12px}
 .row:last-child{border-bottom:0}
@@ -199,7 +204,7 @@ input.amtin{width:100%;text-align:center;font-size:46px;font-weight:800;border:0
 .chart .col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
 .chart .stack{width:100%;max-width:36px;display:flex;flex-direction:column-reverse;border-radius:10px 10px 4px 4px;overflow:hidden;background:var(--soft)}
 .chart .stack i{display:block}
-.chart .inc{position:absolute;left:8%;right:8%;border-top:2px dashed var(--muted)}
+.chart .inc{position:absolute;left:8%;right:8%;border-top:2px dashed #3f8f5a}
 .chart .lab{font-size:12px;color:var(--muted);margin-top:6px}
 .chart .col.sel .lab{color:var(--ink);font-weight:700}
 .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
@@ -273,7 +278,7 @@ en: {
   deleteIncome: 'Delete income', cDelIncome: 'Delete this income?', incomeTag: 'Income', extraIncome: x => `incl. ${x} other income`, salaryLbl: 'Salary / regular income',
   otherIncome: 'Other income', addOtherIncome: 'Add other income', noOtherIncome: 'No other income this month.', incomeOf: x => `Income ${x}`, csvInc: 'Income',
   thisMonthBtn: 'This month', clearMonth: 'Clear', notSet: 'Not set', prevYear: 'Previous year', nextYear: 'Next year',
-  todayBtn: 'Today',
+  todayBtn: 'Today', backTodayAria: m => `Back to ${m}`, trendsBefore: m => `Tracking starts in ${m}. Nothing to show for this month yet.`,
   showOnBudget: 'Show on Budget page', showHidden: n => `Show hidden categories (${n})`, hideHiddenAgain: 'Hide them again', hiddenTag: 'Hidden', refresh: 'Release to refresh',
   instExtra: x => `+ ${x} instalments, not in budget`, instOnly: x => `${x} instalments · not counted in budgets`, loanCatNote: 'Loans and instalment plans always go into the Loans category and don\'t count against budgets.',
   finalPayment: 'Final payment', pausedMonths: 'Paused months', addPause: 'Pause', noPauses: 'No paused months.',
@@ -352,7 +357,7 @@ de: {
   deleteIncome: 'Einnahme löschen', cDelIncome: 'Diese Einnahme löschen?', incomeTag: 'Einnahme', extraIncome: x => `inkl. ${x} weitere Einnahmen`, salaryLbl: 'Gehalt / regelmäßiges Einkommen',
   otherIncome: 'Weitere Einnahmen', addOtherIncome: 'Weitere Einnahme hinzufügen', noOtherIncome: 'Diesen Monat keine weiteren Einnahmen.', incomeOf: x => `Einnahmen ${x}`, csvInc: 'Einnahme',
   thisMonthBtn: 'Dieser Monat', clearMonth: 'Leeren', notSet: 'Nicht gesetzt', prevYear: 'Vorheriges Jahr', nextYear: 'Nächstes Jahr',
-  todayBtn: 'Heute',
+  todayBtn: 'Heute', backTodayAria: m => `Zurück zum ${m}`, trendsBefore: m => `Die Erfassung beginnt im ${m}. Für diesen Monat gibt es noch nichts anzuzeigen.`,
   showOnBudget: 'Auf der Budget-Seite anzeigen', showHidden: n => `Ausgeblendete Kategorien anzeigen (${n})`, hideHiddenAgain: 'Wieder ausblenden', hiddenTag: 'Ausgeblendet', refresh: 'Loslassen zum Aktualisieren',
   instExtra: x => `+ ${x} Raten, nicht im Budget`, instOnly: x => `${x} Raten · zählen nicht zum Budget`, loanCatNote: 'Kredite und Ratenkäufe landen immer in der Kategorie Kredite und zählen nicht zu den Budgets.',
   finalPayment: 'Schlussrate', pausedMonths: 'Pausierte Monate', addPause: 'Pausieren', noPauses: 'Keine Pausen.',
@@ -726,7 +731,7 @@ function avatarHTML(cls = '') {
 function monthPill() {
   const m = UI.month, cur = m === thisMonth(), sameYear = m.slice(0, 4) === thisMonth().slice(0, 4);
   const label = sameYear ? mLabel(m, 'short').replace('.', '') : mLabel(m, 'short').replace('.', '') + ' ' + m.slice(2, 4);
-  return (cur ? '' : `<button class="todaybtn" data-act="goToday" aria-label="${t('backToday')}">${uisvg('back', 2.2)}<span>${t('todayBtn')}</span></button>`) +
+  return (cur ? '' : `<button class="todaybtn" data-act="goToday" aria-label="${esc(t('backTodayAria', mLabel(thisMonth(), 'name')))}" title="${esc(t('backTodayAria', mLabel(thisMonth(), 'name')))}">${uisvg('back', 2.2)}<span>${esc(mLabel(thisMonth(), 'short').replace('.', ''))}</span></button>`) +
     `<button class="mpill ${cur ? '' : 'past'}" data-act="pickViewMonth" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}</button>`;
 }
 function header(title, withMonth = true) {
@@ -838,7 +843,7 @@ function viewBudget() {
 }
 
 function itemHTML(e) {
-  if (e.type === 'inc') return `<button class="item" data-act="editInc" data-id="${e.id}">
+  if (e.type === 'inc') return `<button class="item in" data-act="editInc" data-id="${e.id}">
     <span class="icon" style="${tint('#3f8f5a')}">${svg('cash')}</span>
     <span class="mid"><div class="t">${esc(e.note || t('incomeTag'))}</div><div class="sub">${t('incomeTag')}</div></span>
     <span class="amt num" style="color:#2f8a4c">${S.settings.hide ? money(e.amount) : '+' + money(e.amount)}</span></button>`;
@@ -848,7 +853,7 @@ function itemHTML(e) {
   if (e.type === 'rec') tags += `<span class="tag g">${e.kind === 'loan' ? t('loanTag') : t('recurringTag')}</span>`;
   if (e.skipped) tags += `<span class="tag">${t('skipped')}</span>`; else if (upcoming) tags += `<span class="tag">${t('upcoming')}</span>`;
   const amt = e.type === 'rec' && e.skipped ? recRaw(e.id) : e.amount;
-  return `<button class="item" data-act="${e.type === 'rec' ? 'recMenu' : 'editExp'}" data-id="${e.id}">
+  return `<button class="item out" data-act="${e.type === 'rec' ? 'recMenu' : 'editExp'}" data-id="${e.id}">
     <span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
     <span class="mid"><div class="t">${title}${tags}</div><div class="sub">${esc(c.name)}</div></span>
     <span class="amt num ${e.skipped ? 'strike' : ''}">${money(amt)}</span></button>`;
@@ -936,18 +941,18 @@ function loanDetailsHTML(r) {
     </div>${warn ? `<div class="banner">${esc(warn)}</div>` : ''}`;
 }
 function viewTrends() {
-  const end = UI.month, months = [];
-  for (let i = 5; i >= 0; i--) months.push(addM(end, -i));
+  const end = UI.month, months = [], f0 = firstMonth();
+  for (let i = 5; i >= 0; i--) { const x = addM(end, -i); if (x >= f0) months.push(x); }
+  if (!months.length) return { header: header(t('trendsTitle')), body: `<div class="card"><div class="empty">${esc(t('trendsBefore', mLabel(f0)))}</div></div>` };
   const data = months.map(m => ({ m, ...totals(m) }));
   const max = Math.max(1, ...data.map(d => Math.max(d.spent, d.income)));
   const cols = data.map(d => `<div class="col ${d.m === end ? 'sel' : ''}">
       ${d.income ? `<div class="inc" style="bottom:calc(${d.income / max} * (100% - 22px) + 22px)"></div>` : ''}
       <div class="stack" style="height:calc(${d.spent / max} * (100% - 22px))">
-        <i style="height:${d.spent ? d.rec / d.spent * 100 : 0}%;background:#b9bcf3"></i>
-        <i style="height:${d.spent ? d.exp / d.spent * 100 : 0}%;background:#8fd16a"></i></div>
+        <i style="height:${d.spent ? d.rec / d.spent * 100 : 0}%;background:#f5b8b1"></i>
+        <i style="height:${d.spent ? d.exp / d.spent * 100 : 0}%;background:#ea6b5f"></i></div>
       <div class="lab">${esc(mLabel(d.m, 'short'))}</div></div>`).join('');
-  const f0 = firstMonth();
-  const rows = data.filter(d => d.m >= f0 || d.spent).reverse().map(d => `<div class="row"><span><div>${esc(mLabel(d.m))}</div>
+  const rows = data.slice().reverse().map(d => `<div class="row"><span><div>${esc(mLabel(d.m))}</div>
       <div class="sub num">${esc(t('spentOf', money(d.spent), money(d.income)))}</div></span>
       <span class="num" style="text-align:right"><b class="${d.left < 0 ? 'neg' : ''}">${money(d.left)}</b><div class="sub">${t('left')}</div></span></div>`).join('');
   const sums = {};
@@ -959,7 +964,7 @@ function viewTrends() {
       <span class="num">${money(x.v)}<span class="sub"> ${t('perMonth')}</span></span></div><div class="bar"><i style="width:${x.v / amax * 100}%;background:${esc(x.c.color)}"></i></div></div>`).join('');
   const body = `<div class="card pad"><div class="hint">${esc(t('spendingRange', mLabel(months[0]), mLabel(end)))}</div>
       <div class="chart">${cols}</div>
-      <div class="legend"><span><i style="background:#8fd16a"></i>${t('legendExp')}</span><span><i style="background:#b9bcf3"></i>${t('legendRec')}</span><span><i style="border-top:2px dashed var(--muted);height:0;border-radius:0"></i>${t('legendInc')}</span></div></div>
+      <div class="legend"><span><i style="background:#ea6b5f"></i>${t('legendExp')}</span><span><i style="background:#f5b8b1"></i>${t('legendRec')}</span><span><i style="border-top:2px dashed #3f8f5a;height:0;border-radius:0"></i>${t('legendInc')}</span></div></div>
     <h3>${t('monthByMonth')}</h3><div class="card">${rows || `<div class="empty">${t('nothingTracked')}</div>`}</div>
     <h3>${t('avgByCat')}</h3><div class="card">${avgHTML || `<div class="empty">${t('noSpending')}</div>`}</div>`;
   return { header: header(t('trendsTitle')), body };
