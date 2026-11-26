@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Balancy">
+<meta name="theme-color" content="#f3f1ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121211" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>Balancy</title>
+<style>
+:root{
+  --bg:#f3f1ec;--card:#ffffff;--ink:#1d1c1a;--muted:#78746c;--line:#e7e3db;--soft:#efede7;
+  --accent:#2f6f4e;--accent-ink:#ffffff;--accent-soft:#e3eee7;--danger:#b4412f;--danger-soft:#f6e4e0;
+  --radius:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#121211;--card:#1d1d1b;--ink:#f1efe9;--muted:#9c988f;--line:#2d2c29;--soft:#262522;
+  --accent:#62b087;--accent-ink:#0c1a12;--accent-soft:#1f3328;--danger:#e2735f;--danger-soft:#3a221d}
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input,select{font:inherit;font-size:16px;color:var(--ink)}
+.num{font-variant-numeric:tabular-nums}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(env(safe-area-inset-top) + 10px) 18px 8px}
+header h1{font-size:28px;letter-spacing:-.02em;margin:4px 0 2px}
+main{padding:0 14px calc(96px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+.monthnav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.monthnav button{width:40px;height:40px;border-radius:20px;background:var(--card);font-size:22px;line-height:1;display:grid;place-items:center}
+.monthnav .title{font-size:24px;font-weight:700;letter-spacing:-.02em;text-align:center;flex:1}
+.monthnav .today{font-size:13px;color:var(--accent);font-weight:600}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:12px 0}
+.hero .lbl{color:var(--muted);font-size:14px}
+.hero .big{font-size:42px;font-weight:700;letter-spacing:-.03em;margin:2px 0 4px}
+.neg{color:var(--danger)}
+.pos{color:var(--accent)}
+.hint{color:var(--muted);font-size:13px}
+.rows{margin-top:10px;border-top:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);gap:12px}
+.row:last-child{border-bottom:0}
+.row .k{color:var(--muted)}
+.row.tap .k::after{content:" \203A";color:var(--muted)}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 4px 6px;font-weight:600;display:flex;justify-content:space-between}
+h2 span{text-transform:none;letter-spacing:0}
+.cat{padding:10px 0;border-bottom:1px solid var(--line)}
+.cat:last-child{border-bottom:0}
+.cat .top{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:5px;margin-right:8px;vertical-align:0}
+.bar{height:6px;border-radius:3px;background:var(--soft);margin-top:7px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px}
+.sub{font-size:13px;color:var(--muted)}
+.list .item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.list .item:last-child{border-bottom:0}
+.item .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex:none}
+.item .mid{flex:1;min-width:0}
+.item .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .amt{font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 6px;border-radius:6px;background:var(--soft);color:var(--muted);margin-left:6px;vertical-align:1px}
+.tag.acc{background:var(--accent-soft);color:var(--accent)}
+.strike{text-decoration:line-through;color:var(--muted)}
+.dayhead{font-size:13px;color:var(--muted);padding:12px 0 2px;font-weight:600}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-weight:600;text-align:center;margin-top:12px}
+.btn.ghost{background:var(--card);color:var(--accent)}
+.btn.danger{background:var(--danger-soft);color:var(--danger)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:color-mix(in srgb,var(--card) 92%,transparent);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;align-items:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);padding:4px 0}
+nav.tabs button.on{color:var(--accent)}
+nav.tabs svg{width:24px;height:24px}
+nav.tabs .add{flex:none;width:54px;height:54px;border-radius:27px;background:var(--accent);color:var(--accent-ink);margin:-18px 8px 0;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);justify-content:center}
+nav.tabs .add svg{width:28px;height:28px}
+/* sheet */
+#backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+#backdrop.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:20px 20px 0 0;max-height:92vh;overflow:auto;
+  transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s;padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+#sheet.on{transform:none;visibility:visible;transition:transform .25s ease}
+.sheet-h{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;z-index:1}
+.sheet-h b{font-size:17px}
+.sheet-h button{color:var(--accent);font-size:17px;min-width:64px}
+.sheet-h button:last-child{text-align:right;font-weight:600}
+.amtwrap{text-align:center;padding:10px 0 4px}
+input.amt{width:100%;text-align:center;font-size:44px;font-weight:700;border:0;background:none;outline:none;letter-spacing:-.02em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{padding:8px 12px;border-radius:20px;background:var(--card);font-size:15px;border:2px solid transparent}
+.chip.on{border-color:var(--accent);background:var(--accent-soft)}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);padding:12px 14px;border-bottom:1px solid var(--line)}
+.group{border-radius:14px;overflow:hidden;margin:12px 0}
+.group .field:last-child{border-bottom:0}
+.field label{color:var(--ink);flex:none}
+.field input,.field select{border:0;background:none;text-align:right;outline:none;min-width:0;flex:1;width:100%}
+.field input[type=color]{flex:none;width:36px;height:28px;padding:0;border-radius:6px}
+.field input[type=checkbox]{flex:none;width:22px;height:22px;accent-color:var(--accent)}
+.seg{display:flex;background:var(--soft);border-radius:10px;padding:3px;margin:10px 0}
+.seg button{flex:1;padding:8px;border-radius:8px;font-size:15px;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.err{color:var(--danger);font-size:14px;min-height:20px;text-align:center}
+.catedit{display:grid;grid-template-columns:36px 1fr 100px 32px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.catedit:last-child{border-bottom:0}
+.catedit input{border:0;background:var(--soft);border-radius:8px;padding:8px;width:100%;min-width:0}
+.catedit input[type=color]{padding:0;height:32px;background:none}
+.catedit .x{color:var(--danger);font-size:20px}
+.chart{display:flex;align-items:flex-end;gap:10px;height:170px;padding-top:12px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
+.chart .stack{width:100%;max-width:38px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 2px 2px;overflow:hidden;background:var(--soft)}
+.chart .stack i{display:block}
+.chart .inc{position:absolute;left:8%;right:8%;border-top:2px dashed var(--muted)}
+.chart .lab{font-size:12px;color:var(--muted);margin-top:6px}
+.chart .col.sel .lab{color:var(--ink);font-weight:700}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.progress{height:8px;border-radius:4px;background:var(--soft);overflow:hidden;margin:8px 0 4px}
+.progress i{display:block;height:100%;background:var(--accent)}
+.banner{background:var(--danger-soft);color:var(--danger);padding:10px 14px;border-radius:12px;font-size:14px;margin:8px 0}
+.menu .btn{margin-top:8px}
+</style>
+</head>
+<body>
+<header id="hdr"></header>
+<main id="view"></main>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Month</button>
+  <button data-tab="recurring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.6L4 15.5M4 20v-4.5h4.5"/></svg>Recurring</button>
+  <button class="add" data-act="newExp" aria-label="Add expense"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button data-tab="trends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg>Trends</button>
+  <button data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Settings</button>
+</nav>
+
+<div id="backdrop" data-act="close"></div>
+<div id="sheet" role="dialog" aria-modal="true"></div>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script>
+'use strict';
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+const pad = n => String(n).padStart(2, '0');
+const ym = d => d.getFullYear() + '-' + pad(d.getMonth() + 1);
+const todayISO = () => { const d = new Date(); return ym(d) + '-' + pad(d.getDate()); };
+const thisMonth = () => ym(new Date());
+const r2 = n => Math.round(n * 100) / 100;
+function addM(m, n) { let [y, mo] = m.split('-').map(Number); mo += n; y += Math.floor((mo - 1) / 12); mo = ((mo - 1) % 12 + 12) % 12 + 1; return y + '-' + pad(mo); }
+function dim(m) { const [y, mo] = m.split('-').map(Number); return new Date(y, mo, 0).getDate(); }
+function mLabel(m, style = 'long') { const [y, mo] = m.split('-').map(Number); const d = new Date(y, mo - 1, 1);
+  if (style === 'short') return d.toLocaleDateString(undefined, { month: 'short' });
+  return d.toLocaleDateString(undefined, { month: style, year: 'numeric' }); }
+function dLabel(iso) { const [y, mo, d] = iso.split('-').map(Number); return new Date(y, mo - 1, d).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function parseAmt(v) {
+  v = String(v ?? '').trim().replace(/[\s']/g, '');
+  if (!v) return NaN;
+  if (v.includes(',') && v.includes('.')) {
+    v = v.lastIndexOf(',') > v.lastIndexOf('.') ? v.replace(/\./g, '').replace(',', '.') : v.replace(/,/g, '');
+  } else v = v.replace(',', '.');
+  const n = parseFloat(v); return isFinite(n) ? r2(n) : NaN;
+}
+let _fmt = null, _fmtCur = null;
+function money(n, sign = false) {
+  const cur = S.settings.currency;
+  if (_fmtCur !== cur) { try { _fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency: cur }); } catch (e) { _fmt = null; } _fmtCur = cur; }
+  const v = Math.abs(n) < 0.005 ? 0 : n;
+  const s = _fmt ? _fmt.format(Math.abs(v)) : Math.abs(v).toFixed(2) + ' ' + cur;
+  if (v < 0) return '−' + s;
+  return (sign && v > 0 ? '+' : '') + s;
+}
+
+/* ---------- storage ---------- */
+const KEY = 'balancy.v1', OLD_KEY = 'ledger.v1';
+const DEFAULT_CATS = [['Groceries', '#2f6f4e'], ['Dining out', '#c2632a'], ['Transport', '#3b6ea8'], ['Shopping', '#8a4fa3'],
+  ['Fun', '#c23b5a'], ['Health', '#2a9a96'], ['Housing', '#7a6440'], ['Loans', '#5f6b73'], ['Subscriptions', '#b08a1e'], ['Other', '#8f887d']];
+function fresh() {
+  return { version: 1,
+    settings: { currency: 'EUR', income: 0, opening: 0, rollover: true, startMonth: thisMonth(), lastBackup: null },
+    incomeOverrides: {},
+    categories: DEFAULT_CATS.map(([name, color]) => ({ id: uid(), name, color, budget: 0 })),
+    expenses: [], recurring: [] };
+}
+let storageOK = true;
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY));
+    if (s && s.version === 1) return migrate(s);
+  } catch (e) { storageOK = false; }
+  return fresh();
+}
+function migrate(d) {
+  d.incomeOverrides = d.incomeOverrides || {};
+  for (const r of d.recurring) { r.skips = r.skips || []; if (r.kind === 'loan' && !r.balanceFrom) r.balanceFrom = r.start; }
+  return d;
+}
+function save() {
+  clearCaches();
+  try { localStorage.setItem(KEY, JSON.stringify(S)); storageOK = true; } catch (e) { storageOK = false; }
+}
+let S = load();
+const UI = { tab: 'month', month: thisMonth() };
+
+/* ---------- money logic ---------- */
+let loanCache = {}, carryCache = {}, entryCache = {};
+function clearCaches() { loanCache = {}; carryCache = {}; entryCache = {}; }
+const catById = id => S.categories.find(c => c.id === id) || { id: '', name: 'Uncategorised', color: '#8f887d', budget: 0 };
+
+function amountAt(r, m) { let a = r.amounts[0].amount; for (const x of r.amounts) if (x.from <= m) a = x.amount; return a; }
+const monthOf = d => d ? d.slice(0, 7) : null;
+// Loan schedule. Payments are counted from r.start. The remaining balance is known from r.balanceFrom
+// (the month the "remaining credit sum" was entered for, before that month's payment).
+// With an interest rate, each payment first covers that month's interest, the rest reduces the balance.
+// With a contract end date, payments run until that month; otherwise until the balance reaches zero.
+function loanSched(r) {
+  if (loanCache[r.id]) return loanCache[r.id];
+  const s = {}, endM = monthOf(r.loanEnd), from = r.balanceFrom || r.start, rate = (r.rate || 0) / 1200;
+  let rem = r2(r.balance || 0), m = r.start, end = null, interestTotal = 0;
+  for (let i = 0; i < 720; i++) {
+    if (endM && m > endM) break;
+    if (!endM && m >= from && rem <= 0.004) break;
+    const skipped = (r.skips || []).includes(m);
+    let pay = 0;
+    if (m < from) { if (!skipped) pay = amountAt(r, m); s[m] = { pay, rem: null }; }
+    else {
+      const interest = r2(rem * rate);
+      if (!skipped) pay = endM ? amountAt(r, m) : Math.min(amountAt(r, m), r2(rem + interest));
+      rem = Math.max(0, r2(rem + interest - pay)); interestTotal += interest;
+      s[m] = { pay, rem, interest };
+    }
+    end = m; m = addM(m, 1);
+    if (!endM && amountAt(r, m) <= 0) break;
+  }
+  if (!endM && rem > 0.004) end = null; // payment too low to ever finish
+  return (loanCache[r.id] = { s, end, last: rem, interestTotal: r2(interestTotal) });
+}
+function loanRemaining(r, m) { // balance left after month m's payment
+  const from = r.balanceFrom || r.start;
+  if (m < from) return r2(r.balance || 0);
+  const L = loanSched(r); if (L.s[m]) return L.s[m].rem ?? r2(r.balance || 0);
+  return L.last;
+}
+const paidThisMonth = r => new Date().getDate() >= (r.day || 1);
+function loanOwedNow(r) { const m = thisMonth(); return loanRemaining(r, paidThisMonth(r) ? m : addM(m, -1)); }
+function loanMonthsLeft(r) {
+  const L = loanSched(r), next = paidThisMonth(r) ? addM(thisMonth(), 1) : thisMonth();
+  return Object.keys(L.s).filter(k => k >= next && L.s[k].pay > 0).length;
+}
+function loanEndLabel(r) {
+  if (r.loanEnd) return dLong(r.loanEnd);
+  const L = loanSched(r); return L.end ? mLabel(L.end) : null;
+}
+function dLong(iso) { const [y, mo, d] = iso.split('-').map(Number); return new Date(y, mo - 1, d).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }); }
+function loanDetailsHTML(r) {
+  const owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r), L = loanSched(r);
+  const base = r.principal > 0 ? r.principal : r.balance;
+  const pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+  const row = (k, v) => v === null || v === undefined || v === '' ? '' : `<div class="row"><span class="k">${k}</span><span class="num" style="text-align:right">${v}</span></div>`;
+  // compare the contract end date with what the payments add up to
+  let warn = '';
+  if (r.loanEnd) {
+    const endM = monthOf(r.loanEnd), lastRem = loanRemaining(r, endM);
+    if (lastRem > Math.max(1, amountAt(r, endM))) warn = `With these numbers about ${money(lastRem)} would still be owed at the end date. Check the remaining sum, payment or interest rate.`;
+  }
+  return `<div class="progress" style="margin-top:4px"><i style="width:${pct}%"></i></div>
+    <div class="sub" style="display:flex;justify-content:space-between"><span>${Math.round(pct)}% repaid</span><span>${owed > 0 ? money(owed) + ' to go' : 'Fully repaid'}</span></div>
+    <div class="rows">
+      ${row('Loan number', r.loanNumber ? esc(r.loanNumber) : null)}
+      ${row('Loan amount', r.principal > 0 ? money(r.principal) : null)}
+      ${row('Remaining credit sum', money(owed))}
+      ${row('Monthly payment', money(amountAt(r, thisMonth() < r.start ? r.start : thisMonth())) + ` · day ${r.day}`)}
+      ${row('Payments left', owed > 0 || left ? `${left} month${left === 1 ? '' : 's'}` : '0')}
+      ${row('Start date', r.loanStart ? dLong(r.loanStart) : null)}
+      ${row('End date', endTxt ? esc(endTxt) + (r.loanEnd ? '' : ' (estimated)') : 'Payment too low to finish')}
+      ${row('Interest rate', r.rate ? r.rate.toLocaleString() + ' %' : null)}
+      ${row('Interest still to pay', r.rate ? money(Object.keys(L.s).filter(k => k >= (paidThisMonth(r) ? addM(thisMonth(), 1) : thisMonth())).reduce((a, k) => a + (L.s[k].interest || 0), 0)) : null)}
+    </div>${warn ? `<div class="banner" style="margin-top:10px">${warn}</div>` : ''}`;
+}
+function recActive(r, m) {
+  if (m < r.start) return false;
+  if (r.kind === 'loan') return !!loanSched(r).s[m];
+  return !(r.end && m > r.end);
+}
+function recAmount(r, m) {
+  if (!recActive(r, m)) return 0;
+  if (r.kind === 'loan') return loanSched(r).s[m].pay;
+  if ((r.skips || []).includes(m)) return 0;
+  return amountAt(r, m);
+}
+function monthEntries(m) {
+  if (entryCache[m]) return entryCache[m];
+  const out = S.expenses.filter(e => e.date.slice(0, 7) === m).map(e => ({ ...e, type: 'exp' }));
+  const days = dim(m);
+  for (const r of S.recurring) {
+    if (!recActive(r, m)) continue;
+    const skipped = (r.skips || []).includes(m);
+    out.push({ type: 'rec', id: r.id, kind: r.kind, note: r.name, amount: recAmount(r, m), skipped,
+      categoryId: r.categoryId, date: m + '-' + pad(Math.min(r.day || 1, days)) });
+  }
+  out.sort((a, b) => b.date.localeCompare(a.date) || (a.type === 'rec') - (b.type === 'rec'));
+  return (entryCache[m] = out);
+}
+function incomeFor(m) { if (m in S.incomeOverrides) return S.incomeOverrides[m]; return m < firstMonth() ? 0 : (S.settings.income || 0); }
+function firstMonth() { let f = S.settings.startMonth || thisMonth(); for (const e of S.expenses) { const m = e.date.slice(0, 7); if (m < f) f = m; } return f; }
+function baseTotals(m) {
+  let rec = 0, exp = 0;
+  for (const e of monthEntries(m)) e.type === 'rec' ? rec += e.amount : exp += e.amount;
+  return { income: incomeFor(m), rec: r2(rec), exp: r2(exp), spent: r2(rec + exp) };
+}
+function carryInto(m) {
+  if (m in carryCache) return carryCache[m];
+  const f = firstMonth(); let c = 0;
+  if (m === f) c = S.settings.opening || 0;
+  else if (m > f && S.settings.rollover) { const p = addM(m, -1), t = baseTotals(p); c = r2(t.income + carryInto(p) - t.spent); }
+  return (carryCache[m] = c);
+}
+function totals(m) {
+  // warm the carry cache from the start so recursion stays shallow
+  const f = firstMonth(); for (let x = f; x < m; x = addM(x, 1)) carryInto(x);
+  const t = baseTotals(m), carry = carryInto(m);
+  return { ...t, carry, left: r2(t.income + carry - t.spent) };
+}
+function catSpend(m) {
+  const map = {};
+  for (const e of monthEntries(m)) map[e.categoryId] = r2((map[e.categoryId] || 0) + e.amount);
+  return map;
+}
+
+/* ---------- rendering ---------- */
+const ICON_CHEVRONS = { prev: '‹', next: '›' };
+function render() {
+  clearCaches();
+  document.querySelectorAll('#tabs [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === UI.tab));
+  const v = { month: viewMonth, recurring: viewRecurring, trends: viewTrends, settings: viewSettings }[UI.tab]();
+  $('#hdr').innerHTML = v.header; $('#view').innerHTML = (storageOK ? '' : '<div class="banner">Your browser is blocking storage, so changes will not be saved. Private Browsing can cause this.</div>') + v.body;
+}
+function monthHeader() {
+  const cur = UI.month === thisMonth();
+  return `<div class="monthnav"><button data-act="prevM" aria-label="Previous month">${ICON_CHEVRONS.prev}</button>
+    <div class="title">${esc(mLabel(UI.month))}${cur ? '' : `<div><button class="today" data-act="toToday">Back to this month</button></div>`}</div>
+    <button data-act="nextM" aria-label="Next month">${ICON_CHEVRONS.next}</button></div>`;
+}
+function itemHTML(e) {
+  const c = catById(e.categoryId);
+  const title = e.note ? esc(e.note) : esc(c.name);
+  const upcoming = e.type === 'rec' && !e.skipped && e.date > todayISO();
+  let tags = '';
+  if (e.type === 'rec') tags += `<span class="tag acc">${e.kind === 'loan' ? 'Loan' : 'Recurring'}</span>`;
+  if (e.skipped) tags += '<span class="tag">Skipped</span>'; else if (upcoming) tags += '<span class="tag">Upcoming</span>';
+  return `<button class="item" data-act="${e.type === 'rec' ? 'recMenu' : 'editExp'}" data-id="${e.id}">
+    <span class="ic" style="background:${esc(c.color)}">${esc(c.name.charAt(0).toUpperCase())}</span>
+    <span class="mid"><div class="t">${title}${tags}</div><div class="sub">${esc(e.note ? c.name : dLabel(e.date))}</div></span>
+    <span class="amt num ${e.skipped ? 'strike' : ''}">${money(e.type === 'rec' && e.skipped ? recAmountRaw(e.id) : e.amount)}</span></button>`;
+}
+function recAmountRaw(id) { const r = S.recurring.find(x => x.id === id); return r ? amountAt(r, UI.month) : 0; }
+
+function viewMonth() {
+  const m = UI.month, t = totals(m), cur = m === thisMonth();
+  const entries = monthEntries(m);
+  let extra = '';
+  if (cur) {
+    const today = todayISO();
+    const upcoming = r2(entries.filter(e => e.type === 'rec' && !e.skipped && e.date > today).reduce((a, e) => a + e.amount, 0));
+    const daysLeft = dim(m) - new Date().getDate() + 1;
+    if (upcoming > 0) extra += `<div class="hint">${money(upcoming)} of recurring costs are still due this month (already counted).</div>`;
+    if (t.left > 0) extra += `<div class="hint">That's about ${money(t.left / daysLeft)} a day for the remaining ${daysLeft} day${daysLeft > 1 ? 's' : ''}.</div>`;
+  }
+  const noIncome = !S.settings.income && !(m in S.incomeOverrides);
+  const hero = `<section class="card hero">
+    <div class="lbl">Left ${cur ? 'this month' : 'in ' + esc(mLabel(m, 'long').split(' ')[0])}</div>
+    <div class="big num ${t.left < 0 ? 'neg' : ''}">${money(t.left)}</div>${extra}
+    ${noIncome ? `<div class="hint" style="margin-top:6px">Set your monthly income in Settings to see what's left.</div>` : ''}
+    <div class="rows">
+      <button class="row tap" data-act="editIncome" style="width:100%"><span class="k">Income${m in S.incomeOverrides ? ' (this month only)' : ''}</span><span class="num">${money(t.income)}</span></button>
+      <div class="row"><span class="k">Carried over</span><span class="num ${t.carry < 0 ? 'neg' : ''}">${money(t.carry, true)}</span></div>
+      <div class="row"><span class="k">Recurring</span><span class="num">${money(-t.rec)}</span></div>
+      <div class="row"><span class="k">Expenses</span><span class="num">${money(-t.exp)}</span></div>
+    </div></section>`;
+
+  const spend = catSpend(m);
+  const cats = S.categories.filter(c => spend[c.id] || c.budget).sort((a, b) => (spend[b.id] || 0) - (spend[a.id] || 0));
+  const orphan = Object.keys(spend).filter(id => !S.categories.some(c => c.id === id));
+  const maxSpend = Math.max(1, ...cats.map(c => spend[c.id] || 0));
+  let catHTML = cats.map(c => {
+    const s = spend[c.id] || 0, b = c.budget || 0;
+    const pct = b ? Math.min(100, s / b * 100) : s / maxSpend * 100, over = b && s > b;
+    const note = b ? (over ? `<span class="neg">${money(s - b)} over budget</span>` : `${money(b - s)} left of ${money(b)}`) : 'No budget set';
+    return `<div class="cat"><div class="top"><span><span class="dot" style="background:${esc(c.color)}"></span>${esc(c.name)}</span><span class="num">${money(s)}</span></div>
+      <div class="bar"><i style="width:${pct}%;background:${over ? 'var(--danger)' : esc(c.color)}"></i></div><div class="sub" style="margin-top:4px">${note}</div></div>`;
+  }).join('');
+  if (orphan.length) catHTML += `<div class="cat"><div class="top"><span>Uncategorised</span><span class="num">${money(orphan.reduce((a, id) => a + spend[id], 0))}</span></div></div>`;
+
+  let listHTML = '', lastDate = '';
+  for (const e of entries) {
+    if (e.date !== lastDate) { listHTML += `<div class="dayhead">${esc(dLabel(e.date))}</div>`; lastDate = e.date; }
+    listHTML += itemHTML(e);
+  }
+  const body = hero +
+    `<h2>By category</h2><section class="card" style="padding-top:4px;padding-bottom:4px">${catHTML || '<div class="empty">Nothing spent yet.</div>'}</section>` +
+    `<h2>Transactions <span>${entries.length}</span></h2><section class="card list" style="padding-top:2px;padding-bottom:2px">${listHTML || '<div class="empty">No expenses this month.<br>Tap + to add one.</div>'}</section>`;
+  return { header: monthHeader(), body };
+}
+
+function viewRecurring() {
+  const m = thisMonth();
+  const fixed = S.recurring.filter(r => r.kind !== 'loan'), loans = S.recurring.filter(r => r.kind === 'loan');
+  const monthly = r2(S.recurring.reduce((a, r) => a + recAmount(r, m), 0));
+  const fixedHTML = fixed.map(r => {
+    const c = catById(r.categoryId), active = recActive(r, m);
+    let status = r.start > m ? `Starts ${mLabel(r.start)}` : (!active ? `Ended ${mLabel(r.end)}` : (r.end ? `Until ${mLabel(r.end)}` : 'Ongoing'));
+    return `<button class="item" data-act="editRec" data-id="${r.id}"><span class="ic" style="background:${esc(c.color)}">${esc(c.name.charAt(0))}</span>
+      <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">Day ${r.day} · ${esc(c.name)} · ${status}</div></span>
+      <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}</span></button>`;
+  }).join('');
+  const loanHTML = loans.map(r => {
+    const c = catById(r.categoryId), owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r);
+    const base = r.principal > 0 ? r.principal : r.balance;
+    const pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+    return `<button class="item" data-act="loanInfo" data-id="${r.id}" style="display:block">
+      <div style="display:flex;justify-content:space-between;gap:10px"><span class="t"><span class="dot" style="background:${esc(c.color)}"></span>${esc(r.name)}</span>
+      <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}<span class="sub">/mo</span></span></div>
+      ${r.loanNumber ? `<div class="sub">No. ${esc(r.loanNumber)}</div>` : ''}
+      <div class="progress"><i style="width:${pct}%"></i></div>
+      <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${owed > 0 ? `${money(owed)} still owed${r.principal > 0 ? ' of ' + money(r.principal) : ''}` : 'Fully repaid'}</span>
+      <span>${owed > 0 ? `${left} month${left === 1 ? '' : 's'} left` : ''}</span></div>
+      ${endTxt ? `<div class="sub">Ends ${esc(endTxt)}</div>` : ''}</button>`;
+  }).join('');
+  const body = `<section class="card hero"><div class="lbl">Recurring costs in ${esc(mLabel(m))}</div><div class="big num">${money(monthly)}</div>
+      <div class="hint">These are added to every month automatically. Tap a transaction on the Month screen to skip one for a single month.</div></section>
+    <h2>Fixed costs</h2><section class="card list" style="padding-top:2px;padding-bottom:2px">${fixedHTML || '<div class="empty">Rent, insurance, phone, subscriptions…</div>'}</section>
+    <h2>Loans &amp; credits</h2><section class="card list" style="padding-top:2px;padding-bottom:2px">${loanHTML || '<div class="empty">Add a loan to count down what you still owe.</div>'}</section>
+    <button class="btn" data-act="newRec">Add recurring cost</button>`;
+  return { header: '<h1>Recurring</h1>', body };
+}
+
+function viewTrends() {
+  const end = UI.month, months = [];
+  for (let i = 5; i >= 0; i--) months.push(addM(end, -i));
+  const data = months.map(m => ({ m, ...totals(m) }));
+  const max = Math.max(1, ...data.map(d => Math.max(d.spent, d.income)));
+  const cols = data.map(d => `<div class="col ${d.m === end ? 'sel' : ''}">
+      ${d.income ? `<div class="inc" style="bottom:calc(${d.income / max} * (100% - 22px) + 22px)"></div>` : ''}
+      <div class="stack" style="height:calc(${d.spent / max} * (100% - 22px))">
+        <i style="height:${d.spent ? d.rec / d.spent * 100 : 0}%;background:var(--muted);opacity:.55"></i>
+        <i style="height:${d.spent ? d.exp / d.spent * 100 : 0}%;background:var(--accent)"></i></div>
+      <div class="lab">${esc(mLabel(d.m, 'short'))}</div></div>`).join('');
+  const f0 = firstMonth();
+  const rows = data.filter(d => d.m >= f0 || d.spent).reverse().map(d => `<div class="row"><span><div>${esc(mLabel(d.m))}</div>
+      <div class="sub num">${money(d.spent)} spent of ${money(d.income)} income</div></span>
+      <span class="num" style="text-align:right"><b class="${d.left < 0 ? 'neg' : ''}">${money(d.left)}</b><div class="sub">left</div></span></div>`).join('');
+  // category averages
+  const sums = {};
+  for (const m of months) { const s = catSpend(m); for (const id in s) sums[id] = (sums[id] || 0) + s[id]; }
+  const avg = Object.entries(sums).map(([id, v]) => ({ c: catById(id), v: v / months.length })).filter(x => x.v > 0).sort((a, b) => b.v - a.v);
+  const amax = Math.max(1, ...avg.map(x => x.v));
+  const avgHTML = avg.map(x => `<div class="cat"><div class="top"><span><span class="dot" style="background:${esc(x.c.color)}"></span>${esc(x.c.name)}</span>
+      <span class="num">${money(x.v)}<span class="sub"> /mo</span></span></div><div class="bar"><i style="width:${x.v / amax * 100}%;background:${esc(x.c.color)}"></i></div></div>`).join('');
+  const body = `<section class="card"><div class="hint">Spending, ${esc(mLabel(months[0]))} to ${esc(mLabel(end))}</div>
+      <div class="chart">${cols}</div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>Expenses</span><span><i style="background:var(--muted);opacity:.55"></i>Recurring</span><span><i style="border-top:2px dashed var(--muted);height:0;border-radius:0"></i>Income</span></div></section>
+    <h2>Month by month</h2><section class="card" style="padding-top:4px;padding-bottom:4px">${rows || '<div class="empty">Nothing tracked in this period yet.</div>'}</section>
+    <h2>Average per month, by category</h2><section class="card" style="padding-top:4px;padding-bottom:4px">${avgHTML || '<div class="empty">No spending in this period.</div>'}</section>`;
+  return { header: monthHeader(), body };
+}
+
+function curSymbol(c) {
+  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: c, currencyDisplay: 'narrowSymbol' }).formatToParts(0).find(p => p.type === 'currency').value; } catch (e) { return c; }
+}
+const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD', 'JPY', 'SEK', 'NOK', 'DKK', 'PLN', 'CZK', 'HUF', 'RON', 'TRY', 'INR', 'BRL', 'MXN', 'ZAR', 'SGD', 'HKD', 'CNY', 'KRW'];
+function viewSettings() {
+  const st = S.settings;
+  const curOpts = CURRENCIES.concat(CURRENCIES.includes(st.currency) ? [] : [st.currency]).map(c => `<option value="${c}" ${c === st.currency ? 'selected' : ''}>${c} (${esc(curSymbol(c))})</option>`).join('');
+  const cats = S.categories.map(c => `<div class="catedit">
+      <input type="color" value="${esc(c.color)}" data-cat="${c.id}" data-f="color" aria-label="Colour">
+      <input value="${esc(c.name)}" data-cat="${c.id}" data-f="name" aria-label="Name">
+      <input value="${c.budget || ''}" placeholder="Budget" inputmode="decimal" data-cat="${c.id}" data-f="budget" aria-label="Monthly budget" class="num" style="text-align:right">
+      <button class="x" data-act="delCat" data-id="${c.id}" aria-label="Delete category">×</button></div>`).join('');
+  const lb = st.lastBackup ? new Date(st.lastBackup).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'never';
+  const body = `
+    <h2>Money</h2>
+    <div class="group">
+      <div class="field"><label>Monthly income</label><input class="num" inputmode="decimal" data-set="income" value="${st.income || ''}" placeholder="0"></div>
+      <div class="field"><label>Currency</label><select data-set="currency">${curOpts}</select></div>
+      <div class="field"><label>Carry leftover to next month</label><input type="checkbox" data-set="rollover" ${st.rollover ? 'checked' : ''}></div>
+    </div>
+    <div class="hint" style="padding:0 4px">When this is on, whatever is left at the end of a month (or overspent) is added to the next one.</div>
+    <div class="group">
+      <div class="field"><label>Tracking starts</label><input type="month" data-set="startMonth" value="${esc(st.startMonth)}"></div>
+      <div class="field"><label>Starting balance</label><input class="num" inputmode="decimal" data-set="opening" value="${st.opening || ''}" placeholder="0"></div>
+    </div>
+    <div class="hint" style="padding:0 4px">Starting balance is money you already have at the start, counted as carried over into the first month.</div>
+
+    <h2>Categories &amp; monthly budgets</h2>
+    <section class="card" style="padding-top:4px;padding-bottom:4px">${cats}</section>
+    <button class="btn ghost" data-act="addCat">Add category</button>
+
+    <h2>Backup <span>Last backup: ${esc(lb)}</span></h2>
+    <div class="hint" style="padding:0 4px">Your data lives only on this phone. Save a backup to Files or iCloud Drive now and then.</div>
+    <button class="btn" data-act="exportJSON">Save backup</button>
+    <button class="btn ghost" data-act="importJSON">Restore from backup</button>
+    <button class="btn ghost" data-act="exportCSV">Export spreadsheet (CSV)</button>
+    <button class="btn danger" data-act="reset" style="margin-top:28px">Erase all data</button>
+    <div class="hint" style="text-align:center;margin:18px 0">Balancy · works offline · no account needed</div>`;
+  return { header: '<h1>Settings</h1>', body };
+}
+
+/* ---------- sheet ---------- */
+let sheetState = {};
+function openSheet(html) { $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0; $('#sheet').classList.add('on'); $('#backdrop').classList.add('on'); }
+function closeSheet() { $('#sheet').classList.remove('on'); $('#backdrop').classList.remove('on'); sheetState = {}; if (document.activeElement) document.activeElement.blur(); }
+function chipsHTML(sel, act) {
+  return `<div class="chips">${S.categories.map(c => `<button class="chip ${c.id === sel ? 'on' : ''}" data-act="${act}" data-id="${c.id}"><span class="dot" style="background:${esc(c.color)}"></span>${esc(c.name)}</button>`).join('')}</div>`;
+}
+function expenseSheet(id) {
+  const e = id ? S.expenses.find(x => x.id === id) : null;
+  const date = e ? e.date : (UI.month === thisMonth() ? todayISO() : UI.month + '-01');
+  sheetState = { kind: 'exp', id: e ? e.id : null, cat: e ? e.categoryId : (sheetState.lastCat || S.categories[0]?.id) };
+  openSheet(`<div class="sheet-h"><button data-act="close">Cancel</button><b>${e ? 'Edit expense' : 'New expense'}</b><button data-act="saveExp">Save</button></div>
+    <div class="amtwrap"><input id="f-amt" class="amt num" inputmode="decimal" placeholder="0.00" autocomplete="off" value="${e ? e.amount : ''}"></div>
+    <div class="err" id="f-err"></div>
+    ${chipsHTML(sheetState.cat, 'pickCat')}
+    <div class="group">
+      <div class="field"><label>Note</label><input id="f-note" placeholder="Optional" value="${esc(e ? e.note : '')}"></div>
+      <div class="field"><label>Date</label><input id="f-date" type="date" value="${date}"></div>
+    </div>
+    ${e ? '<button class="btn danger" data-act="delExp">Delete expense</button>' : ''}`);
+  if (!e) $('#f-amt').focus();
+}
+function saveExpense() {
+  const amt = parseAmt($('#f-amt').value), date = $('#f-date').value, note = $('#f-note').value.trim();
+  if (!(amt > 0)) { $('#f-err').textContent = 'Enter an amount.'; return; }
+  if (!/^\d{4}-\d\d-\d\d$/.test(date)) { $('#f-err').textContent = 'Pick a date.'; return; }
+  if (sheetState.id) Object.assign(S.expenses.find(x => x.id === sheetState.id), { amount: amt, date, note, categoryId: sheetState.cat });
+  else S.expenses.push({ id: uid(), amount: amt, date, note, categoryId: sheetState.cat });
+  const lastCat = sheetState.cat;
+  save(); closeSheet(); sheetState.lastCat = lastCat;
+  if (UI.tab === 'month' || UI.tab === 'trends') UI.month = date.slice(0, 7);
+  render();
+}
+function recMenu(id) {
+  const r = S.recurring.find(x => x.id === id); if (!r) return;
+  const m = UI.month, skipped = (r.skips || []).includes(m);
+  sheetState = { kind: 'recmenu', id };
+  openSheet(`<div class="sheet-h"><button data-act="close">Close</button><b>${esc(r.name)}</b><span style="min-width:64px"></span></div>
+    ${r.kind === 'loan' ? `<section class="card">${loanDetailsHTML(r)}</section>` : `<div class="hint" style="text-align:center">${money(amountAt(r, m))} on day ${r.day} of each month</div>`}
+    <div class="menu"><button class="btn ${skipped ? '' : 'ghost'}" data-act="toggleSkip">${skipped ? 'Count it again in ' : 'Skip it in '}${esc(mLabel(m))}</button>
+    <button class="btn ghost" data-act="editRec" data-id="${id}">Edit ${r.kind === 'loan' ? 'loan' : 'recurring cost'}</button></div>`);
+}
+function loanInfo(id) {
+  const r = S.recurring.find(x => x.id === id); if (!r) return;
+  sheetState = { kind: 'loaninfo', id };
+  openSheet(`<div class="sheet-h"><button data-act="close">Close</button><b>${esc(r.name)}</b><button data-act="editRec" data-id="${id}">Edit</button></div>
+    <section class="card">${loanDetailsHTML(r)}</section>`);
+}
+function recSheet(id) {
+  const r = id ? S.recurring.find(x => x.id === id) : null;
+  const m = thisMonth();
+  const defCat = (S.categories.find(c => c.name === 'Housing') || S.categories[0] || {}).id;
+  sheetState = { kind: 'rec', id: r ? r.id : null, type: r ? r.kind : 'fixed', cat: r ? r.categoryId : defCat };
+  const applyFrom = r ? (r.start > m ? r.start : m) : m;
+  const v = (k, d = '') => esc(r && r[k] != null && r[k] !== 0 ? r[k] : d);
+  openSheet(`<div class="sheet-h"><button data-act="close">Cancel</button><b>${r ? 'Edit' : 'New'}</b><button data-act="saveRec">Save</button></div>
+    <div class="seg"><button data-act="recType" data-v="fixed" class="${sheetState.type === 'fixed' ? 'on' : ''}">Fixed cost</button><button data-act="recType" data-v="loan" class="${sheetState.type === 'loan' ? 'on' : ''}">Loan / credit</button></div>
+    <div class="err" id="f-err"></div>
+    <div class="group">
+      <div class="field"><label>Name</label><input id="r-name" placeholder="e.g. Rent, Car loan" value="${v('name')}"></div>
+      <div class="field" data-only="loan"><label>Loan number</label><input id="r-no" placeholder="Optional" value="${v('loanNumber')}"></div>
+      <div class="field"><label><span data-only="fixed">Amount per month</span><span data-only="loan">Monthly payment</span></label><input id="r-amt" class="num" inputmode="decimal" placeholder="0.00" value="${r ? amountAt(r, applyFrom) : ''}"></div>
+      <div class="field"><label>Day of month</label><input id="r-day" type="number" inputmode="numeric" min="1" max="31" value="${r ? r.day : 1}"></div>
+      <div class="field" data-only="fixed"><label>First month</label><input id="r-start" type="month" value="${r ? r.start : m}"></div>
+      <div class="field" data-only="fixed"><label>Last month</label><input id="r-end" type="month" value="${r && r.end ? r.end : ''}"></div>
+      ${r ? `<div class="field"><label>New amount applies from</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
+    </div>
+    <div class="hint" data-only="fixed" style="padding:0 4px">Leave "Last month" empty if it keeps going.</div>
+    <div data-only="loan">
+      <h2>Loan details</h2>
+      <div class="group">
+        <div class="field"><label>Loan amount</label><input id="r-principal" class="num" inputmode="decimal" placeholder="Original amount" value="${v('principal')}"></div>
+        <div class="field"><label>Remaining credit sum</label><input id="r-bal" class="num" inputmode="decimal" placeholder="0.00" value="${v('balance')}"></div>
+        <div class="field"><label>Remaining sum as of</label><input id="r-bfrom" type="month" value="${r && r.balanceFrom ? r.balanceFrom : m}"></div>
+        <div class="field"><label>Start date</label><input id="r-lstart" type="date" value="${v('loanStart')}"></div>
+        <div class="field"><label>End date</label><input id="r-lend" type="date" value="${v('loanEnd')}"></div>
+        <div class="field"><label>Interest rate (% per year)</label><input id="r-rate" class="num" inputmode="decimal" placeholder="Optional" value="${v('rate')}"></div>
+      </div>
+      <div class="hint" style="padding:0 4px">Enter the remaining credit sum from your bank as of the month you choose, before that month's payment. Months left and progress are worked out from it. With the interest rate, each payment is split into interest and repayment so the balance stays accurate. With an end date, payments are counted until that date.</div>
+    </div>
+    ${r ? '<div class="hint" style="padding:6px 4px 0">If the monthly amount changes, earlier months keep the old amount.</div>' : ''}
+    <h2>Category</h2>${chipsHTML(sheetState.cat, 'pickRecCat')}
+    ${r ? `<button class="btn danger" data-act="delRec">Delete ${r.kind === 'loan' ? 'loan' : 'recurring cost'}</button>` : ''}`);
+  syncRecType();
+}
+function syncRecType() {
+  document.querySelectorAll('#sheet [data-only]').forEach(el => el.style.display = el.dataset.only === sheetState.type ? '' : 'none');
+  document.querySelectorAll('#sheet [data-act=recType]').forEach(b => b.classList.toggle('on', b.dataset.v === sheetState.type));
+}
+function saveRec() {
+  const err = t => { $('#f-err').textContent = t; $('#sheet').scrollTop = 0; };
+  const kind = sheetState.type;
+  const name = $('#r-name').value.trim(), amt = parseAmt($('#r-amt').value);
+  const day = Math.min(31, Math.max(1, parseInt($('#r-day').value, 10) || 1));
+  const old = sheetState.id ? S.recurring.find(x => x.id === sheetState.id) : null;
+  if (!name) return err('Give it a name.');
+  if (!(amt > 0)) return err('Enter the monthly amount.');
+  let fields;
+  if (kind === 'fixed') {
+    const start = $('#r-start').value, end = $('#r-end').value || null;
+    if (!/^\d{4}-\d\d$/.test(start)) return err('Pick the first month.');
+    if (end && end < start) return err('The last month is before the first month.');
+    fields = { start, end };
+  } else {
+    const bal = parseAmt($('#r-bal').value), principal = parseAmt($('#r-principal').value), rate = parseAmt($('#r-rate').value);
+    const bfrom = $('#r-bfrom').value, lstart = $('#r-lstart').value || null, lend = $('#r-lend').value || null;
+    if (!(bal >= 0) || $('#r-bal').value.trim() === '') return err('Enter the remaining credit sum.');
+    if (!/^\d{4}-\d\d$/.test(bfrom)) return err('Pick the month the remaining sum is from.');
+    if (principal > 0 && bal > principal * 1.5) return err('The remaining sum is much higher than the loan amount. Please check both.');
+    if (lstart && lend && lend < lstart) return err('The end date is before the start date.');
+    if (lend && monthOf(lend) < bfrom) return err('The end date is before the month of the remaining sum.');
+    if (rate < 0 || rate > 50) return err('The interest rate looks off. Enter it as a yearly percentage, like 4.9.');
+    // payments are counted from the earlier of: the old first month, or the month of the remaining sum
+    const start = old && old.kind === 'loan' && old.start < bfrom ? old.start : bfrom;
+    fields = { start, end: null, balance: bal, balanceFrom: bfrom, principal: principal > 0 ? principal : 0,
+      rate: rate > 0 ? rate : 0, loanNumber: $('#r-no').value.trim(), loanStart: lstart, loanEnd: lend };
+  }
+  if (old) {
+    const from = ($('#r-from') && $('#r-from').value) || fields.start;
+    Object.assign(old, { name, kind, day, categoryId: sheetState.cat }, fields);
+    if (amountAt(old, from) !== amt) {
+      old.amounts = old.amounts.filter(x => x.from < from);
+      old.amounts.push({ from: old.amounts.length ? from : fields.start, amount: amt });
+      old.amounts.sort((a, b) => a.from.localeCompare(b.from));
+    }
+  } else {
+    S.recurring.push({ id: uid(), name, kind, day, categoryId: sheetState.cat, amounts: [{ from: fields.start, amount: amt }], skips: [], ...fields });
+  }
+  save(); closeSheet(); render();
+}
+function incomeSheet() {
+  const m = UI.month, has = m in S.incomeOverrides;
+  sheetState = { kind: 'income' };
+  openSheet(`<div class="sheet-h"><button data-act="close">Cancel</button><b>Income for ${esc(mLabel(m))}</b><button data-act="saveIncome">Save</button></div>
+    <div class="amtwrap"><input id="f-inc" class="amt num" inputmode="decimal" placeholder="0.00" value="${incomeFor(m) || ''}"></div>
+    <div class="hint" style="text-align:center">Use this for a month that's different, like a bonus or a smaller paycheck. Your usual income is ${money(S.settings.income || 0)}, which you can change in Settings.</div>
+    ${has ? '<button class="btn ghost" data-act="clearIncome">Use my usual income</button>' : ''}`);
+  $('#f-inc').focus();
+}
+
+/* ---------- import / export ---------- */
+async function shareOrDownload(text, name, type) {
+  const blob = new Blob([text], { type });
+  try {
+    const file = new File([blob], name, { type });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return true; }
+  } catch (e) { if (e && e.name === 'AbortError') return false; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  return true;
+}
+async function exportJSON() {
+  const ok = await shareOrDownload(JSON.stringify(S, null, 2), `balancy-backup-${todayISO()}.json`, 'application/json');
+  if (ok) { S.settings.lastBackup = Date.now(); save(); render(); }
+}
+function exportCSV() {
+  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const lines = [['Date', 'Category', 'Description', 'Amount', 'Type'].join(',')];
+  const last = [thisMonth(), ...S.expenses.map(e => e.date.slice(0, 7))].sort().pop();
+  for (let m = firstMonth(); m <= last; m = addM(m, 1))
+    for (const e of monthEntries(m).slice().reverse()) {
+      if (e.type === 'rec' && e.skipped) continue;
+      lines.push([e.date, q(catById(e.categoryId).name), q(e.note || ''), e.amount.toFixed(2), e.type === 'rec' ? (e.kind === 'loan' ? 'Loan' : 'Recurring') : 'Expense'].join(','));
+    }
+  shareOrDownload(lines.join('\n'), `balancy-${todayISO()}.csv`, 'text/csv');
+}
+$('#importFile').addEventListener('change', async ev => {
+  const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (!d || d.version !== 1 || !Array.isArray(d.expenses) || !Array.isArray(d.recurring) || !Array.isArray(d.categories)) throw new Error('bad');
+    if (!confirm(`Restore this backup? It has ${d.expenses.length} expenses and ${d.recurring.length} recurring costs, and will replace what's on this phone now.`)) return;
+    S = migrate(d); save(); UI.month = thisMonth(); render();
+  } catch (e) { alert("That file doesn't look like a Balancy backup."); }
+});
+
+/* ---------- events ---------- */
+document.addEventListener('click', ev => {
+  const tab = ev.target.closest('[data-tab]');
+  if (tab) { UI.tab = tab.dataset.tab; if (UI.tab === 'month' || UI.tab === 'trends') { /* keep chosen month */ } render(); window.scrollTo(0, 0); return; }
+  const el = ev.target.closest('[data-act]'); if (!el) return;
+  const id = el.dataset.id;
+  switch (el.dataset.act) {
+    case 'close': closeSheet(); break;
+    case 'prevM': UI.month = addM(UI.month, -1); render(); break;
+    case 'nextM': UI.month = addM(UI.month, 1); render(); break;
+    case 'toToday': UI.month = thisMonth(); render(); break;
+    case 'newExp': expenseSheet(null); break;
+    case 'editExp': expenseSheet(id); break;
+    case 'pickCat': case 'pickRecCat':
+      sheetState.cat = id; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break;
+    case 'saveExp': saveExpense(); break;
+    case 'delExp': if (confirm('Delete this expense?')) { S.expenses = S.expenses.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
+    case 'recMenu': recMenu(id); break;
+    case 'loanInfo': loanInfo(id); break;
+    case 'toggleSkip': {
+      const r = S.recurring.find(x => x.id === sheetState.id); r.skips = r.skips || [];
+      r.skips = r.skips.includes(UI.month) ? r.skips.filter(x => x !== UI.month) : r.skips.concat(UI.month);
+      save(); closeSheet(); render(); break; }
+    case 'newRec': recSheet(null); break;
+    case 'editRec': recSheet(id); break;
+    case 'recType': {
+      sheetState.type = el.dataset.v; syncRecType();
+      if (!sheetState.id) { // suggest a matching category for new items
+        const want = sheetState.type === 'loan' ? 'loans' : 'housing', c = S.categories.find(x => x.name.toLowerCase() === want);
+        if (c) { sheetState.cat = c.id; document.querySelectorAll('#sheet [data-act=pickRecCat]').forEach(ch => ch.classList.toggle('on', ch.dataset.id === c.id)); }
+      }
+      break; }
+    case 'saveRec': saveRec(); break;
+    case 'delRec': if (confirm('Delete this recurring cost? It will disappear from every month, including past ones.')) { S.recurring = S.recurring.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
+    case 'editIncome': incomeSheet(); break;
+    case 'saveIncome': { const v = parseAmt($('#f-inc').value); S.incomeOverrides[UI.month] = v >= 0 ? v : 0; save(); closeSheet(); render(); break; }
+    case 'clearIncome': delete S.incomeOverrides[UI.month]; save(); closeSheet(); render(); break;
+    case 'addCat': S.categories.push({ id: uid(), name: 'New category', color: '#' + Math.floor(Math.random() * 0xaaaaaa + 0x222222).toString(16).padStart(6, '0'), budget: 0 }); save(); render(); break;
+    case 'delCat': {
+      const c = catById(id), used = S.expenses.some(e => e.categoryId === id) || S.recurring.some(r => r.categoryId === id);
+      if (S.categories.length <= 1) { alert('You need at least one category.'); break; }
+      if (!confirm(used ? `Delete "${c.name}"? Its expenses will move to another category.` : `Delete "${c.name}"?`)) break;
+      S.categories = S.categories.filter(x => x.id !== id);
+      if (used) {
+        let fb = S.categories.find(x => x.name.toLowerCase() === 'other') || S.categories[S.categories.length - 1];
+        S.expenses.forEach(e => { if (e.categoryId === id) e.categoryId = fb.id; });
+        S.recurring.forEach(r => { if (r.categoryId === id) r.categoryId = fb.id; });
+      }
+      save(); render(); break; }
+    case 'exportJSON': exportJSON(); break;
+    case 'importJSON': $('#importFile').click(); break;
+    case 'exportCSV': exportCSV(); break;
+    case 'reset': if (confirm('Erase everything? This cannot be undone. Save a backup first if you might want it.')) { S = fresh(); save(); UI.month = thisMonth(); render(); } break;
+  }
+});
+document.addEventListener('change', ev => {
+  const el = ev.target;
+  if (el.dataset.set) {
+    const k = el.dataset.set;
+    if (k === 'rollover') S.settings.rollover = el.checked;
+    else if (k === 'income' || k === 'opening') { const v = parseAmt(el.value); S.settings[k] = isNaN(v) ? 0 : v; }
+    else if (k === 'startMonth') { if (/^\d{4}-\d\d$/.test(el.value)) S.settings.startMonth = el.value; }
+    else S.settings[k] = el.value;
+    save(); render();
+  } else if (el.dataset.cat) {
+    const c = S.categories.find(x => x.id === el.dataset.cat); if (!c) return;
+    if (el.dataset.f === 'budget') { const v = parseAmt(el.value); c.budget = v > 0 ? v : 0; }
+    else if (el.dataset.f === 'name') c.name = el.value.trim() || c.name;
+    else c.color = el.value;
+    save(); render();
+  }
+});
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Enter' && $('#sheet').classList.contains('on') && ev.target.tagName === 'INPUT') {
+    ev.preventDefault();
+    if (sheetState.kind === 'exp') saveExpense(); else if (sheetState.kind === 'rec') saveRec();
+    else if (sheetState.kind === 'income') $('#sheet [data-act=saveIncome]').click();
+  }
+  if (ev.key === 'Escape') closeSheet();
+});
+// refresh when the app comes back to the foreground (e.g. a new day or month started)
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('#sheet').classList.contains('on')) render(); });
+
+/* ---------- boot ---------- */
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+try { if (!localStorage.getItem(KEY) && localStorage.getItem(OLD_KEY)) save(); } catch (e) {}
+render();
+</script>
+</body>
+</html>
