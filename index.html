@@ -67,9 +67,15 @@ main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;ma
 .tile .t3 b{font-size:17px}
 .note{background:var(--soft);border-radius:16px;padding:11px 14px;font-size:14px;color:var(--muted);margin-top:12px}
 /* section heads */
-.sec{display:flex;align-items:center;justify-content:space-between;margin:26px 4px 12px}
+.sec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:26px 4px 12px}
 .sec h2{font-size:24px;margin:0;letter-spacing:-.01em}
 .sec .count{color:var(--muted);font-size:15px}
+.gname{display:flex;align-items:center;gap:8px;text-align:left;min-width:0}
+.gname h2{font-size:21px;line-height:1.2}
+.addpill.only{padding:6px}
+.gname .pen{width:28px;height:28px;border-radius:14px;background:var(--soft);display:grid;place-items:center;flex:none;color:var(--muted)}
+.gname .pen svg{width:15px;height:15px}
+.gsum{color:var(--muted);font-size:14px;margin:-8px 4px 8px}
 .addpill{display:flex;align-items:center;gap:8px;background:var(--pill);color:var(--pill-ink);border-radius:22px;padding:8px 8px 8px 16px;font-weight:700;font-size:15px;letter-spacing:.02em}
 .addpill i{width:26px;height:26px;border-radius:13px;background:#1d1d1f;color:#fff;display:grid;place-items:center;font-style:normal;font-size:20px;line-height:1}
 /* category cards */
@@ -231,10 +237,15 @@ en: {
   recTitle: 'Recurring', recIn: m => `Recurring costs in ${m}`,
   recHint: 'These are counted in every month automatically. Tap one under Transactions to skip it for a single month.',
   fixedCosts: 'Fixed costs', fixedEmpty: 'Rent, insurance, phone, subscriptions…', loans: 'Loans & credits', loansEmpty: 'Add a loan to see how much you still owe.',
+  groupEmpty: 'Nothing here yet.', groupEmptyLoan: 'Add a plan or loan to see how much is still open and how many months are left.',
+  newGroup: 'New group', editGroup: 'Group', groupName: 'Group name', groupNamePh: 'e.g. Leasing', defaultType: 'New entries start as',
+  groupHint: 'Groups only sort your recurring costs on this screen. Your budgets and totals stay the same.', deleteGroup: 'Delete group', group: 'Group',
+  errGroupName: 'Give the group a name.', cDelGroup: n => `Delete the group "${n}"?`, cDelGroupMove: (n, k, to) => `Delete the group "${n}"? Its ${k} entr${k === 1 ? 'y' : 'ies'} will move to "${to}".`,
+  cOneGroup: 'You need at least one group.', editGroupLbl: n => `Edit ${n}`,
   addRec: 'Add recurring cost', starts: m => `From ${m}`, ended: m => `Ended ${m}`, until: m => `Until ${m}`, ongoing: 'Ongoing', day: n => `Day ${n}`,
   perMonth: '/mo', loanNo: n => `No. ${n}`, owedOf: (a, b) => b ? `${a} still owed of ${b}` : `${a} still owed`, repaid: 'Fully repaid',
   monthsLeft: n => `${n} month${n === 1 ? '' : 's'} left`, ends: x => `Ends ${x}`,
-  pctRepaid: p => `${p}% repaid`, toGo: x => `${x} to go`, loanNumber: 'Loan number', loanAmount: 'Loan amount', remaining: 'Remaining credit sum',
+  pctRepaid: p => `${p}% repaid`, toGo: x => `${x} to go`, loanNumber: 'Contract / loan number', loanAmount: 'Loan amount', remaining: 'Remaining credit sum',
   monthlyPayment: 'Monthly payment', onDay: n => `day ${n}`, paymentsLeft: 'Payments left', months: n => `${n} month${n === 1 ? '' : 's'}`,
   startDate: 'Start date', endDate: 'End date', estimated: '(estimated)', tooLow: 'Payment too low to finish', interestRate: 'Interest rate',
   interestLeft: 'Interest still to pay', loanWarn: x => `With these numbers about ${x} would still be owed at the end date. Check the remaining sum, payment or interest rate.`,
@@ -252,12 +263,12 @@ en: {
   newExpense: 'New expense', editExpense: 'Edit expense', note: 'Note', optional: 'Optional', date: 'Date', deleteExpense: 'Delete expense',
   errAmount: 'Enter an amount.', errDate: 'Pick a date.', amountPh: '0.00',
   onDayEach: (x, d) => `${x} on day ${d} of each month`, unskip: m => `Count it again in ${m}`, skip: m => `Skip it in ${m}`,
-  editLoan: 'Edit loan', editRec: 'Edit recurring cost', newTitle: 'New', editTitle: 'Edit', fixedCost: 'Fixed cost', loanCredit: 'Loan / credit',
+  editLoan: 'Edit entry', editRec: 'Edit recurring cost', newTitle: 'New', editTitle: 'Edit', fixedCost: 'Monthly cost', loanCredit: 'Instalments / loan',
   name: 'Name', recNamePh: 'e.g. Rent, Car loan', amountPerMonth: 'Amount per month', dayOfMonth: 'Day of month', firstMonth: 'First month', lastMonth: 'Last month',
   appliesFrom: 'New amount applies from', lastMonthHint: 'Leave "Last month" empty if it keeps going.', loanDetails: 'Loan details', originalAmount: 'Original amount',
   remainingAsOf: 'Remaining sum as of', ratePa: 'Interest rate (% per year)',
   loanHint: 'Enter the remaining credit sum from your bank for the month you choose, before that month\'s payment. Months left and progress are worked out from it. With the interest rate, each payment is split into interest and repayment so the balance stays accurate. With an end date, payments are counted until that date.',
-  amountChangeHint: 'If the monthly amount changes, earlier months keep the old amount.', categoryLbl: 'Category', deleteLoan: 'Delete loan', deleteRec: 'Delete recurring cost',
+  amountChangeHint: 'If the monthly amount changes, earlier months keep the old amount.', categoryLbl: 'Category', deleteLoan: 'Delete entry', deleteRec: 'Delete recurring cost',
   errName: 'Give it a name.', errMonthly: 'Enter the monthly amount.', errFirst: 'Pick the first month.', errLastBefore: 'The last month is before the first month.',
   errRemaining: 'Enter the remaining credit sum.', errRemMonth: 'Pick the month the remaining sum is from.', errRemHigh: 'The remaining sum is much higher than the loan amount. Please check both.',
   errEndStart: 'The end date is before the start date.', errEndRem: 'The end date is before the month of the remaining sum.', errRate: 'The interest rate looks off. Enter it as a yearly percentage, like 4.9.',
@@ -288,10 +299,15 @@ de: {
   recTitle: 'Fixkosten', recIn: m => `Fixkosten im ${m}`,
   recHint: 'Diese Beträge werden jeden Monat automatisch eingerechnet. Tippe unter Buchungen darauf, um einen Monat auszusetzen.',
   fixedCosts: 'Laufende Kosten', fixedEmpty: 'Miete, Versicherung, Handy, Abos …', loans: 'Kredite & Darlehen', loansEmpty: 'Füge einen Kredit hinzu, um zu sehen, wie viel du noch schuldest.',
+  groupEmpty: 'Noch nichts eingetragen.', groupEmptyLoan: 'Füge einen Ratenkauf oder Kredit hinzu, um zu sehen, wie viel noch offen ist und wie viele Monate bleiben.',
+  newGroup: 'Neue Gruppe', editGroup: 'Gruppe', groupName: 'Name der Gruppe', groupNamePh: 'z. B. Leasing', defaultType: 'Neue Einträge sind',
+  groupHint: 'Gruppen sortieren nur deine Fixkosten auf diesem Bildschirm. Budgets und Summen bleiben gleich.', deleteGroup: 'Gruppe löschen', group: 'Gruppe',
+  errGroupName: 'Gib der Gruppe einen Namen.', cDelGroup: n => `Die Gruppe „${n}“ löschen?`, cDelGroupMove: (n, k, to) => `Die Gruppe „${n}“ löschen? ${k === 1 ? 'Der Eintrag wird' : `Die ${k} Einträge werden`} nach „${to}“ verschoben.`,
+  cOneGroup: 'Du brauchst mindestens eine Gruppe.', editGroupLbl: n => `${n} bearbeiten`,
   addRec: 'Fixkosten hinzufügen', starts: m => `Ab ${m}`, ended: m => `Beendet ${m}`, until: m => `Bis ${m}`, ongoing: 'Unbefristet', day: n => `Am ${n}.`,
   perMonth: '/Monat', loanNo: n => `Nr. ${n}`, owedOf: (a, b) => b ? `${a} offen von ${b}` : `${a} noch offen`, repaid: 'Vollständig getilgt',
   monthsLeft: n => `noch ${n} ${n === 1 ? 'Monat' : 'Monate'}`, ends: x => `Endet am ${x}`,
-  pctRepaid: p => `${p} % getilgt`, toGo: x => `noch ${x}`, loanNumber: 'Kreditnummer', loanAmount: 'Kreditbetrag', remaining: 'Restschuld',
+  pctRepaid: p => `${p} % getilgt`, toGo: x => `noch ${x}`, loanNumber: 'Vertrags-/Kreditnummer', loanAmount: 'Kreditbetrag', remaining: 'Restschuld',
   monthlyPayment: 'Monatliche Rate', onDay: n => `am ${n}.`, paymentsLeft: 'Verbleibende Raten', months: n => `${n} ${n === 1 ? 'Monat' : 'Monate'}`,
   startDate: 'Beginn', endDate: 'Ende', estimated: '(geschätzt)', tooLow: 'Rate reicht nicht zur Tilgung', interestRate: 'Zinssatz',
   interestLeft: 'Noch zu zahlende Zinsen', loanWarn: x => `Mit diesen Angaben wären am Enddatum noch etwa ${x} offen. Prüf bitte Restschuld, Rate oder Zinssatz.`,
@@ -309,12 +325,12 @@ de: {
   newExpense: 'Neue Ausgabe', editExpense: 'Ausgabe bearbeiten', note: 'Notiz', optional: 'Optional', date: 'Datum', deleteExpense: 'Ausgabe löschen',
   errAmount: 'Gib einen Betrag ein.', errDate: 'Wähle ein Datum.', amountPh: '0,00',
   onDayEach: (x, d) => `${x} am ${d}. jedes Monats`, unskip: m => `Im ${m} wieder einrechnen`, skip: m => `Im ${m} aussetzen`,
-  editLoan: 'Kredit bearbeiten', editRec: 'Fixkosten bearbeiten', newTitle: 'Neu', editTitle: 'Bearbeiten', fixedCost: 'Laufende Kosten', loanCredit: 'Kredit',
+  editLoan: 'Eintrag bearbeiten', editRec: 'Fixkosten bearbeiten', newTitle: 'Neu', editTitle: 'Bearbeiten', fixedCost: 'Monatliche Kosten', loanCredit: 'Raten / Kredit',
   name: 'Name', recNamePh: 'z. B. Miete, Autokredit', amountPerMonth: 'Betrag pro Monat', dayOfMonth: 'Tag im Monat', firstMonth: 'Erster Monat', lastMonth: 'Letzter Monat',
   appliesFrom: 'Neuer Betrag gilt ab', lastMonthHint: 'Lass „Letzter Monat“ leer, wenn es unbefristet ist.', loanDetails: 'Kreditdetails', originalAmount: 'Ursprünglicher Betrag',
   remainingAsOf: 'Restschuld zum', ratePa: 'Zinssatz (% p. a.)',
   loanHint: 'Trag die Restschuld laut Bank für den gewählten Monat ein, vor der Rate dieses Monats. Daraus werden verbleibende Monate und Fortschritt berechnet. Mit Zinssatz wird jede Rate in Zinsen und Tilgung aufgeteilt, damit die Restschuld stimmt. Mit Enddatum werden Raten bis zu diesem Datum gezählt.',
-  amountChangeHint: 'Ändert sich der Betrag, behalten frühere Monate den alten Betrag.', categoryLbl: 'Kategorie', deleteLoan: 'Kredit löschen', deleteRec: 'Fixkosten löschen',
+  amountChangeHint: 'Ändert sich der Betrag, behalten frühere Monate den alten Betrag.', categoryLbl: 'Kategorie', deleteLoan: 'Eintrag löschen', deleteRec: 'Fixkosten löschen',
   errName: 'Gib einen Namen ein.', errMonthly: 'Gib den monatlichen Betrag ein.', errFirst: 'Wähle den ersten Monat.', errLastBefore: 'Der letzte Monat liegt vor dem ersten.',
   errRemaining: 'Gib die Restschuld ein.', errRemMonth: 'Wähle den Monat der Restschuld.', errRemHigh: 'Die Restschuld ist deutlich höher als der Kreditbetrag. Prüf bitte beide Werte.',
   errEndStart: 'Das Enddatum liegt vor dem Beginn.', errEndRem: 'Das Enddatum liegt vor dem Monat der Restschuld.', errRate: 'Der Zinssatz sieht falsch aus. Gib ihn als Jahreszins in Prozent ein, z. B. 4,9.',
@@ -378,6 +394,7 @@ const UI_IC = {
   caret: '<path d="M6 9l6 6 6-6" fill="currentColor" stroke="currentColor"/>',
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
   eyeoff: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM4 4l16 16"/>',
+  pencil: '<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/>',
   person: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/>'
 };
 const uisvg = (k, sw = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${UI_IC[k]}</svg>`;
@@ -397,19 +414,30 @@ const DEFAULT_CATS = [
   { key: 'loans', en: 'Loans', de: 'Kredite', color: '#66717c', icon: 'bank' },
   { key: 'subs', en: 'Subscriptions', de: 'Abos', color: '#c9a227', icon: 'repeat' },
   { key: 'other', en: 'Other', de: 'Sonstiges', color: '#8f887d', icon: 'dots' }];
+const DEFAULT_GROUPS = [
+  { key: 'fixed', en: 'Fixed costs', de: 'Laufende Kosten', kind: 'fixed', cat: 'housing' },
+  { key: 'klarna', en: 'Klarna', de: 'Klarna', kind: 'loan', cat: 'shopping' },
+  { key: 'paypal', en: 'PayPal', de: 'PayPal', kind: 'loan', cat: 'shopping' },
+  { key: 'credit', en: 'Credit cards & loans', de: 'Kreditkarten & Kredite', kind: 'loan', cat: 'loans' }];
+const defaultGroups = () => DEFAULT_GROUPS.map(g => ({ id: uid(), key: g.key, name: g[LANG] || g.en, kind: g.kind }));
 function fresh() {
   return { version: 1,
     profile: { name: '', photo: null },
     settings: { currency: 'EUR', income: 0, opening: 0, rollover: true, startMonth: thisMonth(), lastBackup: null, lang: 'auto', hide: false },
     incomeOverrides: {},
     categories: DEFAULT_CATS.map(c => ({ id: uid(), key: c.key, name: c[LANG] || c.en, color: c.color, icon: c.icon, budget: 0 })),
-    expenses: [], recurring: [] };
+    expenses: [], recurring: [], recGroups: defaultGroups() };
 }
 function migrate(d) {
   d.incomeOverrides = d.incomeOverrides || {};
   d.profile = d.profile || { name: '', photo: null };
   d.settings.lang = d.settings.lang || 'auto';
-  for (const r of d.recurring) { r.skips = r.skips || []; if (r.kind === 'loan' && !r.balanceFrom) r.balanceFrom = r.start; }
+  if (!Array.isArray(d.recGroups) || !d.recGroups.length) d.recGroups = defaultGroups();
+  const gKey = k => (d.recGroups.find(g => g.key === k) || d.recGroups[0]).id;
+  for (const r of d.recurring) {
+    r.skips = r.skips || []; if (r.kind === 'loan' && !r.balanceFrom) r.balanceFrom = r.start;
+    if (!r.groupId || !d.recGroups.some(g => g.id === r.groupId)) r.groupId = gKey(r.kind === 'loan' ? 'credit' : 'fixed');
+  }
   for (const c of d.categories) {
     const def = DEFAULT_CATS.find(x => x.key === c.key || x.en === c.name || x.de === c.name);
     if (def && !c.key && (def.en === c.name || def.de === c.name)) c.key = def.key;
@@ -661,35 +689,45 @@ function viewTx() {
   return { header: header(t('transactions')), body };
 }
 
+function fixedItemHTML(r, m) {
+  const c = catById(r.categoryId), active = recActive(r, m);
+  const status = r.start > m ? t('starts', mLabel(r.start)) : (!active ? t('ended', mLabel(r.end)) : (r.end ? t('until', mLabel(r.end)) : t('ongoing')));
+  return `<button class="item" data-act="editRec" data-id="${r.id}"><span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
+    <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">${t('day', r.day)} · ${esc(status)}</div></span>
+    <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}</span></button>`;
+}
+function loanCardHTML(r, m) {
+  const c = catById(r.categoryId), owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r);
+  const base = r.principal > 0 ? r.principal : r.balance, pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+  return `<button class="ccard" data-act="loanInfo" data-id="${r.id}" style="display:block">
+    <div style="display:flex;align-items:center;gap:12px"><span class="icon" style="${tint(c.color)};width:46px;height:46px">${svg(c.icon)}</span>
+      <span class="mid" style="flex:1;min-width:0"><div class="nm">${esc(r.name)}</div><div class="sb">${r.loanNumber ? esc(t('loanNo', r.loanNumber)) : esc(t('day', r.day))}</div></span>
+      <span class="left num">${money(amountAt(r, m < r.start ? r.start : m))}<span class="sub">${t('perMonth')}</span></span></div>
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${owed > 0 ? esc(t('owedOf', money(owed), r.principal > 0 ? money(r.principal) : '')) : t('repaid')}</span>
+      <span>${owed > 0 ? esc(t('monthsLeft', left)) : ''}</span></div>
+    ${endTxt ? `<div class="sub">${esc(t('ends', endTxt))}</div>` : ''}</button>`;
+}
 function viewRecurring() {
   const m = thisMonth();
-  const fixed = S.recurring.filter(r => r.kind !== 'loan'), loans = S.recurring.filter(r => r.kind === 'loan');
   const monthly = r2(S.recurring.reduce((a, r) => a + recAmount(r, m), 0));
-  const fixedHTML = fixed.map(r => {
-    const c = catById(r.categoryId), active = recActive(r, m);
-    const status = r.start > m ? t('starts', mLabel(r.start)) : (!active ? t('ended', mLabel(r.end)) : (r.end ? t('until', mLabel(r.end)) : t('ongoing')));
-    return `<button class="item" data-act="editRec" data-id="${r.id}"><span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
-      <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">${t('day', r.day)} · ${esc(status)}</div></span>
-      <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}</span></button>`;
-  }).join('');
-  const loanHTML = loans.map(r => {
-    const c = catById(r.categoryId), owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r);
-    const base = r.principal > 0 ? r.principal : r.balance, pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
-    return `<button class="ccard" data-act="loanInfo" data-id="${r.id}" style="display:block">
-      <div style="display:flex;align-items:center;gap:12px"><span class="icon" style="${tint(c.color)};width:46px;height:46px">${svg(c.icon)}</span>
-        <span class="mid" style="flex:1;min-width:0"><div class="nm">${esc(r.name)}</div><div class="sb">${r.loanNumber ? esc(t('loanNo', r.loanNumber)) : esc(t('day', r.day))}</div></span>
-        <span class="left num">${money(amountAt(r, m < r.start ? r.start : m))}<span class="sub">${t('perMonth')}</span></span></div>
-      <div class="progress"><i style="width:${pct}%"></i></div>
-      <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${owed > 0 ? esc(t('owedOf', money(owed), r.principal > 0 ? money(r.principal) : '')) : t('repaid')}</span>
-        <span>${owed > 0 ? esc(t('monthsLeft', left)) : ''}</span></div>
-      ${endTxt ? `<div class="sub">${esc(t('ends', endTxt))}</div>` : ''}</button>`;
+  const groups = S.recGroups.map(g => {
+    const items = S.recurring.filter(r => r.groupId === g.id);
+    const fixed = items.filter(r => r.kind !== 'loan'), loans = items.filter(r => r.kind === 'loan');
+    const sum = r2(items.reduce((a, r) => a + recAmount(r, m), 0));
+    const empty = g.key === 'fixed' ? t('fixedEmpty') : (g.kind === 'loan' ? t('groupEmptyLoan') : t('groupEmpty'));
+    return `<div class="sec"><button class="gname" data-act="editGroup" data-id="${g.id}" aria-label="${esc(t('editGroupLbl', g.name))}">
+        <h2>${esc(g.name)}</h2><span class="pen">${uisvg('pencil', 2)}</span></button>
+      <button class="addpill only" data-act="newRec" data-group="${g.id}" aria-label="${t('add')}"><i>+</i></button></div>
+      ${items.length ? `<div class="gsum num">${money(sum)}${t('perMonth')}</div>` : ''}
+      ${fixed.length ? `<div class="card">${fixed.map(r => fixedItemHTML(r, m)).join('')}</div>` : ''}
+      ${loans.map(r => loanCardHTML(r, m)).join('')}
+      ${items.length ? '' : `<div class="card"><div class="empty">${empty}</div></div>`}`;
   }).join('');
   const body = `<div class="balance"><div class="lbl">${esc(t('recIn', mLabel(m, 'name')))}</div><div class="amt"><span class="big num">${moneyBig(monthly)}</span></div></div>
     <div class="note" style="margin-top:0">${t('recHint')}</div>
-    <div class="sec"><h2>${t('fixedCosts')}</h2><button class="addpill" data-act="newRec" data-kind="fixed">${t('add')} <i>+</i></button></div>
-    <div class="card">${fixedHTML || `<div class="empty">${t('fixedEmpty')}</div>`}</div>
-    <div class="sec"><h2>${t('loans')}</h2><button class="addpill" data-act="newRec" data-kind="loan">${t('add')} <i>+</i></button></div>
-    ${loanHTML || `<div class="card"><div class="empty">${t('loansEmpty')}</div></div>`}`;
+    ${groups}
+    <button class="btn ghost" data-act="newGroup" style="margin-top:24px">+ ${t('newGroup')}</button>`;
   return { header: header(t('recTitle'), false), body };
 }
 function loanDetailsHTML(r) {
@@ -860,11 +898,15 @@ function loanInfo(id) {
   openSheet(`<div class="sheet-h"><button data-act="close">${t('close')}</button><b>${esc(r.name)}</b><button data-act="editRec" data-id="${id}">${t('edit')}</button></div>
     <div class="card pad">${loanDetailsHTML(r)}</div>`);
 }
-function recSheet(id, kind) {
+function groupDefaultCat(g, type) {
+  const def = g && DEFAULT_GROUPS.find(x => x.key === g.key);
+  return (catByKey(def ? def.cat : (type === 'loan' ? 'loans' : 'housing')) || S.categories[0] || {}).id;
+}
+function recSheet(id, groupId) {
   const r = id ? S.recurring.find(x => x.id === id) : null, m = thisMonth();
-  const type = r ? r.kind : (kind || 'fixed');
-  const defCat = (catByKey(type === 'loan' ? 'loans' : 'housing') || S.categories[0] || {}).id;
-  sheetState = { kind: 'rec', id: r ? r.id : null, type, cat: r ? r.categoryId : defCat };
+  const g = S.recGroups.find(x => x.id === (r ? r.groupId : groupId)) || S.recGroups[0];
+  const type = r ? r.kind : (g ? g.kind : 'fixed');
+  sheetState = { kind: 'rec', id: r ? r.id : null, type, group: g ? g.id : null, cat: r ? r.categoryId : groupDefaultCat(g, type) };
   const applyFrom = r ? (r.start > m ? r.start : m) : m;
   const v = k => esc(r && r[k] != null && r[k] !== 0 ? r[k] : '');
   const vn = k => r && r[k] ? numIn(r[k]) : '';
@@ -894,6 +936,7 @@ function recSheet(id, kind) {
       <div class="hint" style="padding:0 6px">${t('loanHint')}</div>
     </div>
     ${r ? `<div class="hint" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}
+    <h3>${t('group')}</h3><div class="chips">${S.recGroups.map(x => `<button class="chip ${x.id === sheetState.group ? 'on' : ''}" data-act="pickGroup" data-id="${x.id}" style="padding-left:12px">${esc(x.name)}</button>`).join('')}</div>
     <h3>${t('categoryLbl')}</h3>${chipsHTML(sheetState.cat, 'pickRecCat')}
     ${r ? `<button class="btn danger" data-act="delRec">${r.kind === 'loan' ? t('deleteLoan') : t('deleteRec')}</button>` : ''}`);
   syncRecType();
@@ -930,13 +973,33 @@ function saveRec() {
   }
   if (old) {
     const from = ($('#r-from') && $('#r-from').value) || fields.start;
-    Object.assign(old, { name, kind, day, categoryId: sheetState.cat }, fields);
+    Object.assign(old, { name, kind, day, categoryId: sheetState.cat, groupId: sheetState.group }, fields);
     if (amountAt(old, from) !== amt) {
       old.amounts = old.amounts.filter(x => x.from < from);
       old.amounts.push({ from: old.amounts.length ? from : fields.start, amount: amt });
       old.amounts.sort((a, b) => a.from.localeCompare(b.from));
     }
-  } else S.recurring.push({ id: uid(), name, kind, day, categoryId: sheetState.cat, amounts: [{ from: fields.start, amount: amt }], skips: [], ...fields });
+  } else S.recurring.push({ id: uid(), name, kind, day, categoryId: sheetState.cat, groupId: sheetState.group, amounts: [{ from: fields.start, amount: amt }], skips: [], ...fields });
+  save(); closeSheet(); render();
+}
+function groupSheet(id) {
+  const g = id ? S.recGroups.find(x => x.id === id) : null;
+  sheetState = { kind: 'group', id: g ? g.id : null, type: g ? g.kind : 'fixed' };
+  openSheet(`${sheetHead(g ? g.name : t('newGroup'), t('save'), 'saveGroup')}
+    <div class="err" id="f-err"></div>
+    <div class="group"><div class="field"><label>${t('groupName')}</label><input id="g-name" value="${esc(g ? g.name : '')}" placeholder="${t('groupNamePh')}"></div></div>
+    <h3>${t('defaultType')}</h3>
+    <div class="seg"><button data-act="recType" data-v="fixed">${t('fixedCost')}</button><button data-act="recType" data-v="loan">${t('loanCredit')}</button></div>
+    <div class="hint" style="padding:0 6px">${t('groupHint')}</div>
+    ${g ? `<button class="btn danger" data-act="delGroup" data-id="${g.id}">${t('deleteGroup')}</button>` : ''}`);
+  syncRecType();
+  if (!g) $('#g-name').focus();
+}
+function saveGroup() {
+  const name = $('#g-name').value.trim();
+  if (!name) { $('#f-err').textContent = t('errGroupName'); return; }
+  if (sheetState.id) Object.assign(S.recGroups.find(x => x.id === sheetState.id), { name, kind: sheetState.type });
+  else S.recGroups.push({ id: uid(), name, kind: sheetState.type });
   save(); closeSheet(); render();
 }
 function incomeSheet() {
@@ -1000,6 +1063,10 @@ function setLang(v) {
     const def = DEFAULT_CATS.find(x => x.key === c.key);
     if (def && (c.name === def.en || c.name === def.de)) c.name = def[LANG];
   }
+  if (before !== LANG) for (const g of S.recGroups) {
+    const def = DEFAULT_GROUPS.find(x => x.key === g.key);
+    if (def && (g.name === def.en || g.name === def.de)) g.name = def[LANG];
+  }
 }
 
 /* ================= events ================= */
@@ -1043,11 +1110,25 @@ document.addEventListener('click', ev => {
       const r = S.recurring.find(x => x.id === sheetState.id); r.skips = r.skips || [];
       r.skips = r.skips.includes(UI.month) ? r.skips.filter(x => x !== UI.month) : r.skips.concat(UI.month);
       save(); closeSheet(); render(); break; }
-    case 'newRec': recSheet(null, el.dataset.kind); break;
+    case 'newRec': recSheet(null, el.dataset.group); break;
+    case 'newGroup': groupSheet(null); break;
+    case 'editGroup': groupSheet(id); break;
+    case 'saveGroup': saveGroup(); break;
+    case 'pickGroup': {
+      sheetState.group = id; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el));
+      if (!sheetState.id) { const g = S.recGroups.find(x => x.id === id); sheetState.type = g.kind; syncRecType();
+        const c = groupDefaultCat(g, g.kind); sheetState.cat = c; document.querySelectorAll('#sheet [data-act=pickRecCat]').forEach(ch => ch.classList.toggle('on', ch.dataset.id === c)); }
+      break; }
+    case 'delGroup': {
+      if (S.recGroups.length <= 1) { alert(t('cOneGroup')); break; }
+      const g = S.recGroups.find(x => x.id === id), rest = S.recGroups.filter(x => x.id !== id), items = S.recurring.filter(r => r.groupId === id);
+      const to = rest.find(x => x.key === 'fixed') || rest[0];
+      if (!confirm(items.length ? t('cDelGroupMove', g.name, items.length, to.name) : t('cDelGroup', g.name))) break;
+      items.forEach(r => r.groupId = to.id); S.recGroups = rest; save(); closeSheet(); render(); break; }
     case 'editRec': recSheet(id); break;
     case 'recType': {
       sheetState.type = el.dataset.v; syncRecType();
-      if (!sheetState.id) { const c = catByKey(sheetState.type === 'loan' ? 'loans' : 'housing');
+      if (sheetState.kind === 'rec' && !sheetState.id) { const c = catByKey(sheetState.type === 'loan' ? 'loans' : 'housing');
         if (c) { sheetState.cat = c.id; document.querySelectorAll('#sheet [data-act=pickRecCat]').forEach(ch => ch.classList.toggle('on', ch.dataset.id === c.id)); } }
       break; }
     case 'saveRec': saveRec(); break;
@@ -1076,7 +1157,7 @@ document.addEventListener('change', ev => {
 document.addEventListener('keydown', ev => {
   if (ev.key === 'Enter' && $('#sheet').classList.contains('on') && ev.target.tagName === 'INPUT') {
     ev.preventDefault();
-    ({ exp: saveExpense, rec: saveRec, cat: saveCat, income: () => $('#sheet [data-act=saveIncome]').click() }[sheetState.kind] || (() => {}))();
+    ({ exp: saveExpense, rec: saveRec, cat: saveCat, group: saveGroup, income: () => $('#sheet [data-act=saveIncome]').click() }[sheetState.kind] || (() => {}))();
   }
   if (ev.key === 'Enter' && ev.target.dataset && ev.target.dataset.set) ev.target.blur();
   if (ev.key === 'Escape') closeSheet();
