@@ -35,8 +35,12 @@
 :root[data-theme=mono]{--pill:#1d1d1f;--pill-ink:#ffffff;--accent:#1d1d1f}
 :root[data-mode=dark][data-theme=mono]{--pill:#f4f4f5;--pill-ink:#111111;--accent:#f4f4f5}
 @media (prefers-color-scheme:dark){:root:not([data-mode=light])[data-theme=mono]{--pill:#f4f4f5;--pill-ink:#111111;--accent:#f4f4f5}}
+:root[data-theme=mono]{--add:#ffffff;--add-ink:#111111;--add-ring:#1d1d1f}
+:root[data-mode=dark][data-theme=mono]{--add:var(--pill);--add-ink:var(--pill-ink);--add-ring:var(--bg)}
+@media (prefers-color-scheme:dark){:root:not([data-mode=light])[data-theme=mono]{--add:var(--pill);--add-ink:var(--pill-ink);--add-ring:var(--bg)}}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);overflow-x:hidden;overscroll-behavior:none}
+html,body{margin:0;background:var(--bg);color:var(--ink);overscroll-behavior-x:none}
+html{overflow-x:clip}
 body{font:17px/1.35 ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;-webkit-font-smoothing:antialiased;
   -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior-y:none;touch-action:pan-y}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -150,7 +154,7 @@ nav.tabs button .ico{width:52px;height:32px;border-radius:16px;display:grid;plac
 nav.tabs svg{width:24px;height:24px}
 nav.tabs button.on{color:#fff;font-weight:700}
 nav.tabs button.on .ico{background:#fff;color:#111}
-nav.tabs .add{flex:none;width:56px;height:56px;border-radius:28px;background:var(--pill);color:var(--pill-ink);margin:-30px 4px 0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);border:4px solid var(--bg)}
+nav.tabs .add{flex:none;width:56px;height:56px;border-radius:28px;background:var(--add,var(--pill));color:var(--add-ink,var(--pill-ink));margin:-30px 4px 0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);border:4px solid var(--add-ring,var(--bg))}
 nav.tabs .add svg{width:26px;height:26px}
 /* pull to refresh */
 #ptr{position:fixed;top:calc(env(safe-area-inset-top) + 8px);left:50%;width:42px;height:42px;margin-left:-21px;border-radius:50%;background:var(--card);color:var(--ink);
@@ -1050,13 +1054,11 @@ function viewSettings() {
     <h3>${t('general')}</h3>
     <div class="group">
       <div class="field"><label>${t('language')}</label><select data-set="lang">${langOpts}</select></div>
+      <div class="field"><label>${t('modeLbl')}</label><select data-set="mode">${[['system', t('modeSystem')], ['light', t('modeLight')], ['dark', t('modeDark')]].map(([v, l]) => `<option value="${v}" ${(st.mode || 'system') === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
       <div class="field"><label>${t('currency')}</label><select data-set="currency">${curOpts}</select></div>
     </div>
 
-    <h3>${t('appearance')}</h3>
-    <div class="group">
-      <div class="field"><label>${t('modeLbl')}</label><select data-set="mode">${[['system', t('modeSystem')], ['light', t('modeLight')], ['dark', t('modeDark')]].map(([v, l]) => `<option value="${v}" ${(st.mode || 'system') === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select></div>
-    </div>
+    <h3>${t('colorTheme')}</h3>
     <div class="themes">${Object.entries(THEME_SWATCH).map(([k, c]) => `<button class="theme ${(st.theme || 'lime') === k ? 'on' : ''}" data-act="setTheme" data-v="${k}"><span class="sw" style="background:${c}"></span>${esc(t('themeNames')[k])}</button>`).join('')}</div>
 
     <h3>${t('money')}</h3>
