@@ -44,6 +44,8 @@ main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;ma
 .mpill svg{width:14px;height:14px}
 .mpill input{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px}
 .mpill.past{border-color:var(--ink)}
+.todaybtn{display:flex;align-items:center;gap:4px;background:var(--pill);color:var(--pill-ink);border-radius:22px;padding:8px 12px;font-size:14px;font-weight:700;flex:none}
+.todaybtn svg{width:16px;height:16px}
 .backbtn{width:40px;height:40px;border-radius:20px;background:var(--soft);display:grid;place-items:center;font-size:24px;flex:none}
 /* balance */
 .balance{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 4px 14px}
@@ -129,6 +131,13 @@ nav.tabs button.on{color:#fff;font-weight:700}
 nav.tabs button.on .ico{background:#fff;color:#111}
 nav.tabs .add{flex:none;width:56px;height:56px;border-radius:28px;background:var(--pill);color:#111;margin:-30px 4px 0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);border:4px solid var(--bg)}
 nav.tabs .add svg{width:26px;height:26px}
+/* pull to refresh */
+#ptr{position:fixed;top:calc(env(safe-area-inset-top) + 8px);left:50%;width:42px;height:42px;margin-left:-21px;border-radius:50%;background:var(--card);color:var(--ink);
+  box-shadow:0 4px 16px rgba(0,0,0,.18);display:grid;place-items:center;z-index:15;transform:translateY(-90px);opacity:0;transition:transform .2s,opacity .2s;pointer-events:none}
+#ptr svg{width:22px;height:22px}
+#ptr.ready{background:var(--pill);color:#111}
+#ptr.spin svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 /* month swipe */
 @keyframes inR{from{transform:translateX(28px);opacity:.3}to{transform:none;opacity:1}}
 @keyframes inL{from{transform:translateX(-28px);opacity:.3}to{transform:none;opacity:1}}
@@ -206,6 +215,7 @@ input.amtin{width:100%;text-align:center;font-size:46px;font-weight:800;border:0
 <nav class="tabs" id="tabs"></nav>
 <div id="backdrop" data-act="close"></div>
 <div id="sheet" role="dialog" aria-modal="true"></div>
+<div id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4.5h-4.5"/></svg></div>
 <div id="mpback" data-act="mpClose"></div>
 <div id="mpicker" role="dialog" aria-modal="true"></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
@@ -263,6 +273,8 @@ en: {
   deleteIncome: 'Delete income', cDelIncome: 'Delete this income?', incomeTag: 'Income', extraIncome: x => `incl. ${x} other income`, salaryLbl: 'Salary / regular income',
   otherIncome: 'Other income', addOtherIncome: 'Add other income', noOtherIncome: 'No other income this month.', incomeOf: x => `Income ${x}`, csvInc: 'Income',
   thisMonthBtn: 'This month', clearMonth: 'Clear', notSet: 'Not set', prevYear: 'Previous year', nextYear: 'Next year',
+  todayBtn: 'Today',
+  showOnBudget: 'Show on Budget page', showHidden: n => `Show hidden categories (${n})`, hideHiddenAgain: 'Hide them again', hiddenTag: 'Hidden', refresh: 'Release to refresh',
   instExtra: x => `+ ${x} instalments, not in budget`, instOnly: x => `${x} instalments · not counted in budgets`, loanCatNote: 'Loans and instalment plans always go into the Loans category and don\'t count against budgets.',
   finalPayment: 'Final payment', pausedMonths: 'Paused months', addPause: 'Pause', noPauses: 'No paused months.',
   pauseHint: 'No payment is due in a paused month and the plan moves back by one month. If there is an interest rate, interest keeps running during the pause.',
@@ -290,8 +302,8 @@ en: {
   monthByMonth: 'Month by month', spentOf: (a, b) => `${a} spent of ${b} income`, left: 'left', nothingTracked: 'Nothing tracked in this period yet.',
   avgByCat: 'Average per month, by category', noSpending: 'No spending in this period.',
   settings: 'Settings', profile: 'Profile', yourName: 'Your name', namePh: 'Name', changePhoto: 'Choose photo', removePhoto: 'Remove photo',
-  general: 'General', language: 'Language', langAuto: 'System', currency: 'Currency', money: 'Money', monthlyIncome: 'Usual monthly income (salary)',
-  rollover: 'Carry leftover to next month', rolloverHint: 'When this is on, whatever is left at the end of a month (or overspent) moves into the next month. Category budgets always start fresh.',
+  general: 'General', language: 'Language', langAuto: '(Automatic) System', currency: 'Currency', money: 'Money', monthlyIncome: 'Usual monthly income (salary)',
+  rollover: 'Carry leftover to next month', rolloverHint: 'When this is on, money left at the end of a month moves into the next month. If a month ends below zero, the minus carries over too, unless no income is entered for that month (then the next month starts at zero). Category budgets always start fresh.',
   trackingStart: 'Tracking starts', opening: 'Starting balance', openingHint: 'Money you already have when you start, counted as carried over into the first month.',
   backup: 'Backup', lastBackup: x => `Last backup: ${x}`, never: 'never', backupHint: 'Your data lives only on this device. Save a backup to Files, iCloud Drive or another safe place now and then.',
   saveBackup: 'Save backup', restore: 'Restore from backup', exportCsv: 'Export spreadsheet (CSV)', erase: 'Erase all data', footer: 'Balancy · works offline · no account needed',
@@ -340,6 +352,8 @@ de: {
   deleteIncome: 'Einnahme löschen', cDelIncome: 'Diese Einnahme löschen?', incomeTag: 'Einnahme', extraIncome: x => `inkl. ${x} weitere Einnahmen`, salaryLbl: 'Gehalt / regelmäßiges Einkommen',
   otherIncome: 'Weitere Einnahmen', addOtherIncome: 'Weitere Einnahme hinzufügen', noOtherIncome: 'Diesen Monat keine weiteren Einnahmen.', incomeOf: x => `Einnahmen ${x}`, csvInc: 'Einnahme',
   thisMonthBtn: 'Dieser Monat', clearMonth: 'Leeren', notSet: 'Nicht gesetzt', prevYear: 'Vorheriges Jahr', nextYear: 'Nächstes Jahr',
+  todayBtn: 'Heute',
+  showOnBudget: 'Auf der Budget-Seite anzeigen', showHidden: n => `Ausgeblendete Kategorien anzeigen (${n})`, hideHiddenAgain: 'Wieder ausblenden', hiddenTag: 'Ausgeblendet', refresh: 'Loslassen zum Aktualisieren',
   instExtra: x => `+ ${x} Raten, nicht im Budget`, instOnly: x => `${x} Raten · zählen nicht zum Budget`, loanCatNote: 'Kredite und Ratenkäufe landen immer in der Kategorie Kredite und zählen nicht zu den Budgets.',
   finalPayment: 'Schlussrate', pausedMonths: 'Pausierte Monate', addPause: 'Pausieren', noPauses: 'Keine Pausen.',
   pauseHint: 'In einem pausierten Monat ist keine Rate fällig, der Plan verschiebt sich um einen Monat. Gibt es einen Zinssatz, laufen die Zinsen in der Pause weiter.',
@@ -367,8 +381,8 @@ de: {
   monthByMonth: 'Monat für Monat', spentOf: (a, b) => `${a} ausgegeben von ${b} Einnahmen`, left: 'übrig', nothingTracked: 'In diesem Zeitraum noch nichts erfasst.',
   avgByCat: 'Durchschnitt pro Monat nach Kategorie', noSpending: 'Keine Ausgaben in diesem Zeitraum.',
   settings: 'Einstellungen', profile: 'Profil', yourName: 'Dein Name', namePh: 'Name', changePhoto: 'Foto auswählen', removePhoto: 'Foto entfernen',
-  general: 'Allgemein', language: 'Sprache', langAuto: 'System', currency: 'Währung', money: 'Geld', monthlyIncome: 'Übliches Monatseinkommen (Gehalt)',
-  rollover: 'Rest in den nächsten Monat übertragen', rolloverHint: 'Wenn das an ist, wird das, was am Monatsende übrig ist (oder überzogen wurde), in den nächsten Monat übernommen. Kategorie-Budgets starten jeden Monat neu.',
+  general: 'Allgemein', language: 'Sprache', langAuto: '(Automatisch) System', currency: 'Währung', money: 'Geld', monthlyIncome: 'Übliches Monatseinkommen (Gehalt)',
+  rollover: 'Rest in den nächsten Monat übertragen', rolloverHint: 'Wenn das an ist, wird das, was am Monatsende übrig ist, in den nächsten Monat übernommen. Endet ein Monat im Minus, wird das Minus ebenfalls übertragen, außer für diesen Monat ist keine Einnahme eingetragen (dann startet der nächste bei null). Kategorie-Budgets starten jeden Monat neu.',
   trackingStart: 'Erfassung ab', opening: 'Startguthaben', openingHint: 'Geld, das du zu Beginn schon hast. Es zählt als Übertrag in den ersten Monat.',
   backup: 'Sicherung', lastBackup: x => `Letzte Sicherung: ${x}`, never: 'noch nie', backupHint: 'Deine Daten liegen nur auf diesem Gerät. Speichere ab und zu eine Sicherung in Dateien, iCloud Drive oder an einem anderen sicheren Ort.',
   saveBackup: 'Sicherung speichern', restore: 'Sicherung wiederherstellen', exportCsv: 'Tabelle exportieren (CSV)', erase: 'Alle Daten löschen', footer: 'Balancy · funktioniert offline · kein Konto nötig',
@@ -447,6 +461,7 @@ const UI_IC = {
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
   eyeoff: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM4 4l16 16"/>',
   pencil: '<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/>',
+  back: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
   person: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/>'
 };
 const uisvg = (k, sw = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${UI_IC[k]}</svg>`;
@@ -477,7 +492,7 @@ function fresh() {
     profile: { name: '', photo: null },
     settings: { currency: 'EUR', income: 0, opening: 0, rollover: true, startMonth: thisMonth(), lastBackup: null, lang: 'auto', hide: false },
     incomeOverrides: {},
-    categories: DEFAULT_CATS.map(c => ({ id: uid(), key: c.key, name: c[LANG] || c.en, color: c.color, icon: c.icon, budget: 0 })),
+    categories: DEFAULT_CATS.map(c => ({ id: uid(), key: c.key, name: c[LANG] || c.en, color: c.color, icon: c.icon, budget: 0, hidden: c.key === 'housing' || c.key === 'loans' })),
     expenses: [], incomes: [], recurring: [], recGroups: defaultGroups() };
 }
 function migrate(d) {
@@ -508,6 +523,7 @@ function migrate(d) {
     const def = DEFAULT_CATS.find(x => x.key === c.key || x.en === c.name || x.de === c.name);
     if (def && !c.key && (def.en === c.name || def.de === c.name)) c.key = def.key;
     if (!c.icon) c.icon = def ? def.icon : 'dots';
+    if (c.hidden === undefined) c.hidden = c.key === 'housing' || c.key === 'loans';
   }
   return d;
 }
@@ -681,7 +697,7 @@ function carryInto(m) {
   if (m in carryCache) return carryCache[m];
   const f = firstMonth(); let c = 0;
   if (m === f) c = S.settings.opening || 0;
-  else if (m > f && S.settings.rollover) { const p = addM(m, -1), b = baseTotals(p); c = r2(b.income + carryInto(p) - b.spent); }
+  else if (m > f && S.settings.rollover) { const p = addM(m, -1), b = baseTotals(p); const left = r2(b.income + carryInto(p) - b.spent); c = left < 0 && !(b.income > 0) ? 0 : left; } // a minus carries over, unless that month has no income entered
   return (carryCache[m] = c);
 }
 function totals(m) {
@@ -710,7 +726,8 @@ function avatarHTML(cls = '') {
 function monthPill() {
   const m = UI.month, cur = m === thisMonth(), sameYear = m.slice(0, 4) === thisMonth().slice(0, 4);
   const label = sameYear ? mLabel(m, 'short').replace('.', '') : mLabel(m, 'short').replace('.', '') + ' ' + m.slice(2, 4);
-  return `<button class="mpill ${cur ? '' : 'past'}" data-act="pickViewMonth" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}</button>`;
+  return (cur ? '' : `<button class="todaybtn" data-act="goToday" aria-label="${t('backToday')}">${uisvg('back', 2.2)}<span>${t('todayBtn')}</span></button>`) +
+    `<button class="mpill ${cur ? '' : 'past'}" data-act="pickViewMonth" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}</button>`;
 }
 function header(title, withMonth = true) {
   if (UI.tab === 'settings') return `<div class="top"><button class="backbtn" data-act="back" aria-label="${t('close')}">‹</button><div class="hello">${esc(title)}</div></div>`;
@@ -775,7 +792,8 @@ function viewBudget() {
   }
   if (!extraIncome(m)) notes.push(t('noIncome'));
   const bs = budgetSpend(m), spend = bs.map, inst = bs.inst, all = id => (spend[id] || 0) + (inst[id] || 0);
-  const cats = S.categories.slice().sort((a, b) => {
+  const hiddenCount = S.categories.filter(c => c.hidden).length;
+  const cats = S.categories.filter(c => !c.hidden || UI.showHidden).sort((a, b) => {
     const rank = c => c.budget ? 0 : all(c.id) ? 1 : 2, ra = rank(a), rb = rank(b);
     return ra - rb || all(b.id) - all(a.id);
   });
@@ -795,7 +813,7 @@ function viewBudget() {
     if (li && (s || b)) sub += `<div style="font-size:13px">${esc(t('instExtra', money(li)))}</div>`;
     return `<button class="ccard ${!b && !s && !li ? 'dim' : ''}" data-act="editCat" data-id="${c.id}">
       <span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
-      <span class="mid"><div class="nm">${esc(c.name)}</div><div class="sb num">${sub}</div></span>
+      <span class="mid"><div class="nm">${esc(c.name)}${c.hidden ? ` <span class="tag">${t('hiddenTag')}</span>` : ''}</div><div class="sb num">${sub}</div></span>
       <span class="rt">${right}</span></button>`;
   }).join('') + (orphan ? `<div class="ccard"><span class="icon" style="${tint('#8f887d')}">${svg('dots')}</span><span class="mid"><div class="nm">${t('uncategorised')}</div><div class="sb">${t('spentNoBudget', money(orphan))}</div></span></div>` : '');
   const body = `
@@ -814,7 +832,8 @@ function viewBudget() {
     </div>
     ${notes.map(n => `<div class="note">${esc(n)}</div>`).join('')}
     <div class="sec"><h2>${t('category')}</h2><button class="addpill" data-act="newCat">${t('add')} <i>+</i></button></div>
-    ${cards}`;
+    ${cards}
+    ${hiddenCount ? `<button class="btn ghost" data-act="toggleHidden" style="margin-top:6px">${UI.showHidden ? t('hideHiddenAgain') : esc(t('showHidden', hiddenCount))}</button>` : ''}`;
   return { header: header(t('hello', S.profile.name.trim().split(/\s+/)[0])), body };
 }
 
@@ -1042,6 +1061,7 @@ function catSheet(id) {
     <div class="err" id="f-err"></div>
     <div class="group">
       <div class="field"><label>${t('name')}</label><input id="c-name" value="${esc(c ? c.name : '')}" placeholder="${t('newCategory')}"></div>
+      <div class="field"><label>${t('showOnBudget')}</label><input type="checkbox" id="c-show" ${c && c.hidden ? '' : 'checked'}></div>
       <div class="field"><label>${t('monthlyBudget')}</label><input id="c-budget" class="num" inputmode="decimal" value="${c ? numIn(c.budget) : ''}" placeholder="${t('budgetPh')}"></div>
     </div>
     <div class="hint" style="padding:0 6px">${t('budgetHint')}</div>
@@ -1057,7 +1077,7 @@ function catSheet(id) {
 function saveCat() {
   const name = $('#c-name').value.trim(), b = parseAmt($('#c-budget').value);
   if (!name) { $('#f-err').textContent = t('errCatName'); $('#sheet').scrollTop = 0; return; }
-  const fields = { name, budget: b > 0 ? b : 0, icon: sheetState.icon, color: sheetState.color };
+  const fields = { name, budget: b > 0 ? b : 0, icon: sheetState.icon, color: sheetState.color, hidden: !$('#c-show').checked };
   if (sheetState.id) Object.assign(S.categories.find(x => x.id === sheetState.id), fields);
   else S.categories.push({ id: uid(), ...fields });
   save(); closeSheet(); render();
@@ -1335,6 +1355,8 @@ document.addEventListener('click', ev => {
     case 'newRec': recSheet(null, el.dataset.group); break;
     case 'newGroup': groupSheet(null); break;
     case 'incName': { const n = $('#f-note'); n.value = el.dataset.v; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break; }
+    case 'goToday': { const dir = UI.month < thisMonth() ? 1 : -1; UI.month = addM(thisMonth(), -dir); stepMonth(dir); break; }
+    case 'toggleHidden': UI.showHidden = !UI.showHidden; render(); break;
     case 'entryMode': sheetState.mode = el.dataset.v; syncEntryMode(); $('#f-amt').focus(); break;
     case 'editInc': expenseSheet(id, null, 'inc'); break;
     case 'newInc': expenseSheet(null, null, 'inc'); break;
@@ -1420,6 +1442,37 @@ document.addEventListener('keydown', ev => {
   if ((ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') && !$('#sheet').classList.contains('on') && !mpState && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))
     stepMonth(ev.key === 'ArrowRight' ? 1 : -1);
 });
+
+/* ================= pull down to refresh ================= */
+let pull = null;
+const PULL_MAX = 110, PULL_READY = 70;
+document.addEventListener('touchstart', ev => {
+  pull = null;
+  if (ev.touches.length !== 1 || window.scrollY > 0 || $('#sheet').classList.contains('on') || mpState || ev.target.closest('#tabs, #sheet, #mpicker')) return;
+  pull = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, d: 0 };
+}, { passive: true });
+document.addEventListener('touchmove', ev => {
+  if (!pull) return;
+  const tch = ev.touches[0], dy = tch.clientY - pull.y, dx = tch.clientX - pull.x, el = $('#ptr');
+  if (dy <= 0 || Math.abs(dx) > dy || window.scrollY > 0) { pull.d = 0; el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; el.classList.remove('ready'); return; }
+  pull.d = Math.min(PULL_MAX, dy * 0.5);
+  el.style.transition = 'none'; el.style.opacity = Math.min(1, pull.d / PULL_READY);
+  el.style.transform = `translateY(${pull.d - 50}px) rotate(${pull.d * 3}deg)`;
+  el.classList.toggle('ready', pull.d >= PULL_READY);
+}, { passive: true });
+document.addEventListener('touchend', () => {
+  if (!pull) return;
+  const el = $('#ptr'), go = pull.d >= PULL_READY; pull = null;
+  el.style.transition = ''; el.classList.remove('ready');
+  if (!go) { el.style.transform = ''; el.style.opacity = ''; return; }
+  el.style.transform = 'translateY(20px)'; el.style.opacity = '1'; el.classList.add('spin');
+  refreshApp();
+}, { passive: true });
+async function refreshApp() {
+  const check = (async () => { try { const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); } catch (e) {} })();
+  await Promise.race([check, new Promise(r => setTimeout(r, 1500))]); // never wait long for the update check
+  setTimeout(() => location.reload(), 250);
+}
 
 /* ================= boot ================= */
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
