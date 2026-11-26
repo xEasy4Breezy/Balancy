@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f0f10" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.json">
 <title>Balancy</title>
 <style>
@@ -237,15 +237,25 @@ en: {
   recTitle: 'Recurring', recIn: m => `Recurring costs in ${m}`,
   recHint: 'These are counted in every month automatically. Tap one under Transactions to skip it for a single month.',
   fixedCosts: 'Fixed costs', fixedEmpty: 'Rent, insurance, phone, subscriptions…', loans: 'Loans & credits', loansEmpty: 'Add a loan to see how much you still owe.',
+  finalPayment: 'Final payment', pausedMonths: 'Paused months', addPause: 'Pause', noPauses: 'No paused months.',
+  pauseHint: 'No payment is due in a paused month and the plan moves back by one month. If there is an interest rate, interest keeps running during the pause.',
+  finalHint: 'Leave "Final payment" empty if the last payment is the same as the others.',
+  purchasePrice: 'Purchase price / loan amount', shipping: 'Shipping costs', termMonths: 'Term (months)', firstPayment: 'First payment', lastPayment: 'Last payment',
+  calculated: 'Calculated', paymentsMade: 'Payments made', stillToPay: 'Still to pay (incl. interest)', interestPaid: 'Interest paid so far', totalInterest: 'Total interest',
+  totalCost: 'Total cost', termShort: 'Term', ofN: (a, b) => `${a} of ${b}`, stillToPayOf: (a, b) => `${a} still to pay of ${b}`,
+  loanHint2: 'Enter the price, any shipping costs, the interest rate and how many months the plan runs. Balancy works out the monthly payment and what is still left to pay, interest included. If your contract shows a slightly different monthly payment, enter it under "Monthly payment" and that amount is used instead.',
+  preview: (a, b, c, d) => `Monthly payment ${a} · total interest ${b} · total cost ${c} · last payment ${d}`, previewEmpty: 'Enter the price and the number of months to see the monthly payment.',
+  errPrice: 'Enter the purchase price or loan amount.', errTerm: 'Enter how many months the plan runs (1 to 600).', errFirstPay: 'Pick the month of the first payment.',
+  errTooLow: 'With this monthly payment the plan would never be paid off. Check the amount.', errShip: 'Shipping costs cannot be negative.',
   groupEmpty: 'Nothing here yet.', groupEmptyLoan: 'Add a plan or loan to see how much is still open and how many months are left.',
   newGroup: 'New group', editGroup: 'Group', groupName: 'Group name', groupNamePh: 'e.g. Leasing', defaultType: 'New entries start as',
   groupHint: 'Groups only sort your recurring costs on this screen. Your budgets and totals stay the same.', deleteGroup: 'Delete group', group: 'Group',
   errGroupName: 'Give the group a name.', cDelGroup: n => `Delete the group "${n}"?`, cDelGroupMove: (n, k, to) => `Delete the group "${n}"? Its ${k} entr${k === 1 ? 'y' : 'ies'} will move to "${to}".`,
   cOneGroup: 'You need at least one group.', editGroupLbl: n => `Edit ${n}`,
   addRec: 'Add recurring cost', starts: m => `From ${m}`, ended: m => `Ended ${m}`, until: m => `Until ${m}`, ongoing: 'Ongoing', day: n => `Day ${n}`,
-  perMonth: '/mo', loanNo: n => `No. ${n}`, owedOf: (a, b) => b ? `${a} still owed of ${b}` : `${a} still owed`, repaid: 'Fully repaid',
+  perMonth: '/mo', loanNo: n => `No. ${n}`, owedOf: (a, b) => b ? `${a} still owed of ${b}` : `${a} still owed`, repaid: 'Fully paid off',
   monthsLeft: n => `${n} month${n === 1 ? '' : 's'} left`, ends: x => `Ends ${x}`,
-  pctRepaid: p => `${p}% repaid`, toGo: x => `${x} to go`, loanNumber: 'Contract / loan number', loanAmount: 'Loan amount', remaining: 'Remaining credit sum',
+  pctRepaid: p => `${p}% paid`, toGo: x => `${x} to go`, loanNumber: 'Contract / loan number', loanAmount: 'Loan amount', remaining: 'Remaining credit sum',
   monthlyPayment: 'Monthly payment', onDay: n => `day ${n}`, paymentsLeft: 'Payments left', months: n => `${n} month${n === 1 ? '' : 's'}`,
   startDate: 'Start date', endDate: 'End date', estimated: '(estimated)', tooLow: 'Payment too low to finish', interestRate: 'Interest rate',
   interestLeft: 'Interest still to pay', loanWarn: x => `With these numbers about ${x} would still be owed at the end date. Check the remaining sum, payment or interest rate.`,
@@ -299,6 +309,16 @@ de: {
   recTitle: 'Fixkosten', recIn: m => `Fixkosten im ${m}`,
   recHint: 'Diese Beträge werden jeden Monat automatisch eingerechnet. Tippe unter Buchungen darauf, um einen Monat auszusetzen.',
   fixedCosts: 'Laufende Kosten', fixedEmpty: 'Miete, Versicherung, Handy, Abos …', loans: 'Kredite & Darlehen', loansEmpty: 'Füge einen Kredit hinzu, um zu sehen, wie viel du noch schuldest.',
+  finalPayment: 'Schlussrate', pausedMonths: 'Pausierte Monate', addPause: 'Pausieren', noPauses: 'Keine Pausen.',
+  pauseHint: 'In einem pausierten Monat ist keine Rate fällig, der Plan verschiebt sich um einen Monat. Gibt es einen Zinssatz, laufen die Zinsen in der Pause weiter.',
+  finalHint: 'Lass „Schlussrate“ leer, wenn die letzte Rate genauso hoch ist wie die anderen.',
+  purchasePrice: 'Kaufpreis / Kreditbetrag', shipping: 'Versandkosten', termMonths: 'Laufzeit (Monate)', firstPayment: 'Erste Rate', lastPayment: 'Letzte Rate',
+  calculated: 'Wird berechnet', paymentsMade: 'Gezahlte Raten', stillToPay: 'Noch zu zahlen (inkl. Zinsen)', interestPaid: 'Bereits gezahlte Zinsen', totalInterest: 'Zinsen gesamt',
+  totalCost: 'Gesamtkosten', termShort: 'Laufzeit', ofN: (a, b) => `${a} von ${b}`, stillToPayOf: (a, b) => `${a} offen von ${b}`,
+  loanHint2: 'Trag Kaufpreis, eventuelle Versandkosten, Zinssatz und Laufzeit in Monaten ein. Balancy berechnet daraus die monatliche Rate und was noch zu zahlen ist, inklusive Zinsen. Steht in deinem Vertrag eine etwas andere Rate, trag sie unter „Monatliche Rate“ ein, dann wird dieser Betrag verwendet.',
+  preview: (a, b, c, d) => `Monatliche Rate ${a} · Zinsen gesamt ${b} · Gesamtkosten ${c} · letzte Rate ${d}`, previewEmpty: 'Gib Kaufpreis und Laufzeit ein, um die monatliche Rate zu sehen.',
+  errPrice: 'Gib den Kaufpreis oder Kreditbetrag ein.', errTerm: 'Gib die Laufzeit in Monaten ein (1 bis 600).', errFirstPay: 'Wähle den Monat der ersten Rate.',
+  errTooLow: 'Mit dieser Rate würde der Kredit nie abbezahlt. Prüf bitte den Betrag.', errShip: 'Versandkosten können nicht negativ sein.',
   groupEmpty: 'Noch nichts eingetragen.', groupEmptyLoan: 'Füge einen Ratenkauf oder Kredit hinzu, um zu sehen, wie viel noch offen ist und wie viele Monate bleiben.',
   newGroup: 'Neue Gruppe', editGroup: 'Gruppe', groupName: 'Name der Gruppe', groupNamePh: 'z. B. Leasing', defaultType: 'Neue Einträge sind',
   groupHint: 'Gruppen sortieren nur deine Fixkosten auf diesem Bildschirm. Budgets und Summen bleiben gleich.', deleteGroup: 'Gruppe löschen', group: 'Gruppe',
@@ -307,7 +327,7 @@ de: {
   addRec: 'Fixkosten hinzufügen', starts: m => `Ab ${m}`, ended: m => `Beendet ${m}`, until: m => `Bis ${m}`, ongoing: 'Unbefristet', day: n => `Am ${n}.`,
   perMonth: '/Monat', loanNo: n => `Nr. ${n}`, owedOf: (a, b) => b ? `${a} offen von ${b}` : `${a} noch offen`, repaid: 'Vollständig getilgt',
   monthsLeft: n => `noch ${n} ${n === 1 ? 'Monat' : 'Monate'}`, ends: x => `Endet am ${x}`,
-  pctRepaid: p => `${p} % getilgt`, toGo: x => `noch ${x}`, loanNumber: 'Vertrags-/Kreditnummer', loanAmount: 'Kreditbetrag', remaining: 'Restschuld',
+  pctRepaid: p => `${p} % bezahlt`, toGo: x => `noch ${x}`, loanNumber: 'Vertrags-/Kreditnummer', loanAmount: 'Kreditbetrag', remaining: 'Restschuld',
   monthlyPayment: 'Monatliche Rate', onDay: n => `am ${n}.`, paymentsLeft: 'Verbleibende Raten', months: n => `${n} ${n === 1 ? 'Monat' : 'Monate'}`,
   startDate: 'Beginn', endDate: 'Ende', estimated: '(geschätzt)', tooLow: 'Rate reicht nicht zur Tilgung', interestRate: 'Zinssatz',
   interestLeft: 'Noch zu zahlende Zinsen', loanWarn: x => `Mit diesen Angaben wären am Enddatum noch etwa ${x} offen. Prüf bitte Restschuld, Rate oder Zinssatz.`,
@@ -498,8 +518,55 @@ function amountAt(r, m) { let a = r.amounts[0].amount; for (const x of r.amounts
 const monthOf = d => d ? d.slice(0, 7) : null;
 // Loans: payments are counted from r.start. The balance is known from r.balanceFrom (before that month's payment).
 // With an interest rate each payment covers that month's interest first. With an end date payments run until then.
+const ceil2 = n => Math.ceil(n * 100 - 1e-6) / 100;
+function annuity(P, ratePa, n, F = 0) {
+  const i = (ratePa || 0) / 1200; if (!(P > 0) || !(n > 0)) return 0;
+  if (F > 0) { // n-1 equal payments plus a different final payment F
+    if (n === 1) return F;
+    const rest = P - F * Math.pow(1 + i, -n); if (rest <= 0) return 0;
+    return ceil2(i ? rest * i / (1 - Math.pow(1 + i, -(n - 1))) : rest / (n - 1));
+  }
+  return ceil2(i ? P * i / (1 - Math.pow(1 + i, -n)) : P / n);
+}
+// New-style plans (r.term): financed amount = price + shipping, interest charged monthly on what is still open,
+// payments run from r.start until everything incl. interest is paid. Skipped months add interest and push the end back.
+function planSched(r) {
+  const s = {}, rate = (r.rate || 0) / 1200;
+  let rem = r2((r.principal || 0) + (r.shipping || 0)), m = r.start, end = null, n = 0;
+  for (let i = 0; i < 720 && rem > 0.004; i++) {
+    const skipped = (r.skips || []).includes(m), interest = r2(rem * rate);
+    let pay = 0;
+    if (!skipped) { // the last payment of the term settles any rounding difference
+      n++;
+      const last = r.term && n >= r.term;
+      if (last && r.lastPay > 0) pay = r.lastPay;                       // contract's final payment closes the plan
+      else if (last && !r.payment) pay = r2(rem + interest);            // settle rounding differences
+      else pay = Math.min(amountAt(r, m), r2(rem + interest));
+      if (last && r.lastPay > 0) { s[m] = { pay, rem: 0, interest: r2(pay - rem) }; end = m; rem = 0; break; }
+    }
+    rem = Math.max(0, r2(rem + interest - pay));
+    s[m] = { pay, rem, interest }; end = m; m = addM(m, 1);
+    if (amountAt(r, m) <= 0) break;
+  }
+  if (rem > 0.004) end = null;
+  return { s, end, last: rem };
+}
+function loanStats(r) {
+  const L = loanSched(r), n = nextPayMonth(r), o = { paid: 0, toPay: 0, intPaid: 0, intLeft: 0, cntPaid: 0, cntLeft: 0 };
+  for (const k in L.s) {
+    const e = L.s[k];
+    if (k < n) { o.paid += e.pay; o.intPaid += e.interest || 0; if (e.pay > 0) o.cntPaid++; }
+    else { o.toPay += e.pay; o.intLeft += e.interest || 0; if (e.pay > 0) o.cntLeft++; }
+  }
+  for (const k of ['paid', 'toPay', 'intPaid', 'intLeft']) o[k] = r2(o[k]);
+  o.total = r2(o.paid + o.toPay); o.intTotal = r2(o.intPaid + o.intLeft);
+  o.pct = o.total ? Math.max(0, Math.min(100, o.paid / o.total * 100)) : 100;
+  o.end = L.end; o.first = Object.keys(L.s)[0] || r.start;
+  return o;
+}
 function loanSched(r) {
   if (loanCache[r.id]) return loanCache[r.id];
+  if (r.term) return (loanCache[r.id] = planSched(r));
   const s = {}, endM = monthOf(r.loanEnd), from = r.balanceFrom || r.start, rate = (r.rate || 0) / 1200;
   let rem = r2(r.balance || 0), m = r.start, end = null;
   for (let i = 0; i < 720; i++) {
@@ -697,16 +764,15 @@ function fixedItemHTML(r, m) {
     <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}</span></button>`;
 }
 function loanCardHTML(r, m) {
-  const c = catById(r.categoryId), owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r);
-  const base = r.principal > 0 ? r.principal : r.balance, pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+  const c = catById(r.categoryId), st = loanStats(r);
   return `<button class="ccard" data-act="loanInfo" data-id="${r.id}" style="display:block">
     <div style="display:flex;align-items:center;gap:12px"><span class="icon" style="${tint(c.color)};width:46px;height:46px">${svg(c.icon)}</span>
       <span class="mid" style="flex:1;min-width:0"><div class="nm">${esc(r.name)}</div><div class="sb">${r.loanNumber ? esc(t('loanNo', r.loanNumber)) : esc(t('day', r.day))}</div></span>
       <span class="left num">${money(amountAt(r, m < r.start ? r.start : m))}<span class="sub">${t('perMonth')}</span></span></div>
-    <div class="progress"><i style="width:${pct}%"></i></div>
-    <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${owed > 0 ? esc(t('owedOf', money(owed), r.principal > 0 ? money(r.principal) : '')) : t('repaid')}</span>
-      <span>${owed > 0 ? esc(t('monthsLeft', left)) : ''}</span></div>
-    ${endTxt ? `<div class="sub">${esc(t('ends', endTxt))}</div>` : ''}</button>`;
+    <div class="progress"><i style="width:${st.pct}%"></i></div>
+    <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${st.toPay > 0 ? esc(t('stillToPayOf', money(st.toPay), money(st.total))) : t('repaid')}</span>
+      <span>${st.cntLeft ? esc(t('monthsLeft', st.cntLeft)) : ''}</span></div>
+    ${st.end ? `<div class="sub">${esc(t('lastPayment'))}: ${esc(mLabel(st.end))}</div>` : ''}</button>`;
 }
 function viewRecurring() {
   const m = thisMonth();
@@ -731,27 +797,32 @@ function viewRecurring() {
   return { header: header(t('recTitle'), false), body };
 }
 function loanDetailsHTML(r) {
-  const owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r), L = loanSched(r), n = nextPayMonth(r);
-  const base = r.principal > 0 ? r.principal : r.balance, pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+  const st = loanStats(r);
   const row = (k, v) => v === null || v === undefined || v === '' ? '' : `<div class="row"><span class="k">${k}</span><span class="num" style="text-align:right">${v}</span></div>`;
   let warn = '';
-  if (r.loanEnd) { const endM = monthOf(r.loanEnd), lastRem = loanRemaining(r, endM); if (lastRem > Math.max(1, amountAt(r, endM))) warn = t('loanWarn', money(lastRem)); }
-  const intLeft = Object.keys(L.s).filter(k => k >= n).reduce((a, k) => a + (L.s[k].interest || 0), 0);
-  return `<div class="progress" style="margin-top:4px"><i style="width:${pct}%"></i></div>
-    <div class="sub" style="display:flex;justify-content:space-between"><span>${esc(t('pctRepaid', Math.round(pct)))}</span><span>${owed > 0 ? esc(t('toGo', money(owed))) : t('repaid')}</span></div>
+  if (!r.term && r.loanEnd) { const endM = monthOf(r.loanEnd), lastRem = loanRemaining(r, endM); if (lastRem > Math.max(1, amountAt(r, endM))) warn = t('loanWarn', money(lastRem)); }
+  const price = r.term ? r.principal : (r.principal || null);
+  return `<div class="progress" style="margin-top:4px"><i style="width:${st.pct}%"></i></div>
+    <div class="sub" style="display:flex;justify-content:space-between"><span>${esc(t('pctRepaid', Math.round(st.pct)))}</span><span>${st.toPay > 0 ? esc(t('toGo', money(st.toPay))) : t('repaid')}</span></div>
     <div>
       ${row(t('loanNumber'), r.loanNumber ? esc(r.loanNumber) : null)}
-      ${row(t('loanAmount'), r.principal > 0 ? money(r.principal) : null)}
-      ${row(t('remaining'), money(owed))}
-      ${row(t('monthlyPayment'), money(amountAt(r, thisMonth() < r.start ? r.start : thisMonth())) + ' · ' + t('onDay', r.day))}
-      ${row(t('paymentsLeft'), esc(t('months', left)))}
-      ${row(t('startDate'), r.loanStart ? dLong(r.loanStart) : null)}
-      ${row(t('endDate'), endTxt ? esc(endTxt) + (r.loanEnd ? '' : ' ' + t('estimated')) : t('tooLow'))}
+      ${row(t('purchasePrice'), price > 0 ? money(price) : null)}
+      ${row(t('shipping'), r.shipping > 0 ? money(r.shipping) : null)}
       ${row(t('interestRate'), r.rate ? r.rate.toLocaleString(LOCALE) + ' %' : null)}
-      ${row(t('interestLeft'), r.rate ? money(intLeft) : null)}
+      ${row(t('termShort'), r.term ? esc(t('months', r.term)) : null)}
+      ${row(t('monthlyPayment'), money(amountAt(r, thisMonth() < r.start ? r.start : thisMonth())) + ' · ' + t('onDay', r.day))}
+      ${row(t('firstPayment'), esc(mLabel(st.first)))}
+      ${row(t('finalPayment'), r.lastPay > 0 ? money(r.lastPay) : null)}
+      ${row(t('lastPayment'), st.end ? esc(mLabel(st.end)) : t('tooLow'))}
+      ${row(t('pausedMonths'), (r.skips || []).length ? esc(r.skips.slice().sort().map(x => mLabel(x, 'short') + ' ' + x.slice(2, 4)).join(', ')) : null)}
+      ${row(t('paymentsMade'), esc(t('ofN', st.cntPaid, st.cntPaid + st.cntLeft)))}
+      ${row(t('stillToPay'), '<b>' + money(st.toPay) + '</b>')}
+      ${row(t('interestPaid'), r.rate ? money(st.intPaid) : null)}
+      ${row(t('interestLeft'), r.rate ? money(st.intLeft) : null)}
+      ${row(t('totalInterest'), r.rate ? money(st.intTotal) : null)}
+      ${row(t('totalCost'), money(st.total))}
     </div>${warn ? `<div class="banner">${esc(warn)}</div>` : ''}`;
 }
-
 function viewTrends() {
   const end = UI.month, months = [];
   for (let i = 5; i >= 0; i--) months.push(addM(end, -i));
@@ -902,6 +973,30 @@ function groupDefaultCat(g, type) {
   const def = g && DEFAULT_GROUPS.find(x => x.key === g.key);
   return (catByKey(def ? def.cat : (type === 'loan' ? 'loans' : 'housing')) || S.categories[0] || {}).id;
 }
+function loanPrefill(r, m) {
+  if (!r || r.kind !== 'loan') return { first: m };
+  if (r.term) return { principal: r.principal, shipping: r.shipping, rate: r.rate, term: r.term, first: r.start, payment: r.payment, lastPay: r.lastPay };
+  // older entry (remaining-sum style): best guess so it can be saved in the new format
+  const L = loanSched(r), pays = Object.keys(L.s).filter(k => L.s[k].pay > 0);
+  const from = r.balanceFrom || r.start, left = pays.filter(k => k >= from);
+  return { principal: r.balance || r.principal, shipping: 0, rate: r.rate, term: left.length || '', first: from, payment: amountAt(r, from) };
+}
+function planFromForm() {
+  const principal = parseAmt($('#r-principal').value), ship = parseAmt($('#r-ship').value), rate = parseAmt($('#r-rate').value);
+  const term = parseInt($('#r-term').value, 10), first = $('#r-first').value, override = parseAmt($('#r-pay').value), last = parseAmt($('#r-last').value);
+  const P = (principal > 0 ? principal : 0) + (ship > 0 ? ship : 0);
+  const pay = override > 0 ? override : annuity(P, rate > 0 ? rate : 0, term, last > 0 ? last : 0);
+  return { principal, ship, rate, term, first, override, pay, last };
+}
+function updateLoanPreview() {
+  const el = $('#loan-preview'); if (!el || sheetState.type !== 'loan') return;
+  const f = planFromForm();
+  if (!(f.principal > 0) || !(f.term > 0) || !/^\d{4}-\d\d$/.test(f.first) || !(f.pay > 0)) { el.textContent = t('previewEmpty'); return; }
+  const L = planSched({ principal: f.principal, shipping: f.ship > 0 ? f.ship : 0, rate: f.rate > 0 ? f.rate : 0, term: f.term, payment: f.override > 0 ? f.override : 0, lastPay: f.last > 0 ? f.last : 0, start: f.first, amounts: [{ from: f.first, amount: f.pay }], skips: sheetState.skips || [] });
+  if (!L.end) { el.textContent = t('errTooLow'); return; }
+  let total = 0, int = 0; for (const k in L.s) { total += L.s[k].pay; int += L.s[k].interest; }
+  el.textContent = t('preview', money(f.pay), money(r2(int)), money(r2(total)), mLabel(L.end));
+}
 function recSheet(id, groupId) {
   const r = id ? S.recurring.find(x => x.id === id) : null, m = thisMonth();
   const g = S.recGroups.find(x => x.id === (r ? r.groupId : groupId)) || S.recGroups[0];
@@ -909,77 +1004,92 @@ function recSheet(id, groupId) {
   sheetState = { kind: 'rec', id: r ? r.id : null, type, group: g ? g.id : null, cat: r ? r.categoryId : groupDefaultCat(g, type) };
   const applyFrom = r ? (r.start > m ? r.start : m) : m;
   const v = k => esc(r && r[k] != null && r[k] !== 0 ? r[k] : '');
-  const vn = k => r && r[k] ? numIn(r[k]) : '';
+  const lp = loanPrefill(r, m);
+  sheetState.skips = r ? (r.skips || []).slice() : [];
   openSheet(`${sheetHead(r ? t('editTitle') : t('newTitle'), t('save'), 'saveRec')}
     <div class="seg"><button data-act="recType" data-v="fixed">${t('fixedCost')}</button><button data-act="recType" data-v="loan">${t('loanCredit')}</button></div>
     <div class="err" id="f-err"></div>
     <div class="group">
       <div class="field"><label>${t('name')}</label><input id="r-name" placeholder="${t('recNamePh')}" value="${v('name')}"></div>
       <div class="field" data-only="loan"><label>${t('loanNumber')}</label><input id="r-no" placeholder="${t('optional')}" value="${v('loanNumber')}"></div>
-      <div class="field"><label><span data-only="fixed">${t('amountPerMonth')}</span><span data-only="loan">${t('monthlyPayment')}</span></label><input id="r-amt" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${r ? numIn(amountAt(r, applyFrom)) : ''}"></div>
+      <div class="field" data-only="fixed"><label>${t('amountPerMonth')}</label><input id="r-amt" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${r && r.kind !== 'loan' ? numIn(amountAt(r, applyFrom)) : ''}"></div>
       <div class="field"><label>${t('dayOfMonth')}</label><input id="r-day" type="number" inputmode="numeric" min="1" max="31" value="${r ? r.day : 1}"></div>
       <div class="field" data-only="fixed"><label>${t('firstMonth')}</label><input id="r-start" type="month" value="${r ? r.start : m}"></div>
       <div class="field" data-only="fixed"><label>${t('lastMonth')}</label><input id="r-end" type="month" value="${r && r.end ? r.end : ''}"></div>
-      ${r ? `<div class="field"><label>${t('appliesFrom')}</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
+      ${r ? `<div class="field" data-only="fixed"><label>${t('appliesFrom')}</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
     </div>
     <div class="hint" data-only="fixed" style="padding:0 6px">${t('lastMonthHint')}</div>
     <div data-only="loan">
       <h3>${t('loanDetails')}</h3>
       <div class="group">
-        <div class="field"><label>${t('loanAmount')}</label><input id="r-principal" class="num" inputmode="decimal" placeholder="${t('originalAmount')}" value="${vn('principal')}"></div>
-        <div class="field"><label>${t('remaining')}</label><input id="r-bal" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${vn('balance')}"></div>
-        <div class="field"><label>${t('remainingAsOf')}</label><input id="r-bfrom" type="month" value="${r && r.balanceFrom ? r.balanceFrom : m}"></div>
-        <div class="field"><label>${t('startDate')}</label><input id="r-lstart" type="date" value="${v('loanStart')}"></div>
-        <div class="field"><label>${t('endDate')}</label><input id="r-lend" type="date" value="${v('loanEnd')}"></div>
-        <div class="field"><label>${t('ratePa')}</label><input id="r-rate" class="num" inputmode="decimal" placeholder="${t('optional')}" value="${vn('rate')}"></div>
+        <div class="field"><label>${t('purchasePrice')}</label><input id="r-principal" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${lp.principal ? numIn(lp.principal) : ''}"></div>
+        <div class="field"><label>${t('shipping')}</label><input id="r-ship" class="num" inputmode="decimal" placeholder="${t('optional')}" value="${lp.shipping ? numIn(lp.shipping) : ''}"></div>
+        <div class="field"><label>${t('ratePa')}</label><input id="r-rate" class="num" inputmode="decimal" placeholder="${t('optional')}" value="${lp.rate ? numIn(lp.rate) : ''}"></div>
+        <div class="field"><label>${t('termMonths')}</label><input id="r-term" type="number" inputmode="numeric" min="1" max="600" placeholder="12" value="${lp.term || ''}"></div>
+        <div class="field"><label>${t('firstPayment')}</label><input id="r-first" type="month" value="${lp.first}"></div>
+        <div class="field"><label>${t('monthlyPayment')}</label><input id="r-pay" class="num" inputmode="decimal" placeholder="${t('calculated')}" value="${lp.payment ? numIn(lp.payment) : ''}"></div>
+        <div class="field"><label>${t('finalPayment')}</label><input id="r-last" class="num" inputmode="decimal" placeholder="${t('calculated')}" value="${lp.lastPay ? numIn(lp.lastPay) : ''}"></div>
       </div>
-      <div class="hint" style="padding:0 6px">${t('loanHint')}</div>
+      <div class="note" id="loan-preview"></div>
+      <div class="hint" style="padding:8px 6px 0">${t('loanHint2')} ${t('finalHint')}</div>
+      <h3>${t('pausedMonths')}</h3>
+      <div class="group"><div class="field"><input id="r-pause" type="month" value="${lp.first > m ? lp.first : m}" style="text-align:left"><button class="addpill" data-act="addPause" style="flex:none">${t('addPause')} <i>+</i></button></div></div>
+      <div class="chips" id="pause-list"></div>
+      <div class="hint" style="padding:0 6px">${t('pauseHint')}</div>
     </div>
-    ${r ? `<div class="hint" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}
+    ${r && r.kind !== 'loan' ? `<div class="hint" data-only="fixed" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}    ${r ? `<div class="hint" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}
     <h3>${t('group')}</h3><div class="chips">${S.recGroups.map(x => `<button class="chip ${x.id === sheetState.group ? 'on' : ''}" data-act="pickGroup" data-id="${x.id}" style="padding-left:12px">${esc(x.name)}</button>`).join('')}</div>
     <h3>${t('categoryLbl')}</h3>${chipsHTML(sheetState.cat, 'pickRecCat')}
     ${r ? `<button class="btn danger" data-act="delRec">${r.kind === 'loan' ? t('deleteLoan') : t('deleteRec')}</button>` : ''}`);
-  syncRecType();
+  syncRecType(); renderPauses();
+}
+function renderPauses() {
+  const el = $('#pause-list'); if (!el) return;
+  const list = (sheetState.skips || []).slice().sort();
+  el.innerHTML = list.length ? list.map(x => `<button class="chip" data-act="rmPause" data-v="${x}" style="padding-left:12px">${esc(mLabel(x))} <span style="font-size:18px;line-height:1">×</span></button>`).join('')
+    : `<span class="hint" style="padding:0 6px">${t('noPauses')}</span>`;
 }
 function syncRecType() {
   document.querySelectorAll('#sheet [data-only]').forEach(el => el.style.display = el.dataset.only === sheetState.type ? '' : 'none');
   document.querySelectorAll('#sheet [data-act=recType]').forEach(b => b.classList.toggle('on', b.dataset.v === sheetState.type));
+  if (sheetState.kind === 'rec') updateLoanPreview();
 }
 function saveRec() {
   const err = x => { $('#f-err').textContent = x; $('#sheet').scrollTop = 0; };
-  const kind = sheetState.type, name = $('#r-name').value.trim(), amt = parseAmt($('#r-amt').value);
+  const kind = sheetState.type, name = $('#r-name').value.trim();
   const day = Math.min(31, Math.max(1, parseInt($('#r-day').value, 10) || 1));
   const old = sheetState.id ? S.recurring.find(x => x.id === sheetState.id) : null;
+  const base = { name, kind, day, categoryId: sheetState.cat, groupId: sheetState.group };
   if (!name) return err(t('errName'));
-  if (!(amt > 0)) return err(t('errMonthly'));
-  let fields;
   if (kind === 'fixed') {
-    const start = $('#r-start').value, end = $('#r-end').value || null;
+    const amt = parseAmt($('#r-amt').value), start = $('#r-start').value, end = $('#r-end').value || null;
+    if (!(amt > 0)) return err(t('errMonthly'));
     if (!/^\d{4}-\d\d$/.test(start)) return err(t('errFirst'));
     if (end && end < start) return err(t('errLastBefore'));
-    fields = { start, end };
+    if (old) {
+      const wasLoan = old.kind === 'loan', from = wasLoan ? start : (($('#r-from') && $('#r-from').value) || start);
+      Object.assign(old, base, { start, end, term: 0, principal: 0, shipping: 0, rate: 0, payment: 0, balance: null, balanceFrom: null, loanStart: null, loanEnd: null });
+      if (wasLoan) old.amounts = [{ from: start, amount: amt }];
+      else if (amountAt(old, from) !== amt) {
+        old.amounts = old.amounts.filter(x => x.from < from);
+        old.amounts.push({ from: old.amounts.length ? from : start, amount: amt });
+        old.amounts.sort((a, b) => a.from.localeCompare(b.from));
+      }
+    } else S.recurring.push({ id: uid(), ...base, start, end, amounts: [{ from: start, amount: amt }], skips: [] });
   } else {
-    const bal = parseAmt($('#r-bal').value), principal = parseAmt($('#r-principal').value), rate = parseAmt($('#r-rate').value);
-    const bfrom = $('#r-bfrom').value, lstart = $('#r-lstart').value || null, lend = $('#r-lend').value || null;
-    if (!(bal >= 0) || $('#r-bal').value.trim() === '') return err(t('errRemaining'));
-    if (!/^\d{4}-\d\d$/.test(bfrom)) return err(t('errRemMonth'));
-    if (principal > 0 && bal > principal * 1.5) return err(t('errRemHigh'));
-    if (lstart && lend && lend < lstart) return err(t('errEndStart'));
-    if (lend && monthOf(lend) < bfrom) return err(t('errEndRem'));
-    if (rate < 0 || rate > 50) return err(t('errRate'));
-    const start = old && old.kind === 'loan' && old.start < bfrom ? old.start : bfrom;
-    fields = { start, end: null, balance: bal, balanceFrom: bfrom, principal: principal > 0 ? principal : 0,
-      rate: rate > 0 ? rate : 0, loanNumber: $('#r-no').value.trim(), loanStart: lstart, loanEnd: lend };
+    const f = planFromForm();
+    if (!(f.principal > 0)) return err(t('errPrice'));
+    if (f.ship < 0) return err(t('errShip'));
+    if (!(f.term >= 1 && f.term <= 600)) return err(t('errTerm'));
+    if (!/^\d{4}-\d\d$/.test(f.first)) return err(t('errFirstPay'));
+    if (f.rate < 0 || f.rate > 50) return err(t('errRate'));
+    const fields = { start: f.first, end: null, principal: f.principal, shipping: f.ship > 0 ? f.ship : 0, rate: f.rate > 0 ? f.rate : 0, term: f.term,
+      payment: f.override > 0 ? f.override : 0, lastPay: f.last > 0 ? f.last : 0, skips: (sheetState.skips || []).slice().sort(), loanNumber: $('#r-no').value.trim(), balance: null, balanceFrom: null, loanStart: null, loanEnd: null,
+      amounts: [{ from: f.first, amount: f.pay }] };
+    if (!planSched(fields).end) return err(t('errTooLow'));
+    if (old) Object.assign(old, base, fields);
+    else S.recurring.push({ id: uid(), ...base, ...fields });
   }
-  if (old) {
-    const from = ($('#r-from') && $('#r-from').value) || fields.start;
-    Object.assign(old, { name, kind, day, categoryId: sheetState.cat, groupId: sheetState.group }, fields);
-    if (amountAt(old, from) !== amt) {
-      old.amounts = old.amounts.filter(x => x.from < from);
-      old.amounts.push({ from: old.amounts.length ? from : fields.start, amount: amt });
-      old.amounts.sort((a, b) => a.from.localeCompare(b.from));
-    }
-  } else S.recurring.push({ id: uid(), name, kind, day, categoryId: sheetState.cat, groupId: sheetState.group, amounts: [{ from: fields.start, amount: amt }], skips: [], ...fields });
   save(); closeSheet(); render();
 }
 function groupSheet(id) {
@@ -1112,6 +1222,8 @@ document.addEventListener('click', ev => {
       save(); closeSheet(); render(); break; }
     case 'newRec': recSheet(null, el.dataset.group); break;
     case 'newGroup': groupSheet(null); break;
+    case 'addPause': { const v = $('#r-pause').value; if (/^\d{4}-\d\d$/.test(v) && !sheetState.skips.includes(v)) sheetState.skips.push(v); renderPauses(); updateLoanPreview(); break; }
+    case 'rmPause': sheetState.skips = sheetState.skips.filter(x => x !== el.dataset.v); renderPauses(); updateLoanPreview(); break;
     case 'editGroup': groupSheet(id); break;
     case 'saveGroup': saveGroup(); break;
     case 'pickGroup': {
@@ -1154,6 +1266,7 @@ document.addEventListener('change', ev => {
   else S.settings[k] = el.value;
   save(); render();
 });
+document.addEventListener('input', ev => { if (sheetState.kind === 'rec' && /^r-(principal|ship|rate|term|first|pay|last)$/.test(ev.target.id)) updateLoanPreview(); });
 document.addEventListener('keydown', ev => {
   if (ev.key === 'Enter' && $('#sheet').classList.contains('on') && ev.target.tagName === 'INPUT') {
     ev.preventDefault();
