@@ -7,144 +7,185 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Balancy">
-<meta name="theme-color" content="#f3f1ec" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121211" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f10" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
 <title>Balancy</title>
 <style>
 :root{
-  --bg:#f3f1ec;--card:#ffffff;--ink:#1d1c1a;--muted:#78746c;--line:#e7e3db;--soft:#efede7;
-  --accent:#2f6f4e;--accent-ink:#ffffff;--accent-soft:#e3eee7;--danger:#b4412f;--danger-soft:#f6e4e0;
-  --radius:16px;
+  --bg:#ffffff;--card:#ffffff;--ink:#1d1d1f;--muted:#76767c;--line:#ececee;--soft:#f3f3f5;
+  --inc:#dff3c3;--exp:#e7e8fc;--pill:#cdeca2;--pill-ink:#1d1d1f;
+  --ok:#22d65a;--bad:#e5241b;--accent:#3f8f5a;--danger:#d93a2b;--danger-soft:#fde8e6;
+  --nav:#111112;--nav-ink:#ffffff;--r:24px;
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#121211;--card:#1d1d1b;--ink:#f1efe9;--muted:#9c988f;--line:#2d2c29;--soft:#262522;
-  --accent:#62b087;--accent-ink:#0c1a12;--accent-soft:#1f3328;--danger:#e2735f;--danger-soft:#3a221d}
+  :root{--bg:#0f0f10;--card:#18181a;--ink:#f4f4f5;--muted:#9b9ba2;--line:#29292d;--soft:#232326;
+  --inc:#2b3b1f;--exp:#26283f;--pill:#a9d873;--pill-ink:#111;--danger-soft:#3a1f1c;--nav:#000;}
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+body{font:17px/1.35 ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;-webkit-font-smoothing:antialiased;
   -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 input,select{font:inherit;font-size:16px;color:var(--ink)}
 .num{font-variant-numeric:tabular-nums}
-header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(env(safe-area-inset-top) + 10px) 18px 8px}
-header h1{font-size:28px;letter-spacing:-.02em;margin:4px 0 2px}
-main{padding:0 14px calc(96px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
-.monthnav{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.monthnav button{width:40px;height:40px;border-radius:20px;background:var(--card);font-size:22px;line-height:1;display:grid;place-items:center}
-.monthnav .title{font-size:24px;font-weight:700;letter-spacing:-.02em;text-align:center;flex:1}
-.monthnav .today{font-size:13px;color:var(--accent);font-weight:600}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin:12px 0}
-.hero .lbl{color:var(--muted);font-size:14px}
-.hero .big{font-size:42px;font-weight:700;letter-spacing:-.03em;margin:2px 0 4px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(env(safe-area-inset-top) + 12px) 20px 10px}
+main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+/* header */
+.top{display:flex;align-items:center;gap:12px}
+.avatar{width:50px;height:50px;border-radius:50%;flex:none;overflow:hidden;display:grid;place-items:center;font-weight:700;font-size:19px;color:#fff;
+  background:#7b8cde;box-shadow:0 4px 14px rgba(0,0,0,.12);border:2px solid var(--card)}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar svg{width:60%;height:60%}
+.hello{font-size:25px;font-weight:700;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mpill{position:relative;display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:22px;padding:7px 12px 7px 16px;font-size:16px;font-weight:600;flex:none}
+.mpill svg{width:14px;height:14px}
+.mpill input{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px}
+.mpill.past{border-color:var(--ink)}
+.backbtn{width:40px;height:40px;border-radius:20px;background:var(--soft);display:grid;place-items:center;font-size:24px;flex:none}
+/* balance */
+.balance{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 4px 14px}
+.balance .lbl{font-size:18px}
+.balance .lbl .hint{display:block}
+.balance .amt{display:flex;align-items:center;gap:10px}
+.big{font-size:44px;font-weight:800;letter-spacing:-.035em;line-height:1}
+.big small{font-size:22px;font-weight:600;letter-spacing:0}
+.eye{width:34px;height:34px;display:grid;place-items:center;flex:none}
+.eye svg{width:26px;height:26px}
 .neg{color:var(--danger)}
-.pos{color:var(--accent)}
-.hint{color:var(--muted);font-size:13px}
-.rows{margin-top:10px;border-top:1px solid var(--line)}
-.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);gap:12px}
+.hint{color:var(--muted);font-size:14px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border-radius:30px;padding:18px 18px 20px;text-align:left;display:flex;flex-direction:column;min-height:180px}
+.tile.inc{background:var(--inc)} .tile.exp{background:var(--exp)}
+.tile .ring{width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;margin-bottom:auto}
+.tile .ring svg{width:20px;height:20px}
+.tile .t1{font-size:17px;margin-top:22px}
+.tile .t2{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:2px 0 14px;white-space:nowrap}
+.tile .t3{font-size:15px}
+.tile .t3 b{font-size:17px}
+.note{background:var(--soft);border-radius:16px;padding:11px 14px;font-size:14px;color:var(--muted);margin-top:12px}
+/* section heads */
+.sec{display:flex;align-items:center;justify-content:space-between;margin:26px 4px 12px}
+.sec h2{font-size:24px;margin:0;letter-spacing:-.01em}
+.sec .count{color:var(--muted);font-size:15px}
+.addpill{display:flex;align-items:center;gap:8px;background:var(--pill);color:var(--pill-ink);border-radius:22px;padding:8px 8px 8px 16px;font-weight:700;font-size:15px;letter-spacing:.02em}
+.addpill i{width:26px;height:26px;border-radius:13px;background:#1d1d1f;color:#fff;display:grid;place-items:center;font-style:normal;font-size:20px;line-height:1}
+/* category cards */
+.ccard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1.5px solid var(--line);border-radius:var(--r);padding:12px 14px 12px 12px;margin-bottom:10px;background:var(--card)}
+.ccard.dim{opacity:.6}
+.icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;flex:none}
+.icon svg{width:28px;height:28px}
+.ccard .mid{flex:1;min-width:0}
+.ccard .nm{font-weight:700;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccard .sb{color:var(--muted);font-size:15px}
+.ccard .rt{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.mini{width:66px;height:7px;border-radius:4px;background:var(--soft);overflow:hidden}
+.mini i{display:block;height:100%;border-radius:4px;background:var(--ok)}
+.mini.bad i{background:var(--bad)}
+.ccard .left{font-weight:700;font-size:16px;white-space:nowrap}
+.setb{font-size:14px;font-weight:600;color:var(--accent)}
+/* lists */
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:6px 16px;margin:10px 0}
+.card.pad{padding:16px}
+.item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.item:last-child{border-bottom:0}
+.item .icon{width:42px;height:42px;border-radius:13px}
+.item .icon svg{width:22px;height:22px}
+.item .mid{flex:1;min-width:0}
+.item .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.item .amt{font-weight:700}
+.sub{font-size:14px;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:7px;background:var(--soft);color:var(--muted);margin-left:6px;vertical-align:2px}
+.tag.g{background:var(--inc);color:var(--ink)}
+.strike{text-decoration:line-through;color:var(--muted)}
+.dayhead{font-size:13px;color:var(--muted);padding:14px 0 0;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);gap:12px}
 .row:last-child{border-bottom:0}
 .row .k{color:var(--muted)}
-.row.tap .k::after{content:" \203A";color:var(--muted)}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 4px 6px;font-weight:600;display:flex;justify-content:space-between}
-h2 span{text-transform:none;letter-spacing:0}
-.cat{padding:10px 0;border-bottom:1px solid var(--line)}
-.cat:last-child{border-bottom:0}
-.cat .top{display:flex;justify-content:space-between;gap:10px;font-size:15px}
-.dot{display:inline-block;width:10px;height:10px;border-radius:5px;margin-right:8px;vertical-align:0}
-.bar{height:6px;border-radius:3px;background:var(--soft);margin-top:7px;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:3px}
-.sub{font-size:13px;color:var(--muted)}
-.list .item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
-.list .item:last-child{border-bottom:0}
-.item .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;flex:none}
-.item .mid{flex:1;min-width:0}
-.item .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item .amt{font-weight:600}
-.tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 6px;border-radius:6px;background:var(--soft);color:var(--muted);margin-left:6px;vertical-align:1px}
-.tag.acc{background:var(--accent-soft);color:var(--accent)}
-.strike{text-decoration:line-through;color:var(--muted)}
-.dayhead{font-size:13px;color:var(--muted);padding:12px 0 2px;font-weight:600}
-.empty{text-align:center;color:var(--muted);padding:26px 10px}
-.btn{display:block;width:100%;padding:14px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-weight:600;text-align:center;margin-top:12px}
-.btn.ghost{background:var(--card);color:var(--accent)}
+.progress{height:8px;border-radius:4px;background:var(--soft);overflow:hidden;margin:10px 0 6px}
+.progress i{display:block;height:100%;background:var(--ok)}
+.btn{display:block;width:100%;padding:15px;border-radius:18px;background:var(--ink);color:var(--bg);font-weight:700;text-align:center;margin-top:12px}
+.btn.ghost{background:var(--soft);color:var(--ink)}
 .btn.danger{background:var(--danger-soft);color:var(--danger)}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:color-mix(in srgb,var(--card) 92%,transparent);
-  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line);
-  display:flex;justify-content:space-around;align-items:center;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
-nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);padding:4px 0}
-nav.tabs button.on{color:var(--accent)}
+.banner{background:var(--danger-soft);color:var(--danger);padding:11px 14px;border-radius:14px;font-size:14px;margin:10px 0}
+h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 4px 8px;font-weight:700;display:flex;justify-content:space-between}
+h3 span{text-transform:none;letter-spacing:0;font-weight:500}
+/* nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--nav);color:var(--nav-ink);border-radius:26px 26px 0 0;
+  display:flex;justify-content:space-around;align-items:center;padding:10px 6px calc(10px + env(safe-area-inset-bottom))}
+nav.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:rgba(255,255,255,.75)}
+nav.tabs button .ico{width:52px;height:32px;border-radius:16px;display:grid;place-items:center}
 nav.tabs svg{width:24px;height:24px}
-nav.tabs .add{flex:none;width:54px;height:54px;border-radius:27px;background:var(--accent);color:var(--accent-ink);margin:-18px 8px 0;
-  box-shadow:0 6px 18px rgba(0,0,0,.18);justify-content:center}
-nav.tabs .add svg{width:28px;height:28px}
+nav.tabs button.on{color:#fff;font-weight:700}
+nav.tabs button.on .ico{background:#fff;color:#111}
+nav.tabs .add{flex:none;width:56px;height:56px;border-radius:28px;background:var(--pill);color:#111;margin:-30px 4px 0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);border:4px solid var(--bg)}
+nav.tabs .add svg{width:26px;height:26px}
 /* sheet */
 #backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
 #backdrop.on{opacity:1;pointer-events:auto}
-#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:20px 20px 0 0;max-height:92vh;overflow:auto;
-  transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s;padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--bg);border-radius:28px 28px 0 0;max-height:92vh;overflow:auto;
+  transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s;padding:0 18px calc(22px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
 #sheet.on{transform:none;visibility:visible;transition:transform .25s ease}
-.sheet-h{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;z-index:1}
-.sheet-h b{font-size:17px}
-.sheet-h button{color:var(--accent);font-size:17px;min-width:64px}
-.sheet-h button:last-child{text-align:right;font-weight:600}
-.amtwrap{text-align:center;padding:10px 0 4px}
-input.amt{width:100%;text-align:center;font-size:44px;font-weight:700;border:0;background:none;outline:none;letter-spacing:-.02em}
+.sheet-h{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:16px 0 10px;z-index:1}
+.sheet-h b{font-size:18px;text-align:center;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
+.sheet-h button{font-size:17px;min-width:72px;text-align:left;color:var(--muted)}
+.sheet-h button:last-child{text-align:right;font-weight:700;color:var(--ink)}
+.amtwrap{text-align:center;padding:8px 0 2px}
+input.amtin{width:100%;text-align:center;font-size:46px;font-weight:800;border:0;background:none;outline:none;letter-spacing:-.03em}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.chip{padding:8px 12px;border-radius:20px;background:var(--card);font-size:15px;border:2px solid transparent}
-.chip.on{border-color:var(--accent);background:var(--accent-soft)}
-.field{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);padding:12px 14px;border-bottom:1px solid var(--line)}
-.group{border-radius:14px;overflow:hidden;margin:12px 0}
+.chip{display:flex;align-items:center;gap:7px;padding:7px 12px 7px 7px;border-radius:20px;background:var(--soft);font-size:15px;border:2px solid transparent}
+.chip .icon{width:26px;height:26px;border-radius:9px}
+.chip .icon svg{width:16px;height:16px}
+.chip.on{border-color:var(--ink);background:var(--card)}
+.group{border:1.5px solid var(--line);border-radius:20px;overflow:hidden;margin:12px 0;background:var(--card)}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
 .group .field:last-child{border-bottom:0}
-.field label{color:var(--ink);flex:none}
+.field label{flex:none}
 .field input,.field select{border:0;background:none;text-align:right;outline:none;min-width:0;flex:1;width:100%}
-.field input[type=color]{flex:none;width:36px;height:28px;padding:0;border-radius:6px}
-.field input[type=checkbox]{flex:none;width:22px;height:22px;accent-color:var(--accent)}
-.seg{display:flex;background:var(--soft);border-radius:10px;padding:3px;margin:10px 0}
-.seg button{flex:1;padding:8px;border-radius:8px;font-size:15px;color:var(--muted)}
-.seg button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.field input[type=checkbox]{flex:none;width:22px;height:22px;accent-color:#1d1d1f}
+.seg{display:flex;background:var(--soft);border-radius:14px;padding:3px;margin:10px 0}
+.seg button{flex:1;padding:9px;border-radius:11px;font-size:15px;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .err{color:var(--danger);font-size:14px;min-height:20px;text-align:center}
-.catedit{display:grid;grid-template-columns:36px 1fr 100px 32px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-.catedit:last-child{border-bottom:0}
-.catedit input{border:0;background:var(--soft);border-radius:8px;padding:8px;width:100%;min-width:0}
-.catedit input[type=color]{padding:0;height:32px;background:none}
-.catedit .x{color:var(--danger);font-size:20px}
+.icongrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:8px 0}
+.icongrid button{aspect-ratio:1;border-radius:14px;background:var(--soft);display:grid;place-items:center;border:2px solid transparent}
+.icongrid button svg{width:24px;height:24px}
+.icongrid button.on{border-color:var(--ink);background:var(--card)}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.swatches button{width:34px;height:34px;border-radius:50%;border:3px solid var(--bg);box-shadow:0 0 0 2px transparent}
+.swatches button.on{box-shadow:0 0 0 2px var(--ink)}
+.profile{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 4px}
+.profile .avatar{width:96px;height:96px;font-size:36px}
+.linkbtn{color:var(--accent);font-weight:600;font-size:15px}
 .chart{display:flex;align-items:flex-end;gap:10px;height:170px;padding-top:12px}
 .chart .col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative}
-.chart .stack{width:100%;max-width:38px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 2px 2px;overflow:hidden;background:var(--soft)}
+.chart .stack{width:100%;max-width:36px;display:flex;flex-direction:column-reverse;border-radius:10px 10px 4px 4px;overflow:hidden;background:var(--soft)}
 .chart .stack i{display:block}
 .chart .inc{position:absolute;left:8%;right:8%;border-top:2px dashed var(--muted)}
 .chart .lab{font-size:12px;color:var(--muted);margin-top:6px}
 .chart .col.sel .lab{color:var(--ink);font-weight:700}
 .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.progress{height:8px;border-radius:4px;background:var(--soft);overflow:hidden;margin:8px 0 4px}
-.progress i{display:block;height:100%;background:var(--accent)}
-.banner{background:var(--danger-soft);color:var(--danger);padding:10px 14px;border-radius:12px;font-size:14px;margin:8px 0}
+.bar{height:7px;border-radius:4px;background:var(--soft);margin-top:7px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px}
 .menu .btn{margin-top:8px}
 </style>
 </head>
 <body>
 <header id="hdr"></header>
 <main id="view"></main>
-
-<nav class="tabs" id="tabs">
-  <button data-tab="month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Month</button>
-  <button data-tab="recurring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.6L4 15.5M4 20v-4.5h4.5"/></svg>Recurring</button>
-  <button class="add" data-act="newExp" aria-label="Add expense"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
-  <button data-tab="trends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg>Trends</button>
-  <button data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Settings</button>
-</nav>
-
+<nav class="tabs" id="tabs"></nav>
 <div id="backdrop" data-act="close"></div>
 <div id="sheet" role="dialog" aria-modal="true"></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
+<input type="file" id="photoFile" accept="image/*" hidden>
 
 <script>
 'use strict';
-/* ---------- helpers ---------- */
+/* ================= helpers ================= */
 const $ = s => document.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
 const pad = n => String(n).padStart(2, '0');
@@ -152,77 +193,287 @@ const ym = d => d.getFullYear() + '-' + pad(d.getMonth() + 1);
 const todayISO = () => { const d = new Date(); return ym(d) + '-' + pad(d.getDate()); };
 const thisMonth = () => ym(new Date());
 const r2 = n => Math.round(n * 100) / 100;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 function addM(m, n) { let [y, mo] = m.split('-').map(Number); mo += n; y += Math.floor((mo - 1) / 12); mo = ((mo - 1) % 12 + 12) % 12 + 1; return y + '-' + pad(mo); }
 function dim(m) { const [y, mo] = m.split('-').map(Number); return new Date(y, mo, 0).getDate(); }
-function mLabel(m, style = 'long') { const [y, mo] = m.split('-').map(Number); const d = new Date(y, mo - 1, 1);
-  if (style === 'short') return d.toLocaleDateString(undefined, { month: 'short' });
-  return d.toLocaleDateString(undefined, { month: style, year: 'numeric' }); }
-function dLabel(iso) { const [y, mo, d] = iso.split('-').map(Number); return new Date(y, mo - 1, d).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }); }
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const toDate = iso => { const [y, mo, d] = iso.split('-').map(Number); return new Date(y, mo - 1, d || 1); };
+function mLabel(m, style = 'long') {
+  const d = toDate(m);
+  if (style === 'short') return d.toLocaleDateString(LOCALE, { month: 'short' });
+  if (style === 'name') return d.toLocaleDateString(LOCALE, { month: 'long' });
+  return d.toLocaleDateString(LOCALE, { month: style, year: 'numeric' });
+}
+const dLabel = iso => toDate(iso).toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' });
+const dLong = iso => toDate(iso).toLocaleDateString(LOCALE, { day: 'numeric', month: 'long', year: 'numeric' });
 function parseAmt(v) {
-  v = String(v ?? '').trim().replace(/[\s']/g, '');
+  v = String(v ?? '').trim().replace(/[\s'€$£]/g, '');
   if (!v) return NaN;
-  if (v.includes(',') && v.includes('.')) {
-    v = v.lastIndexOf(',') > v.lastIndexOf('.') ? v.replace(/\./g, '').replace(',', '.') : v.replace(/,/g, '');
-  } else v = v.replace(',', '.');
+  if (v.includes(',') && v.includes('.')) v = v.lastIndexOf(',') > v.lastIndexOf('.') ? v.replace(/\./g, '').replace(',', '.') : v.replace(/,/g, '');
+  else v = v.replace(',', '.');
   const n = parseFloat(v); return isFinite(n) ? r2(n) : NaN;
 }
-let _fmt = null, _fmtCur = null;
-function money(n, sign = false) {
-  const cur = S.settings.currency;
-  if (_fmtCur !== cur) { try { _fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency: cur }); } catch (e) { _fmt = null; } _fmtCur = cur; }
-  const v = Math.abs(n) < 0.005 ? 0 : n;
-  const s = _fmt ? _fmt.format(Math.abs(v)) : Math.abs(v).toFixed(2) + ' ' + cur;
-  if (v < 0) return '−' + s;
-  return (sign && v > 0 ? '+' : '') + s;
+const numIn = n => n ? String(n).replace('.', LANG === 'de' ? ',' : '.') : '';
+
+/* ================= language ================= */
+const I18N = {
+en: {
+  tabBudget: 'Budget', tabTx: 'Transactions', tabRec: 'Recurring', tabTrends: 'Trends', addExpense: 'Add expense',
+  hello: n => n ? `Hi, ${n}!` : 'Hi there!', balance: 'Current balance', balancePast: m => `Left in ${m}`,
+  hide: 'Hide amounts', show: 'Show amounts', income: 'Income', expense: 'Expenses',
+  carried: x => `incl. ${x} carried over`, outOf: 'Out of', thisMonthOnly: 'this month only',
+  noIncome: 'Add your monthly income in Settings (tap your picture) to see what you have left.',
+  daily: (x, n) => n > 1 ? `That's about ${x} a day for the remaining ${n} days.` : `That's ${x} for today, the last day of the month.`,
+  dueSoon: x => `${x} of recurring costs are still due this month and already counted.`,
+  category: 'Category', add: 'ADD', outOfAmt: (a, b) => `${a} out of ${b}`, leftAmt: x => `${x} left`, overAmt: x => `${x} over`,
+  spentNoBudget: x => `${x} spent`, setBudget: 'Set budget', uncategorised: 'Uncategorised',
+  transactions: 'Transactions', noTx: 'No expenses this month yet.<br>Tap + to add one.', recurringTag: 'Monthly', loanTag: 'Loan',
+  skipped: 'Skipped', upcoming: 'Upcoming', backToday: 'This month',
+  recTitle: 'Recurring', recIn: m => `Recurring costs in ${m}`,
+  recHint: 'These are counted in every month automatically. Tap one under Transactions to skip it for a single month.',
+  fixedCosts: 'Fixed costs', fixedEmpty: 'Rent, insurance, phone, subscriptions…', loans: 'Loans & credits', loansEmpty: 'Add a loan to see how much you still owe.',
+  addRec: 'Add recurring cost', starts: m => `From ${m}`, ended: m => `Ended ${m}`, until: m => `Until ${m}`, ongoing: 'Ongoing', day: n => `Day ${n}`,
+  perMonth: '/mo', loanNo: n => `No. ${n}`, owedOf: (a, b) => b ? `${a} still owed of ${b}` : `${a} still owed`, repaid: 'Fully repaid',
+  monthsLeft: n => `${n} month${n === 1 ? '' : 's'} left`, ends: x => `Ends ${x}`,
+  pctRepaid: p => `${p}% repaid`, toGo: x => `${x} to go`, loanNumber: 'Loan number', loanAmount: 'Loan amount', remaining: 'Remaining credit sum',
+  monthlyPayment: 'Monthly payment', onDay: n => `day ${n}`, paymentsLeft: 'Payments left', months: n => `${n} month${n === 1 ? '' : 's'}`,
+  startDate: 'Start date', endDate: 'End date', estimated: '(estimated)', tooLow: 'Payment too low to finish', interestRate: 'Interest rate',
+  interestLeft: 'Interest still to pay', loanWarn: x => `With these numbers about ${x} would still be owed at the end date. Check the remaining sum, payment or interest rate.`,
+  trendsTitle: 'Trends', spendingRange: (a, b) => `Spending, ${a} to ${b}`, legendExp: 'Expenses', legendRec: 'Recurring', legendInc: 'Income',
+  monthByMonth: 'Month by month', spentOf: (a, b) => `${a} spent of ${b} income`, left: 'left', nothingTracked: 'Nothing tracked in this period yet.',
+  avgByCat: 'Average per month, by category', noSpending: 'No spending in this period.',
+  settings: 'Settings', profile: 'Profile', yourName: 'Your name', namePh: 'Name', changePhoto: 'Choose photo', removePhoto: 'Remove photo',
+  general: 'General', language: 'Language', langAuto: 'Automatic (iPhone)', currency: 'Currency', money: 'Money', monthlyIncome: 'Monthly income',
+  rollover: 'Carry leftover to next month', rolloverHint: 'When this is on, whatever is left at the end of a month (or overspent) moves into the next month. Category budgets always start fresh.',
+  trackingStart: 'Tracking starts', opening: 'Starting balance', openingHint: 'Money you already have when you start, counted as carried over into the first month.',
+  backup: 'Backup', lastBackup: x => `Last backup: ${x}`, never: 'never', backupHint: 'Your data lives only on this phone. Save a backup to Files or iCloud Drive now and then.',
+  saveBackup: 'Save backup', restore: 'Restore from backup', exportCsv: 'Export spreadsheet (CSV)', erase: 'Erase all data', footer: 'Balancy · works offline · no account needed',
+  storageBlocked: 'Your browser is blocking storage, so changes will not be saved. Private Browsing can cause this.',
+  cancel: 'Cancel', save: 'Save', close: 'Close', edit: 'Edit', done: 'Done',
+  newExpense: 'New expense', editExpense: 'Edit expense', note: 'Note', optional: 'Optional', date: 'Date', deleteExpense: 'Delete expense',
+  errAmount: 'Enter an amount.', errDate: 'Pick a date.', amountPh: '0.00',
+  onDayEach: (x, d) => `${x} on day ${d} of each month`, unskip: m => `Count it again in ${m}`, skip: m => `Skip it in ${m}`,
+  editLoan: 'Edit loan', editRec: 'Edit recurring cost', newTitle: 'New', editTitle: 'Edit', fixedCost: 'Fixed cost', loanCredit: 'Loan / credit',
+  name: 'Name', recNamePh: 'e.g. Rent, Car loan', amountPerMonth: 'Amount per month', dayOfMonth: 'Day of month', firstMonth: 'First month', lastMonth: 'Last month',
+  appliesFrom: 'New amount applies from', lastMonthHint: 'Leave "Last month" empty if it keeps going.', loanDetails: 'Loan details', originalAmount: 'Original amount',
+  remainingAsOf: 'Remaining sum as of', ratePa: 'Interest rate (% per year)',
+  loanHint: 'Enter the remaining credit sum from your bank for the month you choose, before that month\'s payment. Months left and progress are worked out from it. With the interest rate, each payment is split into interest and repayment so the balance stays accurate. With an end date, payments are counted until that date.',
+  amountChangeHint: 'If the monthly amount changes, earlier months keep the old amount.', categoryLbl: 'Category', deleteLoan: 'Delete loan', deleteRec: 'Delete recurring cost',
+  errName: 'Give it a name.', errMonthly: 'Enter the monthly amount.', errFirst: 'Pick the first month.', errLastBefore: 'The last month is before the first month.',
+  errRemaining: 'Enter the remaining credit sum.', errRemMonth: 'Pick the month the remaining sum is from.', errRemHigh: 'The remaining sum is much higher than the loan amount. Please check both.',
+  errEndStart: 'The end date is before the start date.', errEndRem: 'The end date is before the month of the remaining sum.', errRate: 'The interest rate looks off. Enter it as a yearly percentage, like 4.9.',
+  incomeFor: m => `Income in ${m}`, incomeHint: x => `Use this for a month that's different, like a bonus or a smaller paycheck. Your usual income is ${x}, which you can change in Settings.`,
+  useUsual: 'Use my usual income',
+  newCategory: 'New category', editCategory: 'Category', monthlyBudget: 'Monthly budget', budgetPh: 'No budget', icon: 'Icon', color: 'Colour',
+  budgetHint: 'The budget starts fresh every month. Leave it empty for no budget.', deleteCategory: 'Delete category', thisMonthIn: m => `In ${m}`,
+  errCatName: 'Give the category a name.', noTxCat: 'Nothing in this category this month.',
+  cDelExpense: 'Delete this expense?', cDelRec: 'Delete this? It will disappear from every month, including past ones.', cOneCat: 'You need at least one category.',
+  cDelCatUsed: n => `Delete "${n}"? Its expenses will move to another category.`, cDelCat: n => `Delete "${n}"?`,
+  cReset: 'Erase everything? This cannot be undone. Save a backup first if you might want it.',
+  cRestore: (a, b) => `Restore this backup? It has ${a} expenses and ${b} recurring costs, and will replace what's on this phone now.`,
+  notBackup: "That file doesn't look like a Balancy backup.", photoFail: "That photo couldn't be loaded. Try another one.",
+  csvHead: ['Date', 'Category', 'Description', 'Amount', 'Type'], csvExp: 'Expense', csvRec: 'Recurring', csvLoan: 'Loan', prevMonth: 'Previous month', nextMonth: 'Next month', monthPick: 'Choose month'
+},
+de: {
+  tabBudget: 'Budget', tabTx: 'Buchungen', tabRec: 'Fixkosten', tabTrends: 'Verlauf', addExpense: 'Ausgabe hinzufügen',
+  hello: n => n ? `Hallo, ${n}!` : 'Hallo!', balance: 'Aktueller Stand', balancePast: m => `Übrig im ${m}`,
+  hide: 'Beträge ausblenden', show: 'Beträge anzeigen', income: 'Einnahmen', expense: 'Ausgaben',
+  carried: x => `inkl. ${x} Übertrag`, outOf: 'Von', thisMonthOnly: 'nur dieser Monat',
+  noIncome: 'Trag dein monatliches Einkommen in den Einstellungen ein (tippe auf dein Bild), um zu sehen, was übrig bleibt.',
+  daily: (x, n) => n > 1 ? `Das sind etwa ${x} pro Tag für die restlichen ${n} Tage.` : `Das sind ${x} für heute, den letzten Tag im Monat.`,
+  dueSoon: x => `${x} an Fixkosten sind diesen Monat noch fällig und schon eingerechnet.`,
+  category: 'Kategorien', add: 'NEU', outOfAmt: (a, b) => `${a} von ${b}`, leftAmt: x => `${x} übrig`, overAmt: x => `${x} drüber`,
+  spentNoBudget: x => `${x} ausgegeben`, setBudget: 'Budget setzen', uncategorised: 'Ohne Kategorie',
+  transactions: 'Buchungen', noTx: 'Diesen Monat noch keine Ausgaben.<br>Tippe auf +, um eine hinzuzufügen.', recurringTag: 'Monatlich', loanTag: 'Kredit',
+  skipped: 'Ausgesetzt', upcoming: 'Anstehend', backToday: 'Dieser Monat',
+  recTitle: 'Fixkosten', recIn: m => `Fixkosten im ${m}`,
+  recHint: 'Diese Beträge werden jeden Monat automatisch eingerechnet. Tippe unter Buchungen darauf, um einen Monat auszusetzen.',
+  fixedCosts: 'Laufende Kosten', fixedEmpty: 'Miete, Versicherung, Handy, Abos …', loans: 'Kredite & Darlehen', loansEmpty: 'Füge einen Kredit hinzu, um zu sehen, wie viel du noch schuldest.',
+  addRec: 'Fixkosten hinzufügen', starts: m => `Ab ${m}`, ended: m => `Beendet ${m}`, until: m => `Bis ${m}`, ongoing: 'Unbefristet', day: n => `Am ${n}.`,
+  perMonth: '/Monat', loanNo: n => `Nr. ${n}`, owedOf: (a, b) => b ? `${a} offen von ${b}` : `${a} noch offen`, repaid: 'Vollständig getilgt',
+  monthsLeft: n => `noch ${n} ${n === 1 ? 'Monat' : 'Monate'}`, ends: x => `Endet am ${x}`,
+  pctRepaid: p => `${p} % getilgt`, toGo: x => `noch ${x}`, loanNumber: 'Kreditnummer', loanAmount: 'Kreditbetrag', remaining: 'Restschuld',
+  monthlyPayment: 'Monatliche Rate', onDay: n => `am ${n}.`, paymentsLeft: 'Verbleibende Raten', months: n => `${n} ${n === 1 ? 'Monat' : 'Monate'}`,
+  startDate: 'Beginn', endDate: 'Ende', estimated: '(geschätzt)', tooLow: 'Rate reicht nicht zur Tilgung', interestRate: 'Zinssatz',
+  interestLeft: 'Noch zu zahlende Zinsen', loanWarn: x => `Mit diesen Angaben wären am Enddatum noch etwa ${x} offen. Prüf bitte Restschuld, Rate oder Zinssatz.`,
+  trendsTitle: 'Verlauf', spendingRange: (a, b) => `Ausgaben, ${a} bis ${b}`, legendExp: 'Ausgaben', legendRec: 'Fixkosten', legendInc: 'Einnahmen',
+  monthByMonth: 'Monat für Monat', spentOf: (a, b) => `${a} ausgegeben von ${b} Einnahmen`, left: 'übrig', nothingTracked: 'In diesem Zeitraum noch nichts erfasst.',
+  avgByCat: 'Durchschnitt pro Monat nach Kategorie', noSpending: 'Keine Ausgaben in diesem Zeitraum.',
+  settings: 'Einstellungen', profile: 'Profil', yourName: 'Dein Name', namePh: 'Name', changePhoto: 'Foto auswählen', removePhoto: 'Foto entfernen',
+  general: 'Allgemein', language: 'Sprache', langAuto: 'Automatisch (iPhone)', currency: 'Währung', money: 'Geld', monthlyIncome: 'Monatliches Einkommen',
+  rollover: 'Rest in den nächsten Monat übertragen', rolloverHint: 'Wenn das an ist, wird das, was am Monatsende übrig ist (oder überzogen wurde), in den nächsten Monat übernommen. Kategorie-Budgets starten jeden Monat neu.',
+  trackingStart: 'Erfassung ab', opening: 'Startguthaben', openingHint: 'Geld, das du zu Beginn schon hast. Es zählt als Übertrag in den ersten Monat.',
+  backup: 'Sicherung', lastBackup: x => `Letzte Sicherung: ${x}`, never: 'noch nie', backupHint: 'Deine Daten liegen nur auf diesem iPhone. Speichere ab und zu eine Sicherung in Dateien oder iCloud Drive.',
+  saveBackup: 'Sicherung speichern', restore: 'Sicherung wiederherstellen', exportCsv: 'Tabelle exportieren (CSV)', erase: 'Alle Daten löschen', footer: 'Balancy · funktioniert offline · kein Konto nötig',
+  storageBlocked: 'Dein Browser blockiert den Speicher, Änderungen werden nicht gesichert. Das kann am privaten Surfen liegen.',
+  cancel: 'Abbrechen', save: 'Sichern', close: 'Schließen', edit: 'Bearbeiten', done: 'Fertig',
+  newExpense: 'Neue Ausgabe', editExpense: 'Ausgabe bearbeiten', note: 'Notiz', optional: 'Optional', date: 'Datum', deleteExpense: 'Ausgabe löschen',
+  errAmount: 'Gib einen Betrag ein.', errDate: 'Wähle ein Datum.', amountPh: '0,00',
+  onDayEach: (x, d) => `${x} am ${d}. jedes Monats`, unskip: m => `Im ${m} wieder einrechnen`, skip: m => `Im ${m} aussetzen`,
+  editLoan: 'Kredit bearbeiten', editRec: 'Fixkosten bearbeiten', newTitle: 'Neu', editTitle: 'Bearbeiten', fixedCost: 'Laufende Kosten', loanCredit: 'Kredit',
+  name: 'Name', recNamePh: 'z. B. Miete, Autokredit', amountPerMonth: 'Betrag pro Monat', dayOfMonth: 'Tag im Monat', firstMonth: 'Erster Monat', lastMonth: 'Letzter Monat',
+  appliesFrom: 'Neuer Betrag gilt ab', lastMonthHint: 'Lass „Letzter Monat“ leer, wenn es unbefristet ist.', loanDetails: 'Kreditdetails', originalAmount: 'Ursprünglicher Betrag',
+  remainingAsOf: 'Restschuld zum', ratePa: 'Zinssatz (% p. a.)',
+  loanHint: 'Trag die Restschuld laut Bank für den gewählten Monat ein, vor der Rate dieses Monats. Daraus werden verbleibende Monate und Fortschritt berechnet. Mit Zinssatz wird jede Rate in Zinsen und Tilgung aufgeteilt, damit die Restschuld stimmt. Mit Enddatum werden Raten bis zu diesem Datum gezählt.',
+  amountChangeHint: 'Ändert sich der Betrag, behalten frühere Monate den alten Betrag.', categoryLbl: 'Kategorie', deleteLoan: 'Kredit löschen', deleteRec: 'Fixkosten löschen',
+  errName: 'Gib einen Namen ein.', errMonthly: 'Gib den monatlichen Betrag ein.', errFirst: 'Wähle den ersten Monat.', errLastBefore: 'Der letzte Monat liegt vor dem ersten.',
+  errRemaining: 'Gib die Restschuld ein.', errRemMonth: 'Wähle den Monat der Restschuld.', errRemHigh: 'Die Restschuld ist deutlich höher als der Kreditbetrag. Prüf bitte beide Werte.',
+  errEndStart: 'Das Enddatum liegt vor dem Beginn.', errEndRem: 'Das Enddatum liegt vor dem Monat der Restschuld.', errRate: 'Der Zinssatz sieht falsch aus. Gib ihn als Jahreszins in Prozent ein, z. B. 4,9.',
+  incomeFor: m => `Einnahmen im ${m}`, incomeHint: x => `Für Monate, die anders sind, z. B. mit Bonus oder weniger Gehalt. Dein übliches Einkommen ist ${x}; das kannst du in den Einstellungen ändern.`,
+  useUsual: 'Übliches Einkommen verwenden',
+  newCategory: 'Neue Kategorie', editCategory: 'Kategorie', monthlyBudget: 'Monatsbudget', budgetPh: 'Kein Budget', icon: 'Symbol', color: 'Farbe',
+  budgetHint: 'Das Budget startet jeden Monat neu. Leer lassen für kein Budget.', deleteCategory: 'Kategorie löschen', thisMonthIn: m => `Im ${m}`,
+  errCatName: 'Gib der Kategorie einen Namen.', noTxCat: 'Diesen Monat nichts in dieser Kategorie.',
+  cDelExpense: 'Diese Ausgabe löschen?', cDelRec: 'Wirklich löschen? Der Eintrag verschwindet aus allen Monaten, auch aus vergangenen.', cOneCat: 'Du brauchst mindestens eine Kategorie.',
+  cDelCatUsed: n => `„${n}“ löschen? Die Ausgaben werden in eine andere Kategorie verschoben.`, cDelCat: n => `„${n}“ löschen?`,
+  cReset: 'Alles löschen? Das lässt sich nicht rückgängig machen. Speichere vorher eine Sicherung, falls du sie noch brauchst.',
+  cRestore: (a, b) => `Diese Sicherung wiederherstellen? Sie enthält ${a} Ausgaben und ${b} Fixkosten und ersetzt alles, was jetzt auf diesem iPhone ist.`,
+  notBackup: 'Diese Datei ist keine Balancy-Sicherung.', photoFail: 'Das Foto konnte nicht geladen werden. Probier ein anderes.',
+  csvHead: ['Datum', 'Kategorie', 'Beschreibung', 'Betrag', 'Art'], csvExp: 'Ausgabe', csvRec: 'Fixkosten', csvLoan: 'Kredit', prevMonth: 'Vorheriger Monat', nextMonth: 'Nächster Monat', monthPick: 'Monat wählen'
+}};
+let LANG = 'en', LOCALE = 'en-US', _fmt = null, _fmtKey = null;
+function t(key, ...a) { const v = (I18N[LANG] && I18N[LANG][key]) ?? I18N.en[key]; return typeof v === 'function' ? v(...a) : (v ?? key); }
+function applyLang() {
+  const pref = (S && S.settings.lang) || 'auto', nav = (navigator.language || 'en-US');
+  LANG = pref === 'auto' ? (nav.toLowerCase().startsWith('de') ? 'de' : 'en') : pref;
+  LOCALE = nav.toLowerCase().startsWith(LANG) ? nav : (LANG === 'de' ? 'de-DE' : 'en-US');
+  document.documentElement.lang = LANG; _fmtKey = null;
 }
 
-/* ---------- storage ---------- */
+/* ================= icons ================= */
+const IC = {
+  cart: '<path d="M3 4h2l2.3 10.6a1.6 1.6 0 0 0 1.6 1.3h8.4a1.6 1.6 0 0 0 1.5-1.2L21 8H6.1"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/>',
+  food: '<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 21V3c-2.2 1.2-3.5 3.6-3.5 7v3H17"/>',
+  car: '<path d="M5 16.5v2M19 16.5v2M3.5 12.5l1.8-5A2 2 0 0 1 7.2 6h9.6a2 2 0 0 1 1.9 1.5l1.8 5M3.5 12.5h17v4h-17zM7 14.5h.01M17 14.5h.01"/>',
+  bag: '<path d="M5.5 8h13l-1 12.5h-11zM9 8V6.5a3 3 0 0 1 6 0V8"/>',
+  star: '<path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+  heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  home: '<path d="M4 11l8-6.5 8 6.5M6 9.5V20h12V9.5M10 20v-5h4v5"/>',
+  bank: '<path d="M3.5 9.5L12 4.5l8.5 5M5.5 10.5v7M10 10.5v7M14 10.5v7M18.5 10.5v7M3.5 20h17"/>',
+  repeat: '<path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.6L4 15.5M4 20v-4.5h4.5"/>',
+  dots: '<path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3.2"/>',
+  coffee: '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5V6M12 3.5V6"/>',
+  gift: '<path d="M4 9h16v4H4zM5.5 13v7.5h13V13M12 9v11.5M12 9c-1.5-3.5-5-4-5-1.5S10 9 12 9zm0 0c1.5-3.5 5-4 5-1.5S14 9 12 9z"/>',
+  plane: '<path d="M21 3.5L3 11l7 2.5 2.5 7zM10 13.5l11-10"/>',
+  book: '<path d="M5 19.5V5.5A2 2 0 0 1 7 3.5h12v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/>',
+  phone: '<path d="M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3zM11 18h2"/>',
+  bolt: '<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',
+  shirt: '<path d="M8.5 4L4 6.5l1.5 4 2-.8V20h9V9.7l2 .8 1.5-4L15.5 4a3.5 3.5 0 0 1-7 0z"/>',
+  piggy: '<path d="M4.5 11.5a7 6 0 0 1 12.8-3.4H20v3.6l-1.6 1.1V16l-2 .6V19h-2.6v-2H9.6v2H7v-2.8a6 6 0 0 1-2.5-4.7zM15 10.5h.01"/>',
+  cash: '<path d="M3 7h18v10H3zM6.5 10v4M17.5 10v4"/><circle cx="12" cy="12" r="2.5"/>',
+  gym: '<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>',
+  paw: '<circle cx="7" cy="10" r="1.6"/><circle cx="10.5" cy="6.5" r="1.6"/><circle cx="14.5" cy="6.5" r="1.6"/><circle cx="18" cy="10" r="1.6"/><path d="M8.5 17.5c0-2.5 1.8-5 3.5-5s3.5 2.5 3.5 5c0 1.6-1.5 2-3.5 1.4-2 .6-3.5.2-3.5-1.4z"/>',
+  kid: '<circle cx="12" cy="7" r="3"/><path d="M6 21v-3a6 6 0 0 1 12 0v3"/>',
+  tv: '<path d="M3.5 6.5h17v11h-17zM8.5 21h7M12 17.5V21"/>',
+  tools: '<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5zM14.5 6.5L17 4"/>'
+};
+const ICON_KEYS = Object.keys(IC);
+const svg = (k, sw = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${IC[k] || IC.dots}</svg>`;
+const UI_IC = {
+  wallet: '<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5zM15.5 12h2"/><path d="M4 9h16"/>',
+  receipt: '<path d="M6 3.5h12v17l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3-2 1.3zM9 8h6M9 11.5h6M9 15h3.5"/>',
+  chart: '<path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  down: '<path d="M12 6v12M6.5 12.5L12 18l5.5-5.5"/>',
+  up: '<path d="M12 18V6M6.5 11.5L12 6l5.5 5.5"/>',
+  caret: '<path d="M6 9l6 6 6-6" fill="currentColor" stroke="currentColor"/>',
+  eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+  eyeoff: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM4 4l16 16"/>',
+  person: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/>'
+};
+const uisvg = (k, sw = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${UI_IC[k]}</svg>`;
+const PALETTE = ['#3f8f5a', '#e07a3a', '#4a7bd0', '#9b5fc0', '#d9486a', '#2aa39c', '#9c7a45', '#66717c', '#c9a227', '#8f887d', '#5b6be0', '#c0563f'];
+const tint = c => `background:color-mix(in srgb, ${c} 15%, var(--card));color:${c}`;
+
+/* ================= storage ================= */
 const KEY = 'balancy.v1', OLD_KEY = 'ledger.v1';
-const DEFAULT_CATS = [['Groceries', '#2f6f4e'], ['Dining out', '#c2632a'], ['Transport', '#3b6ea8'], ['Shopping', '#8a4fa3'],
-  ['Fun', '#c23b5a'], ['Health', '#2a9a96'], ['Housing', '#7a6440'], ['Loans', '#5f6b73'], ['Subscriptions', '#b08a1e'], ['Other', '#8f887d']];
+const DEFAULT_CATS = [
+  { key: 'groceries', en: 'Groceries', de: 'Lebensmittel', color: '#3f8f5a', icon: 'cart' },
+  { key: 'dining', en: 'Dining out', de: 'Essen gehen', color: '#e07a3a', icon: 'food' },
+  { key: 'transport', en: 'Transport', de: 'Mobilität', color: '#4a7bd0', icon: 'car' },
+  { key: 'shopping', en: 'Shopping', de: 'Einkaufen', color: '#9b5fc0', icon: 'bag' },
+  { key: 'fun', en: 'Fun', de: 'Freizeit', color: '#d9486a', icon: 'star' },
+  { key: 'health', en: 'Health', de: 'Gesundheit', color: '#2aa39c', icon: 'heart' },
+  { key: 'housing', en: 'Housing', de: 'Wohnen', color: '#9c7a45', icon: 'home' },
+  { key: 'loans', en: 'Loans', de: 'Kredite', color: '#66717c', icon: 'bank' },
+  { key: 'subs', en: 'Subscriptions', de: 'Abos', color: '#c9a227', icon: 'repeat' },
+  { key: 'other', en: 'Other', de: 'Sonstiges', color: '#8f887d', icon: 'dots' }];
 function fresh() {
   return { version: 1,
-    settings: { currency: 'EUR', income: 0, opening: 0, rollover: true, startMonth: thisMonth(), lastBackup: null },
+    profile: { name: '', photo: null },
+    settings: { currency: 'EUR', income: 0, opening: 0, rollover: true, startMonth: thisMonth(), lastBackup: null, lang: 'auto', hide: false },
     incomeOverrides: {},
-    categories: DEFAULT_CATS.map(([name, color]) => ({ id: uid(), name, color, budget: 0 })),
+    categories: DEFAULT_CATS.map(c => ({ id: uid(), key: c.key, name: c[LANG] || c.en, color: c.color, icon: c.icon, budget: 0 })),
     expenses: [], recurring: [] };
-}
-let storageOK = true;
-function load() {
-  try {
-    const s = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY));
-    if (s && s.version === 1) return migrate(s);
-  } catch (e) { storageOK = false; }
-  return fresh();
 }
 function migrate(d) {
   d.incomeOverrides = d.incomeOverrides || {};
+  d.profile = d.profile || { name: '', photo: null };
+  d.settings.lang = d.settings.lang || 'auto';
   for (const r of d.recurring) { r.skips = r.skips || []; if (r.kind === 'loan' && !r.balanceFrom) r.balanceFrom = r.start; }
+  for (const c of d.categories) {
+    const def = DEFAULT_CATS.find(x => x.key === c.key || x.en === c.name || x.de === c.name);
+    if (def && !c.key && (def.en === c.name || def.de === c.name)) c.key = def.key;
+    if (!c.icon) c.icon = def ? def.icon : 'dots';
+  }
   return d;
 }
-function save() {
-  clearCaches();
-  try { localStorage.setItem(KEY, JSON.stringify(S)); storageOK = true; } catch (e) { storageOK = false; }
+let storageOK = true;
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY)); if (s && s.version === 1) return migrate(s); }
+  catch (e) { storageOK = false; }
+  return null;
 }
-let S = load();
-const UI = { tab: 'month', month: thisMonth() };
+function save() { clearCaches(); try { localStorage.setItem(KEY, JSON.stringify(S)); storageOK = true; } catch (e) { storageOK = false; } }
+let S = null;
+S = load(); applyLang(); if (!S) S = fresh();
+const UI = { tab: 'budget', month: thisMonth(), back: 'budget' };
 
-/* ---------- money logic ---------- */
+/* ================= money formatting ================= */
+function fmt() {
+  const k = S.settings.currency + LOCALE;
+  if (_fmtKey !== k) { try { _fmt = new Intl.NumberFormat(LOCALE, { style: 'currency', currency: S.settings.currency }); } catch (e) { _fmt = null; } _fmtKey = k; }
+  return _fmt;
+}
+function money(n, sign = false) {
+  if (S.settings.hide) return '•••';
+  const v = Math.abs(n) < 0.005 ? 0 : n, f = fmt();
+  const s = f ? f.format(Math.abs(v)) : Math.abs(v).toFixed(2) + ' ' + S.settings.currency;
+  if (v < 0) return '−' + s;
+  return (sign && v > 0 ? '+' : '') + s;
+}
+function moneyRound(n) { // whole units, for cards
+  if (S.settings.hide) return '•••';
+  try { return (n < -0.004 ? '−' : '') + new Intl.NumberFormat(LOCALE, { style: 'currency', currency: S.settings.currency, maximumFractionDigits: 0 }).format(Math.abs(n)); }
+  catch (e) { return money(n); }
+}
+function moneyBig(n) { // cents in smaller type
+  if (S.settings.hide) return '•••••';
+  const f = fmt(); if (!f) return esc(money(n));
+  let out = n < -0.004 ? '−' : '', small = false;
+  for (const p of f.formatToParts(Math.abs(n))) {
+    if (p.type === 'decimal') { out += '<small>' + esc(p.value); small = true; continue; }
+    if (p.type === 'fraction') { out += esc(p.value) + '</small>'; small = false; continue; }
+    out += esc(p.value);
+  }
+  return out;
+}
+function curSymbol(c) {
+  try { return new Intl.NumberFormat(LOCALE, { style: 'currency', currency: c, currencyDisplay: 'narrowSymbol' }).formatToParts(0).find(p => p.type === 'currency').value; } catch (e) { return c; }
+}
+
+/* ================= money logic ================= */
 let loanCache = {}, carryCache = {}, entryCache = {};
 function clearCaches() { loanCache = {}; carryCache = {}; entryCache = {}; }
-const catById = id => S.categories.find(c => c.id === id) || { id: '', name: 'Uncategorised', color: '#8f887d', budget: 0 };
-
+const catById = id => S.categories.find(c => c.id === id) || { id: '', name: t('uncategorised'), color: '#8f887d', icon: 'dots', budget: 0 };
+const catByKey = k => S.categories.find(c => c.key === k);
 function amountAt(r, m) { let a = r.amounts[0].amount; for (const x of r.amounts) if (x.from <= m) a = x.amount; return a; }
 const monthOf = d => d ? d.slice(0, 7) : null;
-// Loan schedule. Payments are counted from r.start. The remaining balance is known from r.balanceFrom
-// (the month the "remaining credit sum" was entered for, before that month's payment).
-// With an interest rate, each payment first covers that month's interest, the rest reduces the balance.
-// With a contract end date, payments run until that month; otherwise until the balance reaches zero.
+// Loans: payments are counted from r.start. The balance is known from r.balanceFrom (before that month's payment).
+// With an interest rate each payment covers that month's interest first. With an end date payments run until then.
 function loanSched(r) {
   if (loanCache[r.id]) return loanCache[r.id];
   const s = {}, endM = monthOf(r.loanEnd), from = r.balanceFrom || r.start, rate = (r.rate || 0) / 1200;
-  let rem = r2(r.balance || 0), m = r.start, end = null, interestTotal = 0;
+  let rem = r2(r.balance || 0), m = r.start, end = null;
   for (let i = 0; i < 720; i++) {
     if (endM && m > endM) break;
     if (!endM && m >= from && rem <= 0.004) break;
@@ -232,57 +483,26 @@ function loanSched(r) {
     else {
       const interest = r2(rem * rate);
       if (!skipped) pay = endM ? amountAt(r, m) : Math.min(amountAt(r, m), r2(rem + interest));
-      rem = Math.max(0, r2(rem + interest - pay)); interestTotal += interest;
+      rem = Math.max(0, r2(rem + interest - pay));
       s[m] = { pay, rem, interest };
     }
     end = m; m = addM(m, 1);
     if (!endM && amountAt(r, m) <= 0) break;
   }
-  if (!endM && rem > 0.004) end = null; // payment too low to ever finish
-  return (loanCache[r.id] = { s, end, last: rem, interestTotal: r2(interestTotal) });
+  if (!endM && rem > 0.004) end = null;
+  return (loanCache[r.id] = { s, end, last: rem });
 }
-function loanRemaining(r, m) { // balance left after month m's payment
+function loanRemaining(r, m) {
   const from = r.balanceFrom || r.start;
   if (m < from) return r2(r.balance || 0);
   const L = loanSched(r); if (L.s[m]) return L.s[m].rem ?? r2(r.balance || 0);
   return L.last;
 }
 const paidThisMonth = r => new Date().getDate() >= (r.day || 1);
+const nextPayMonth = r => paidThisMonth(r) ? addM(thisMonth(), 1) : thisMonth();
 function loanOwedNow(r) { const m = thisMonth(); return loanRemaining(r, paidThisMonth(r) ? m : addM(m, -1)); }
-function loanMonthsLeft(r) {
-  const L = loanSched(r), next = paidThisMonth(r) ? addM(thisMonth(), 1) : thisMonth();
-  return Object.keys(L.s).filter(k => k >= next && L.s[k].pay > 0).length;
-}
-function loanEndLabel(r) {
-  if (r.loanEnd) return dLong(r.loanEnd);
-  const L = loanSched(r); return L.end ? mLabel(L.end) : null;
-}
-function dLong(iso) { const [y, mo, d] = iso.split('-').map(Number); return new Date(y, mo - 1, d).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }); }
-function loanDetailsHTML(r) {
-  const owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r), L = loanSched(r);
-  const base = r.principal > 0 ? r.principal : r.balance;
-  const pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
-  const row = (k, v) => v === null || v === undefined || v === '' ? '' : `<div class="row"><span class="k">${k}</span><span class="num" style="text-align:right">${v}</span></div>`;
-  // compare the contract end date with what the payments add up to
-  let warn = '';
-  if (r.loanEnd) {
-    const endM = monthOf(r.loanEnd), lastRem = loanRemaining(r, endM);
-    if (lastRem > Math.max(1, amountAt(r, endM))) warn = `With these numbers about ${money(lastRem)} would still be owed at the end date. Check the remaining sum, payment or interest rate.`;
-  }
-  return `<div class="progress" style="margin-top:4px"><i style="width:${pct}%"></i></div>
-    <div class="sub" style="display:flex;justify-content:space-between"><span>${Math.round(pct)}% repaid</span><span>${owed > 0 ? money(owed) + ' to go' : 'Fully repaid'}</span></div>
-    <div class="rows">
-      ${row('Loan number', r.loanNumber ? esc(r.loanNumber) : null)}
-      ${row('Loan amount', r.principal > 0 ? money(r.principal) : null)}
-      ${row('Remaining credit sum', money(owed))}
-      ${row('Monthly payment', money(amountAt(r, thisMonth() < r.start ? r.start : thisMonth())) + ` · day ${r.day}`)}
-      ${row('Payments left', owed > 0 || left ? `${left} month${left === 1 ? '' : 's'}` : '0')}
-      ${row('Start date', r.loanStart ? dLong(r.loanStart) : null)}
-      ${row('End date', endTxt ? esc(endTxt) + (r.loanEnd ? '' : ' (estimated)') : 'Payment too low to finish')}
-      ${row('Interest rate', r.rate ? r.rate.toLocaleString() + ' %' : null)}
-      ${row('Interest still to pay', r.rate ? money(Object.keys(L.s).filter(k => k >= (paidThisMonth(r) ? addM(thisMonth(), 1) : thisMonth())).reduce((a, k) => a + (L.s[k].interest || 0), 0)) : null)}
-    </div>${warn ? `<div class="banner" style="margin-top:10px">${warn}</div>` : ''}`;
-}
+function loanMonthsLeft(r) { const L = loanSched(r), n = nextPayMonth(r); return Object.keys(L.s).filter(k => k >= n && L.s[k].pay > 0).length; }
+function loanEndLabel(r) { if (r.loanEnd) return dLong(r.loanEnd); const L = loanSched(r); return L.end ? mLabel(L.end) : null; }
 function recActive(r, m) {
   if (m < r.start) return false;
   if (r.kind === 'loan') return !!loanSched(r).s[m];
@@ -300,15 +520,14 @@ function monthEntries(m) {
   const days = dim(m);
   for (const r of S.recurring) {
     if (!recActive(r, m)) continue;
-    const skipped = (r.skips || []).includes(m);
-    out.push({ type: 'rec', id: r.id, kind: r.kind, note: r.name, amount: recAmount(r, m), skipped,
+    out.push({ type: 'rec', id: r.id, kind: r.kind, note: r.name, amount: recAmount(r, m), skipped: (r.skips || []).includes(m),
       categoryId: r.categoryId, date: m + '-' + pad(Math.min(r.day || 1, days)) });
   }
   out.sort((a, b) => b.date.localeCompare(a.date) || (a.type === 'rec') - (b.type === 'rec'));
   return (entryCache[m] = out);
 }
-function incomeFor(m) { if (m in S.incomeOverrides) return S.incomeOverrides[m]; return m < firstMonth() ? 0 : (S.settings.income || 0); }
 function firstMonth() { let f = S.settings.startMonth || thisMonth(); for (const e of S.expenses) { const m = e.date.slice(0, 7); if (m < f) f = m; } return f; }
+function incomeFor(m) { if (m in S.incomeOverrides) return S.incomeOverrides[m]; return m < firstMonth() ? 0 : (S.settings.income || 0); }
 function baseTotals(m) {
   let rec = 0, exp = 0;
   for (const e of monthEntries(m)) e.type === 'rec' ? rec += e.amount : exp += e.amount;
@@ -318,94 +537,128 @@ function carryInto(m) {
   if (m in carryCache) return carryCache[m];
   const f = firstMonth(); let c = 0;
   if (m === f) c = S.settings.opening || 0;
-  else if (m > f && S.settings.rollover) { const p = addM(m, -1), t = baseTotals(p); c = r2(t.income + carryInto(p) - t.spent); }
+  else if (m > f && S.settings.rollover) { const p = addM(m, -1), b = baseTotals(p); c = r2(b.income + carryInto(p) - b.spent); }
   return (carryCache[m] = c);
 }
 function totals(m) {
-  // warm the carry cache from the start so recursion stays shallow
   const f = firstMonth(); for (let x = f; x < m; x = addM(x, 1)) carryInto(x);
-  const t = baseTotals(m), carry = carryInto(m);
-  return { ...t, carry, left: r2(t.income + carry - t.spent) };
+  const b = baseTotals(m), carry = carryInto(m);
+  return { ...b, carry, left: r2(b.income + carry - b.spent) };
 }
-function catSpend(m) {
-  const map = {};
-  for (const e of monthEntries(m)) map[e.categoryId] = r2((map[e.categoryId] || 0) + e.amount);
-  return map;
+function catSpend(m) { const map = {}; for (const e of monthEntries(m)) map[e.categoryId] = r2((map[e.categoryId] || 0) + e.amount); return map; }
+
+/* ================= rendering ================= */
+function avatarHTML(cls = '') {
+  const p = S.profile;
+  if (p.photo) return `<span class="avatar ${cls}"><img src="${p.photo}" alt=""></span>`;
+  const ini = (p.name || '').trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  return `<span class="avatar ${cls}">${ini ? esc(ini) : uisvg('person', 2)}</span>`;
+}
+function monthPill() {
+  const m = UI.month, cur = m === thisMonth(), sameYear = m.slice(0, 4) === thisMonth().slice(0, 4);
+  const label = sameYear ? mLabel(m, 'short').replace('.', '') : mLabel(m, 'short').replace('.', '') + ' ' + m.slice(2, 4);
+  return `<label class="mpill ${cur ? '' : 'past'}" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}
+    <input type="month" id="monthInput" value="${m}"></label>`;
+}
+function header(title, withMonth = true) {
+  if (UI.tab === 'settings') return `<div class="top"><button class="backbtn" data-act="back" aria-label="${t('close')}">‹</button><div class="hello">${esc(title)}</div></div>`;
+  return `<div class="top"><button data-act="openSettings" aria-label="${t('settings')}">${avatarHTML()}</button>
+    <div class="hello">${esc(title)}</div>${withMonth ? monthPill() : ''}</div>`;
+}
+function renderNav() {
+  const tab = (k, icon, label) => `<button data-tab="${k}" class="${UI.tab === k ? 'on' : ''}"><span class="ico">${uisvg(icon)}</span>${esc(label)}</button>`;
+  $('#tabs').innerHTML = tab('budget', 'wallet', t('tabBudget')) + tab('tx', 'receipt', t('tabTx')) +
+    `<button class="add" data-act="newExp" aria-label="${t('addExpense')}">${uisvg('plus', 2.6)}</button>` +
+    `<button data-tab="recurring" class="${UI.tab === 'recurring' ? 'on' : ''}"><span class="ico">${svg('repeat')}</span>${esc(t('tabRec'))}</button>` +
+    tab('trends', 'chart', t('tabTrends'));
+}
+function render() {
+  clearCaches(); renderNav();
+  const v = { budget: viewBudget, tx: viewTx, recurring: viewRecurring, trends: viewTrends, settings: viewSettings }[UI.tab]();
+  $('#hdr').innerHTML = v.header;
+  $('#view').innerHTML = (storageOK ? '' : `<div class="banner">${t('storageBlocked')}</div>`) + v.body;
+  const mi = $('#monthInput'); if (mi) mi.addEventListener('change', () => { if (/^\d{4}-\d\d$/.test(mi.value)) { UI.month = mi.value; render(); } });
 }
 
-/* ---------- rendering ---------- */
-const ICON_CHEVRONS = { prev: '‹', next: '›' };
-function render() {
-  clearCaches();
-  document.querySelectorAll('#tabs [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === UI.tab));
-  const v = { month: viewMonth, recurring: viewRecurring, trends: viewTrends, settings: viewSettings }[UI.tab]();
-  $('#hdr').innerHTML = v.header; $('#view').innerHTML = (storageOK ? '' : '<div class="banner">Your browser is blocking storage, so changes will not be saved. Private Browsing can cause this.</div>') + v.body;
+function viewBudget() {
+  const m = UI.month, tt = totals(m), cur = m === thisMonth();
+  const avail = r2(tt.income + tt.carry);
+  let notes = [];
+  if (cur && !S.settings.hide) {
+    const today = todayISO(), entries = monthEntries(m);
+    const due = r2(entries.filter(e => e.type === 'rec' && !e.skipped && e.date > today).reduce((a, e) => a + e.amount, 0));
+    const daysLeft = dim(m) - new Date().getDate() + 1;
+    if (tt.left > 0) notes.push(t('daily', money(tt.left / daysLeft), daysLeft));
+    if (due > 0) notes.push(t('dueSoon', money(due)));
+  }
+  if (!S.settings.income && !(m in S.incomeOverrides)) notes.push(t('noIncome'));
+  const spend = catSpend(m);
+  const cats = S.categories.slice().sort((a, b) => {
+    const rank = c => c.budget ? 0 : spend[c.id] ? 1 : 2, ra = rank(a), rb = rank(b);
+    return ra - rb || (spend[b.id] || 0) - (spend[a.id] || 0);
+  });
+  const orphan = Object.keys(spend).filter(id => !S.categories.some(c => c.id === id)).reduce((a, id) => a + spend[id], 0);
+  const cards = cats.map(c => {
+    const s = spend[c.id] || 0, b = c.budget || 0, over = b && s > b + 0.004;
+    let sub, right;
+    if (b) {
+      sub = t('outOfAmt', money(s), moneyRound(b));
+      const pct = Math.max(4, Math.min(100, s / b * 100));
+      right = `<span class="mini ${over ? 'bad' : ''}"><i style="width:${over ? 100 : pct}%"></i></span>
+        <span class="left ${over ? 'neg' : ''}">${over ? t('overAmt', moneyRound(-(s - b))) : t('leftAmt', moneyRound(b - s))}</span>`;
+    } else {
+      sub = t('spentNoBudget', money(s));
+      right = `<span class="setb">${t('setBudget')}</span>`;
+    }
+    return `<button class="ccard ${!b && !s ? 'dim' : ''}" data-act="editCat" data-id="${c.id}">
+      <span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
+      <span class="mid"><div class="nm">${esc(c.name)}</div><div class="sb num">${sub}</div></span>
+      <span class="rt">${right}</span></button>`;
+  }).join('') + (orphan ? `<div class="ccard"><span class="icon" style="${tint('#8f887d')}">${svg('dots')}</span><span class="mid"><div class="nm">${t('uncategorised')}</div><div class="sb">${t('spentNoBudget', money(orphan))}</div></span></div>` : '');
+  const body = `
+    <div class="balance"><div class="lbl">${cur ? t('balance') : esc(t('balancePast', mLabel(m, 'name')))}</div>
+      <div class="amt"><span class="big num ${tt.left < 0 ? 'neg' : ''}">${moneyBig(tt.left)}</span>
+      <button class="eye" data-act="toggleHide" aria-label="${S.settings.hide ? t('show') : t('hide')}">${uisvg(S.settings.hide ? 'eyeoff' : 'eye', 2)}</button></div></div>
+    <div class="duo">
+      <button class="tile inc" data-act="editIncome"><span class="ring">${uisvg('down', 2.2)}</span>
+        <span class="t1">${t('income')}${m in S.incomeOverrides ? ` <span class="tag">${t('thisMonthOnly')}</span>` : ''}</span>
+        <span class="t2 num">${moneyRound(tt.income)}</span>
+        <span class="t3">${tt.carry ? esc(t('carried', moneyRound(tt.carry))) : '&nbsp;'}</span></button>
+      <button class="tile exp" data-act="goTx"><span class="ring">${uisvg('up', 2.2)}</span>
+        <span class="t1">${t('expense')}</span>
+        <span class="t2 num">${moneyRound(tt.spent)}</span>
+        <span class="t3">${t('outOf')} <b class="num">${moneyRound(avail)}</b></span></button>
+    </div>
+    ${notes.map(n => `<div class="note">${esc(n)}</div>`).join('')}
+    <div class="sec"><h2>${t('category')}</h2><button class="addpill" data-act="newCat">${t('add')} <i>+</i></button></div>
+    ${cards}`;
+  return { header: header(t('hello', S.profile.name.trim().split(/\s+/)[0])), body };
 }
-function monthHeader() {
-  const cur = UI.month === thisMonth();
-  return `<div class="monthnav"><button data-act="prevM" aria-label="Previous month">${ICON_CHEVRONS.prev}</button>
-    <div class="title">${esc(mLabel(UI.month))}${cur ? '' : `<div><button class="today" data-act="toToday">Back to this month</button></div>`}</div>
-    <button data-act="nextM" aria-label="Next month">${ICON_CHEVRONS.next}</button></div>`;
-}
+
 function itemHTML(e) {
-  const c = catById(e.categoryId);
-  const title = e.note ? esc(e.note) : esc(c.name);
+  const c = catById(e.categoryId), title = e.note ? esc(e.note) : esc(c.name);
   const upcoming = e.type === 'rec' && !e.skipped && e.date > todayISO();
   let tags = '';
-  if (e.type === 'rec') tags += `<span class="tag acc">${e.kind === 'loan' ? 'Loan' : 'Recurring'}</span>`;
-  if (e.skipped) tags += '<span class="tag">Skipped</span>'; else if (upcoming) tags += '<span class="tag">Upcoming</span>';
+  if (e.type === 'rec') tags += `<span class="tag g">${e.kind === 'loan' ? t('loanTag') : t('recurringTag')}</span>`;
+  if (e.skipped) tags += `<span class="tag">${t('skipped')}</span>`; else if (upcoming) tags += `<span class="tag">${t('upcoming')}</span>`;
+  const amt = e.type === 'rec' && e.skipped ? recRaw(e.id) : e.amount;
   return `<button class="item" data-act="${e.type === 'rec' ? 'recMenu' : 'editExp'}" data-id="${e.id}">
-    <span class="ic" style="background:${esc(c.color)}">${esc(c.name.charAt(0).toUpperCase())}</span>
-    <span class="mid"><div class="t">${title}${tags}</div><div class="sub">${esc(e.note ? c.name : dLabel(e.date))}</div></span>
-    <span class="amt num ${e.skipped ? 'strike' : ''}">${money(e.type === 'rec' && e.skipped ? recAmountRaw(e.id) : e.amount)}</span></button>`;
+    <span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
+    <span class="mid"><div class="t">${title}${tags}</div><div class="sub">${esc(c.name)}</div></span>
+    <span class="amt num ${e.skipped ? 'strike' : ''}">${money(amt)}</span></button>`;
 }
-function recAmountRaw(id) { const r = S.recurring.find(x => x.id === id); return r ? amountAt(r, UI.month) : 0; }
-
-function viewMonth() {
-  const m = UI.month, t = totals(m), cur = m === thisMonth();
-  const entries = monthEntries(m);
-  let extra = '';
-  if (cur) {
-    const today = todayISO();
-    const upcoming = r2(entries.filter(e => e.type === 'rec' && !e.skipped && e.date > today).reduce((a, e) => a + e.amount, 0));
-    const daysLeft = dim(m) - new Date().getDate() + 1;
-    if (upcoming > 0) extra += `<div class="hint">${money(upcoming)} of recurring costs are still due this month (already counted).</div>`;
-    if (t.left > 0) extra += `<div class="hint">That's about ${money(t.left / daysLeft)} a day for the remaining ${daysLeft} day${daysLeft > 1 ? 's' : ''}.</div>`;
-  }
-  const noIncome = !S.settings.income && !(m in S.incomeOverrides);
-  const hero = `<section class="card hero">
-    <div class="lbl">Left ${cur ? 'this month' : 'in ' + esc(mLabel(m, 'long').split(' ')[0])}</div>
-    <div class="big num ${t.left < 0 ? 'neg' : ''}">${money(t.left)}</div>${extra}
-    ${noIncome ? `<div class="hint" style="margin-top:6px">Set your monthly income in Settings to see what's left.</div>` : ''}
-    <div class="rows">
-      <button class="row tap" data-act="editIncome" style="width:100%"><span class="k">Income${m in S.incomeOverrides ? ' (this month only)' : ''}</span><span class="num">${money(t.income)}</span></button>
-      <div class="row"><span class="k">Carried over</span><span class="num ${t.carry < 0 ? 'neg' : ''}">${money(t.carry, true)}</span></div>
-      <div class="row"><span class="k">Recurring</span><span class="num">${money(-t.rec)}</span></div>
-      <div class="row"><span class="k">Expenses</span><span class="num">${money(-t.exp)}</span></div>
-    </div></section>`;
-
-  const spend = catSpend(m);
-  const cats = S.categories.filter(c => spend[c.id] || c.budget).sort((a, b) => (spend[b.id] || 0) - (spend[a.id] || 0));
-  const orphan = Object.keys(spend).filter(id => !S.categories.some(c => c.id === id));
-  const maxSpend = Math.max(1, ...cats.map(c => spend[c.id] || 0));
-  let catHTML = cats.map(c => {
-    const s = spend[c.id] || 0, b = c.budget || 0;
-    const pct = b ? Math.min(100, s / b * 100) : s / maxSpend * 100, over = b && s > b;
-    const note = b ? (over ? `<span class="neg">${money(s - b)} over budget</span>` : `${money(b - s)} left of ${money(b)}`) : 'No budget set';
-    return `<div class="cat"><div class="top"><span><span class="dot" style="background:${esc(c.color)}"></span>${esc(c.name)}</span><span class="num">${money(s)}</span></div>
-      <div class="bar"><i style="width:${pct}%;background:${over ? 'var(--danger)' : esc(c.color)}"></i></div><div class="sub" style="margin-top:4px">${note}</div></div>`;
-  }).join('');
-  if (orphan.length) catHTML += `<div class="cat"><div class="top"><span>Uncategorised</span><span class="num">${money(orphan.reduce((a, id) => a + spend[id], 0))}</span></div></div>`;
-
-  let listHTML = '', lastDate = '';
-  for (const e of entries) {
-    if (e.date !== lastDate) { listHTML += `<div class="dayhead">${esc(dLabel(e.date))}</div>`; lastDate = e.date; }
-    listHTML += itemHTML(e);
-  }
-  const body = hero +
-    `<h2>By category</h2><section class="card" style="padding-top:4px;padding-bottom:4px">${catHTML || '<div class="empty">Nothing spent yet.</div>'}</section>` +
-    `<h2>Transactions <span>${entries.length}</span></h2><section class="card list" style="padding-top:2px;padding-bottom:2px">${listHTML || '<div class="empty">No expenses this month.<br>Tap + to add one.</div>'}</section>`;
-  return { header: monthHeader(), body };
+function recRaw(id) { const r = S.recurring.find(x => x.id === id); return r ? amountAt(r, UI.month) : 0; }
+function txListHTML(entries) {
+  let html = '', last = '';
+  for (const e of entries) { if (e.date !== last) { html += `<div class="dayhead">${esc(dLabel(e.date))}</div>`; last = e.date; } html += itemHTML(e); }
+  return html;
+}
+function viewTx() {
+  const m = UI.month, entries = monthEntries(m), tt = totals(m);
+  const body = `<div class="balance"><div class="lbl">${t('expense')}<span class="hint">${esc(mLabel(m))}</span></div>
+      <div class="amt"><span class="big num">${moneyBig(tt.spent)}</span></div></div>
+    <div class="card">${entries.length ? txListHTML(entries) : `<div class="empty">${t('noTx')}</div>`}</div>`;
+  return { header: header(t('transactions')), body };
 }
 
 function viewRecurring() {
@@ -414,30 +667,51 @@ function viewRecurring() {
   const monthly = r2(S.recurring.reduce((a, r) => a + recAmount(r, m), 0));
   const fixedHTML = fixed.map(r => {
     const c = catById(r.categoryId), active = recActive(r, m);
-    let status = r.start > m ? `Starts ${mLabel(r.start)}` : (!active ? `Ended ${mLabel(r.end)}` : (r.end ? `Until ${mLabel(r.end)}` : 'Ongoing'));
-    return `<button class="item" data-act="editRec" data-id="${r.id}"><span class="ic" style="background:${esc(c.color)}">${esc(c.name.charAt(0))}</span>
-      <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">Day ${r.day} · ${esc(c.name)} · ${status}</div></span>
+    const status = r.start > m ? t('starts', mLabel(r.start)) : (!active ? t('ended', mLabel(r.end)) : (r.end ? t('until', mLabel(r.end)) : t('ongoing')));
+    return `<button class="item" data-act="editRec" data-id="${r.id}"><span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
+      <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">${t('day', r.day)} · ${esc(status)}</div></span>
       <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}</span></button>`;
   }).join('');
   const loanHTML = loans.map(r => {
     const c = catById(r.categoryId), owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r);
-    const base = r.principal > 0 ? r.principal : r.balance;
-    const pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
-    return `<button class="item" data-act="loanInfo" data-id="${r.id}" style="display:block">
-      <div style="display:flex;justify-content:space-between;gap:10px"><span class="t"><span class="dot" style="background:${esc(c.color)}"></span>${esc(r.name)}</span>
-      <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}<span class="sub">/mo</span></span></div>
-      ${r.loanNumber ? `<div class="sub">No. ${esc(r.loanNumber)}</div>` : ''}
+    const base = r.principal > 0 ? r.principal : r.balance, pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+    return `<button class="ccard" data-act="loanInfo" data-id="${r.id}" style="display:block">
+      <div style="display:flex;align-items:center;gap:12px"><span class="icon" style="${tint(c.color)};width:46px;height:46px">${svg(c.icon)}</span>
+        <span class="mid" style="flex:1;min-width:0"><div class="nm">${esc(r.name)}</div><div class="sb">${r.loanNumber ? esc(t('loanNo', r.loanNumber)) : esc(t('day', r.day))}</div></span>
+        <span class="left num">${money(amountAt(r, m < r.start ? r.start : m))}<span class="sub">${t('perMonth')}</span></span></div>
       <div class="progress"><i style="width:${pct}%"></i></div>
-      <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${owed > 0 ? `${money(owed)} still owed${r.principal > 0 ? ' of ' + money(r.principal) : ''}` : 'Fully repaid'}</span>
-      <span>${owed > 0 ? `${left} month${left === 1 ? '' : 's'} left` : ''}</span></div>
-      ${endTxt ? `<div class="sub">Ends ${esc(endTxt)}</div>` : ''}</button>`;
+      <div class="sub" style="display:flex;justify-content:space-between;gap:8px"><span>${owed > 0 ? esc(t('owedOf', money(owed), r.principal > 0 ? money(r.principal) : '')) : t('repaid')}</span>
+        <span>${owed > 0 ? esc(t('monthsLeft', left)) : ''}</span></div>
+      ${endTxt ? `<div class="sub">${esc(t('ends', endTxt))}</div>` : ''}</button>`;
   }).join('');
-  const body = `<section class="card hero"><div class="lbl">Recurring costs in ${esc(mLabel(m))}</div><div class="big num">${money(monthly)}</div>
-      <div class="hint">These are added to every month automatically. Tap a transaction on the Month screen to skip one for a single month.</div></section>
-    <h2>Fixed costs</h2><section class="card list" style="padding-top:2px;padding-bottom:2px">${fixedHTML || '<div class="empty">Rent, insurance, phone, subscriptions…</div>'}</section>
-    <h2>Loans &amp; credits</h2><section class="card list" style="padding-top:2px;padding-bottom:2px">${loanHTML || '<div class="empty">Add a loan to count down what you still owe.</div>'}</section>
-    <button class="btn" data-act="newRec">Add recurring cost</button>`;
-  return { header: '<h1>Recurring</h1>', body };
+  const body = `<div class="balance"><div class="lbl">${esc(t('recIn', mLabel(m, 'name')))}</div><div class="amt"><span class="big num">${moneyBig(monthly)}</span></div></div>
+    <div class="note" style="margin-top:0">${t('recHint')}</div>
+    <div class="sec"><h2>${t('fixedCosts')}</h2><button class="addpill" data-act="newRec" data-kind="fixed">${t('add')} <i>+</i></button></div>
+    <div class="card">${fixedHTML || `<div class="empty">${t('fixedEmpty')}</div>`}</div>
+    <div class="sec"><h2>${t('loans')}</h2><button class="addpill" data-act="newRec" data-kind="loan">${t('add')} <i>+</i></button></div>
+    ${loanHTML || `<div class="card"><div class="empty">${t('loansEmpty')}</div></div>`}`;
+  return { header: header(t('recTitle'), false), body };
+}
+function loanDetailsHTML(r) {
+  const owed = loanOwedNow(r), left = loanMonthsLeft(r), endTxt = loanEndLabel(r), L = loanSched(r), n = nextPayMonth(r);
+  const base = r.principal > 0 ? r.principal : r.balance, pct = base ? Math.max(0, Math.min(100, (1 - owed / base) * 100)) : 100;
+  const row = (k, v) => v === null || v === undefined || v === '' ? '' : `<div class="row"><span class="k">${k}</span><span class="num" style="text-align:right">${v}</span></div>`;
+  let warn = '';
+  if (r.loanEnd) { const endM = monthOf(r.loanEnd), lastRem = loanRemaining(r, endM); if (lastRem > Math.max(1, amountAt(r, endM))) warn = t('loanWarn', money(lastRem)); }
+  const intLeft = Object.keys(L.s).filter(k => k >= n).reduce((a, k) => a + (L.s[k].interest || 0), 0);
+  return `<div class="progress" style="margin-top:4px"><i style="width:${pct}%"></i></div>
+    <div class="sub" style="display:flex;justify-content:space-between"><span>${esc(t('pctRepaid', Math.round(pct)))}</span><span>${owed > 0 ? esc(t('toGo', money(owed))) : t('repaid')}</span></div>
+    <div>
+      ${row(t('loanNumber'), r.loanNumber ? esc(r.loanNumber) : null)}
+      ${row(t('loanAmount'), r.principal > 0 ? money(r.principal) : null)}
+      ${row(t('remaining'), money(owed))}
+      ${row(t('monthlyPayment'), money(amountAt(r, thisMonth() < r.start ? r.start : thisMonth())) + ' · ' + t('onDay', r.day))}
+      ${row(t('paymentsLeft'), esc(t('months', left)))}
+      ${row(t('startDate'), r.loanStart ? dLong(r.loanStart) : null)}
+      ${row(t('endDate'), endTxt ? esc(endTxt) + (r.loanEnd ? '' : ' ' + t('estimated')) : t('tooLow'))}
+      ${row(t('interestRate'), r.rate ? r.rate.toLocaleString(LOCALE) + ' %' : null)}
+      ${row(t('interestLeft'), r.rate ? money(intLeft) : null)}
+    </div>${warn ? `<div class="banner">${esc(warn)}</div>` : ''}`;
 }
 
 function viewTrends() {
@@ -448,152 +722,180 @@ function viewTrends() {
   const cols = data.map(d => `<div class="col ${d.m === end ? 'sel' : ''}">
       ${d.income ? `<div class="inc" style="bottom:calc(${d.income / max} * (100% - 22px) + 22px)"></div>` : ''}
       <div class="stack" style="height:calc(${d.spent / max} * (100% - 22px))">
-        <i style="height:${d.spent ? d.rec / d.spent * 100 : 0}%;background:var(--muted);opacity:.55"></i>
-        <i style="height:${d.spent ? d.exp / d.spent * 100 : 0}%;background:var(--accent)"></i></div>
+        <i style="height:${d.spent ? d.rec / d.spent * 100 : 0}%;background:#b9bcf3"></i>
+        <i style="height:${d.spent ? d.exp / d.spent * 100 : 0}%;background:#8fd16a"></i></div>
       <div class="lab">${esc(mLabel(d.m, 'short'))}</div></div>`).join('');
   const f0 = firstMonth();
   const rows = data.filter(d => d.m >= f0 || d.spent).reverse().map(d => `<div class="row"><span><div>${esc(mLabel(d.m))}</div>
-      <div class="sub num">${money(d.spent)} spent of ${money(d.income)} income</div></span>
-      <span class="num" style="text-align:right"><b class="${d.left < 0 ? 'neg' : ''}">${money(d.left)}</b><div class="sub">left</div></span></div>`).join('');
-  // category averages
+      <div class="sub num">${esc(t('spentOf', money(d.spent), money(d.income)))}</div></span>
+      <span class="num" style="text-align:right"><b class="${d.left < 0 ? 'neg' : ''}">${money(d.left)}</b><div class="sub">${t('left')}</div></span></div>`).join('');
   const sums = {};
   for (const m of months) { const s = catSpend(m); for (const id in s) sums[id] = (sums[id] || 0) + s[id]; }
   const avg = Object.entries(sums).map(([id, v]) => ({ c: catById(id), v: v / months.length })).filter(x => x.v > 0).sort((a, b) => b.v - a.v);
   const amax = Math.max(1, ...avg.map(x => x.v));
-  const avgHTML = avg.map(x => `<div class="cat"><div class="top"><span><span class="dot" style="background:${esc(x.c.color)}"></span>${esc(x.c.name)}</span>
-      <span class="num">${money(x.v)}<span class="sub"> /mo</span></span></div><div class="bar"><i style="width:${x.v / amax * 100}%;background:${esc(x.c.color)}"></i></div></div>`).join('');
-  const body = `<section class="card"><div class="hint">Spending, ${esc(mLabel(months[0]))} to ${esc(mLabel(end))}</div>
+  const avgHTML = avg.map(x => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;gap:10px">
+      <span style="display:flex;align-items:center;gap:10px"><span class="icon" style="${tint(x.c.color)};width:32px;height:32px;border-radius:10px">${svg(x.c.icon)}</span>${esc(x.c.name)}</span>
+      <span class="num">${money(x.v)}<span class="sub"> ${t('perMonth')}</span></span></div><div class="bar"><i style="width:${x.v / amax * 100}%;background:${esc(x.c.color)}"></i></div></div>`).join('');
+  const body = `<div class="card pad"><div class="hint">${esc(t('spendingRange', mLabel(months[0]), mLabel(end)))}</div>
       <div class="chart">${cols}</div>
-      <div class="legend"><span><i style="background:var(--accent)"></i>Expenses</span><span><i style="background:var(--muted);opacity:.55"></i>Recurring</span><span><i style="border-top:2px dashed var(--muted);height:0;border-radius:0"></i>Income</span></div></section>
-    <h2>Month by month</h2><section class="card" style="padding-top:4px;padding-bottom:4px">${rows || '<div class="empty">Nothing tracked in this period yet.</div>'}</section>
-    <h2>Average per month, by category</h2><section class="card" style="padding-top:4px;padding-bottom:4px">${avgHTML || '<div class="empty">No spending in this period.</div>'}</section>`;
-  return { header: monthHeader(), body };
+      <div class="legend"><span><i style="background:#8fd16a"></i>${t('legendExp')}</span><span><i style="background:#b9bcf3"></i>${t('legendRec')}</span><span><i style="border-top:2px dashed var(--muted);height:0;border-radius:0"></i>${t('legendInc')}</span></div></div>
+    <h3>${t('monthByMonth')}</h3><div class="card">${rows || `<div class="empty">${t('nothingTracked')}</div>`}</div>
+    <h3>${t('avgByCat')}</h3><div class="card">${avgHTML || `<div class="empty">${t('noSpending')}</div>`}</div>`;
+  return { header: header(t('trendsTitle')), body };
 }
 
-function curSymbol(c) {
-  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: c, currencyDisplay: 'narrowSymbol' }).formatToParts(0).find(p => p.type === 'currency').value; } catch (e) { return c; }
-}
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF', 'CAD', 'AUD', 'NZD', 'JPY', 'SEK', 'NOK', 'DKK', 'PLN', 'CZK', 'HUF', 'RON', 'TRY', 'INR', 'BRL', 'MXN', 'ZAR', 'SGD', 'HKD', 'CNY', 'KRW'];
 function viewSettings() {
-  const st = S.settings;
+  const st = S.settings, p = S.profile;
   const curOpts = CURRENCIES.concat(CURRENCIES.includes(st.currency) ? [] : [st.currency]).map(c => `<option value="${c}" ${c === st.currency ? 'selected' : ''}>${c} (${esc(curSymbol(c))})</option>`).join('');
-  const cats = S.categories.map(c => `<div class="catedit">
-      <input type="color" value="${esc(c.color)}" data-cat="${c.id}" data-f="color" aria-label="Colour">
-      <input value="${esc(c.name)}" data-cat="${c.id}" data-f="name" aria-label="Name">
-      <input value="${c.budget || ''}" placeholder="Budget" inputmode="decimal" data-cat="${c.id}" data-f="budget" aria-label="Monthly budget" class="num" style="text-align:right">
-      <button class="x" data-act="delCat" data-id="${c.id}" aria-label="Delete category">×</button></div>`).join('');
-  const lb = st.lastBackup ? new Date(st.lastBackup).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'never';
+  const langOpts = [['auto', t('langAuto')], ['en', 'English'], ['de', 'Deutsch']].map(([v, l]) => `<option value="${v}" ${st.lang === v ? 'selected' : ''}>${esc(l)}</option>`).join('');
+  const lb = st.lastBackup ? new Date(st.lastBackup).toLocaleDateString(LOCALE, { day: 'numeric', month: 'short', year: 'numeric' }) : t('never');
   const body = `
-    <h2>Money</h2>
-    <div class="group">
-      <div class="field"><label>Monthly income</label><input class="num" inputmode="decimal" data-set="income" value="${st.income || ''}" placeholder="0"></div>
-      <div class="field"><label>Currency</label><select data-set="currency">${curOpts}</select></div>
-      <div class="field"><label>Carry leftover to next month</label><input type="checkbox" data-set="rollover" ${st.rollover ? 'checked' : ''}></div>
+    <div class="card pad"><div class="profile">
+      <button data-act="pickPhoto" aria-label="${t('changePhoto')}">${avatarHTML()}</button>
+      <div style="display:flex;gap:18px"><button class="linkbtn" data-act="pickPhoto">${t('changePhoto')}</button>${p.photo ? `<button class="linkbtn" style="color:var(--danger)" data-act="removePhoto">${t('removePhoto')}</button>` : ''}</div>
     </div>
-    <div class="hint" style="padding:0 4px">When this is on, whatever is left at the end of a month (or overspent) is added to the next one.</div>
+    <div class="group" style="margin-bottom:0"><div class="field"><label>${t('yourName')}</label><input data-set="name" value="${esc(p.name)}" placeholder="${t('namePh')}" autocomplete="given-name"></div></div></div>
+
+    <h3>${t('general')}</h3>
     <div class="group">
-      <div class="field"><label>Tracking starts</label><input type="month" data-set="startMonth" value="${esc(st.startMonth)}"></div>
-      <div class="field"><label>Starting balance</label><input class="num" inputmode="decimal" data-set="opening" value="${st.opening || ''}" placeholder="0"></div>
+      <div class="field"><label>${t('language')}</label><select data-set="lang">${langOpts}</select></div>
+      <div class="field"><label>${t('currency')}</label><select data-set="currency">${curOpts}</select></div>
     </div>
-    <div class="hint" style="padding:0 4px">Starting balance is money you already have at the start, counted as carried over into the first month.</div>
 
-    <h2>Categories &amp; monthly budgets</h2>
-    <section class="card" style="padding-top:4px;padding-bottom:4px">${cats}</section>
-    <button class="btn ghost" data-act="addCat">Add category</button>
+    <h3>${t('money')}</h3>
+    <div class="group">
+      <div class="field"><label>${t('monthlyIncome')}</label><input class="num" inputmode="decimal" data-set="income" value="${numIn(st.income)}" placeholder="0"></div>
+      <div class="field"><label>${t('rollover')}</label><input type="checkbox" data-set="rollover" ${st.rollover ? 'checked' : ''}></div>
+    </div>
+    <div class="hint" style="padding:0 6px">${t('rolloverHint')}</div>
+    <div class="group">
+      <div class="field"><label>${t('trackingStart')}</label><input type="month" data-set="startMonth" value="${esc(st.startMonth)}"></div>
+      <div class="field"><label>${t('opening')}</label><input class="num" inputmode="decimal" data-set="opening" value="${numIn(st.opening)}" placeholder="0"></div>
+    </div>
+    <div class="hint" style="padding:0 6px">${t('openingHint')}</div>
 
-    <h2>Backup <span>Last backup: ${esc(lb)}</span></h2>
-    <div class="hint" style="padding:0 4px">Your data lives only on this phone. Save a backup to Files or iCloud Drive now and then.</div>
-    <button class="btn" data-act="exportJSON">Save backup</button>
-    <button class="btn ghost" data-act="importJSON">Restore from backup</button>
-    <button class="btn ghost" data-act="exportCSV">Export spreadsheet (CSV)</button>
-    <button class="btn danger" data-act="reset" style="margin-top:28px">Erase all data</button>
-    <div class="hint" style="text-align:center;margin:18px 0">Balancy · works offline · no account needed</div>`;
-  return { header: '<h1>Settings</h1>', body };
+    <h3>${t('backup')} <span>${esc(t('lastBackup', lb))}</span></h3>
+    <div class="hint" style="padding:0 6px">${t('backupHint')}</div>
+    <button class="btn" data-act="exportJSON">${t('saveBackup')}</button>
+    <button class="btn ghost" data-act="importJSON">${t('restore')}</button>
+    <button class="btn ghost" data-act="exportCSV">${t('exportCsv')}</button>
+    <button class="btn danger" data-act="reset" style="margin-top:28px">${t('erase')}</button>
+    <div class="hint" style="text-align:center;margin:18px 0">${t('footer')}</div>`;
+  return { header: header(t('settings')), body };
 }
 
-/* ---------- sheet ---------- */
-let sheetState = {};
+/* ================= sheets ================= */
+let sheetState = {}, lastCat = null;
 function openSheet(html) { $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0; $('#sheet').classList.add('on'); $('#backdrop').classList.add('on'); }
 function closeSheet() { $('#sheet').classList.remove('on'); $('#backdrop').classList.remove('on'); sheetState = {}; if (document.activeElement) document.activeElement.blur(); }
+const sheetHead = (title, right, rightAct, rightId) => `<div class="sheet-h"><button data-act="close">${t(right ? 'cancel' : 'close')}</button><b>${esc(title)}</b>${right ? `<button data-act="${rightAct}" ${rightId ? `data-id="${rightId}"` : ''}>${right}</button>` : '<span style="min-width:72px"></span>'}</div>`;
 function chipsHTML(sel, act) {
-  return `<div class="chips">${S.categories.map(c => `<button class="chip ${c.id === sel ? 'on' : ''}" data-act="${act}" data-id="${c.id}"><span class="dot" style="background:${esc(c.color)}"></span>${esc(c.name)}</button>`).join('')}</div>`;
+  return `<div class="chips">${S.categories.map(c => `<button class="chip ${c.id === sel ? 'on' : ''}" data-act="${act}" data-id="${c.id}"><span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>${esc(c.name)}</button>`).join('')}</div>`;
 }
-function expenseSheet(id) {
+function expenseSheet(id, presetCat) {
   const e = id ? S.expenses.find(x => x.id === id) : null;
   const date = e ? e.date : (UI.month === thisMonth() ? todayISO() : UI.month + '-01');
-  sheetState = { kind: 'exp', id: e ? e.id : null, cat: e ? e.categoryId : (sheetState.lastCat || S.categories[0]?.id) };
-  openSheet(`<div class="sheet-h"><button data-act="close">Cancel</button><b>${e ? 'Edit expense' : 'New expense'}</b><button data-act="saveExp">Save</button></div>
-    <div class="amtwrap"><input id="f-amt" class="amt num" inputmode="decimal" placeholder="0.00" autocomplete="off" value="${e ? e.amount : ''}"></div>
+  sheetState = { kind: 'exp', id: e ? e.id : null, cat: e ? e.categoryId : (presetCat || lastCat || S.categories[0]?.id) };
+  openSheet(`${sheetHead(e ? t('editExpense') : t('newExpense'), t('save'), 'saveExp')}
+    <div class="amtwrap"><input id="f-amt" class="amtin num" inputmode="decimal" placeholder="${t('amountPh')}" autocomplete="off" value="${e ? numIn(e.amount) : ''}"></div>
     <div class="err" id="f-err"></div>
     ${chipsHTML(sheetState.cat, 'pickCat')}
     <div class="group">
-      <div class="field"><label>Note</label><input id="f-note" placeholder="Optional" value="${esc(e ? e.note : '')}"></div>
-      <div class="field"><label>Date</label><input id="f-date" type="date" value="${date}"></div>
+      <div class="field"><label>${t('note')}</label><input id="f-note" placeholder="${t('optional')}" value="${esc(e ? e.note : '')}"></div>
+      <div class="field"><label>${t('date')}</label><input id="f-date" type="date" value="${date}"></div>
     </div>
-    ${e ? '<button class="btn danger" data-act="delExp">Delete expense</button>' : ''}`);
+    ${e ? `<button class="btn danger" data-act="delExp">${t('deleteExpense')}</button>` : ''}`);
   if (!e) $('#f-amt').focus();
 }
 function saveExpense() {
   const amt = parseAmt($('#f-amt').value), date = $('#f-date').value, note = $('#f-note').value.trim();
-  if (!(amt > 0)) { $('#f-err').textContent = 'Enter an amount.'; return; }
-  if (!/^\d{4}-\d\d-\d\d$/.test(date)) { $('#f-err').textContent = 'Pick a date.'; return; }
+  if (!(amt > 0)) { $('#f-err').textContent = t('errAmount'); return; }
+  if (!/^\d{4}-\d\d-\d\d$/.test(date)) { $('#f-err').textContent = t('errDate'); return; }
   if (sheetState.id) Object.assign(S.expenses.find(x => x.id === sheetState.id), { amount: amt, date, note, categoryId: sheetState.cat });
   else S.expenses.push({ id: uid(), amount: amt, date, note, categoryId: sheetState.cat });
-  const lastCat = sheetState.cat;
-  save(); closeSheet(); sheetState.lastCat = lastCat;
-  if (UI.tab === 'month' || UI.tab === 'trends') UI.month = date.slice(0, 7);
-  render();
+  lastCat = sheetState.cat;
+  save(); closeSheet(); UI.month = date.slice(0, 7); render();
+}
+function catSheet(id) {
+  const c = id ? S.categories.find(x => x.id === id) : null;
+  sheetState = { kind: 'cat', id: c ? c.id : null, icon: c ? c.icon : 'dots', color: c ? c.color : PALETTE[S.categories.length % PALETTE.length] };
+  const m = UI.month, list = c ? monthEntries(m).filter(e => e.categoryId === c.id) : [];
+  openSheet(`${sheetHead(c ? c.name : t('newCategory'), t('save'), 'saveCat')}
+    <div class="err" id="f-err"></div>
+    <div class="group">
+      <div class="field"><label>${t('name')}</label><input id="c-name" value="${esc(c ? c.name : '')}" placeholder="${t('newCategory')}"></div>
+      <div class="field"><label>${t('monthlyBudget')}</label><input id="c-budget" class="num" inputmode="decimal" value="${c ? numIn(c.budget) : ''}" placeholder="${t('budgetPh')}"></div>
+    </div>
+    <div class="hint" style="padding:0 6px">${t('budgetHint')}</div>
+    <h3>${t('icon')}</h3>
+    <div class="icongrid" id="c-icons">${ICON_KEYS.map(k => `<button data-act="pickIcon" data-v="${k}" class="${k === sheetState.icon ? 'on' : ''}" style="color:${sheetState.color}">${svg(k)}</button>`).join('')}</div>
+    <h3>${t('color')}</h3>
+    <div class="swatches">${PALETTE.map(col => `<button data-act="pickColor" data-v="${col}" class="${col === sheetState.color ? 'on' : ''}" style="background:${col}" aria-label="${col}"></button>`).join('')}</div>
+    ${c ? `<h3>${esc(t('thisMonthIn', mLabel(m, 'name')))} <span>${money(list.reduce((a, e) => a + e.amount, 0))}</span></h3>
+      <div class="card">${list.length ? txListHTML(list) : `<div class="empty">${t('noTxCat')}</div>`}</div>
+      <button class="btn danger" data-act="delCat" data-id="${c.id}">${t('deleteCategory')}</button>` : ''}`);
+  if (!c) $('#c-name').focus();
+}
+function saveCat() {
+  const name = $('#c-name').value.trim(), b = parseAmt($('#c-budget').value);
+  if (!name) { $('#f-err').textContent = t('errCatName'); $('#sheet').scrollTop = 0; return; }
+  const fields = { name, budget: b > 0 ? b : 0, icon: sheetState.icon, color: sheetState.color };
+  if (sheetState.id) Object.assign(S.categories.find(x => x.id === sheetState.id), fields);
+  else S.categories.push({ id: uid(), ...fields });
+  save(); closeSheet(); render();
 }
 function recMenu(id) {
   const r = S.recurring.find(x => x.id === id); if (!r) return;
   const m = UI.month, skipped = (r.skips || []).includes(m);
   sheetState = { kind: 'recmenu', id };
-  openSheet(`<div class="sheet-h"><button data-act="close">Close</button><b>${esc(r.name)}</b><span style="min-width:64px"></span></div>
-    ${r.kind === 'loan' ? `<section class="card">${loanDetailsHTML(r)}</section>` : `<div class="hint" style="text-align:center">${money(amountAt(r, m))} on day ${r.day} of each month</div>`}
-    <div class="menu"><button class="btn ${skipped ? '' : 'ghost'}" data-act="toggleSkip">${skipped ? 'Count it again in ' : 'Skip it in '}${esc(mLabel(m))}</button>
-    <button class="btn ghost" data-act="editRec" data-id="${id}">Edit ${r.kind === 'loan' ? 'loan' : 'recurring cost'}</button></div>`);
+  openSheet(`${sheetHead(r.name)}
+    ${r.kind === 'loan' ? `<div class="card pad">${loanDetailsHTML(r)}</div>` : `<div class="hint" style="text-align:center">${esc(t('onDayEach', money(amountAt(r, m)), r.day))}</div>`}
+    <div class="menu"><button class="btn ${skipped ? '' : 'ghost'}" data-act="toggleSkip">${esc(skipped ? t('unskip', mLabel(m, 'name')) : t('skip', mLabel(m, 'name')))}</button>
+    <button class="btn ghost" data-act="editRec" data-id="${id}">${r.kind === 'loan' ? t('editLoan') : t('editRec')}</button></div>`);
 }
 function loanInfo(id) {
   const r = S.recurring.find(x => x.id === id); if (!r) return;
   sheetState = { kind: 'loaninfo', id };
-  openSheet(`<div class="sheet-h"><button data-act="close">Close</button><b>${esc(r.name)}</b><button data-act="editRec" data-id="${id}">Edit</button></div>
-    <section class="card">${loanDetailsHTML(r)}</section>`);
+  openSheet(`<div class="sheet-h"><button data-act="close">${t('close')}</button><b>${esc(r.name)}</b><button data-act="editRec" data-id="${id}">${t('edit')}</button></div>
+    <div class="card pad">${loanDetailsHTML(r)}</div>`);
 }
-function recSheet(id) {
-  const r = id ? S.recurring.find(x => x.id === id) : null;
-  const m = thisMonth();
-  const defCat = (S.categories.find(c => c.name === 'Housing') || S.categories[0] || {}).id;
-  sheetState = { kind: 'rec', id: r ? r.id : null, type: r ? r.kind : 'fixed', cat: r ? r.categoryId : defCat };
+function recSheet(id, kind) {
+  const r = id ? S.recurring.find(x => x.id === id) : null, m = thisMonth();
+  const type = r ? r.kind : (kind || 'fixed');
+  const defCat = (catByKey(type === 'loan' ? 'loans' : 'housing') || S.categories[0] || {}).id;
+  sheetState = { kind: 'rec', id: r ? r.id : null, type, cat: r ? r.categoryId : defCat };
   const applyFrom = r ? (r.start > m ? r.start : m) : m;
-  const v = (k, d = '') => esc(r && r[k] != null && r[k] !== 0 ? r[k] : d);
-  openSheet(`<div class="sheet-h"><button data-act="close">Cancel</button><b>${r ? 'Edit' : 'New'}</b><button data-act="saveRec">Save</button></div>
-    <div class="seg"><button data-act="recType" data-v="fixed" class="${sheetState.type === 'fixed' ? 'on' : ''}">Fixed cost</button><button data-act="recType" data-v="loan" class="${sheetState.type === 'loan' ? 'on' : ''}">Loan / credit</button></div>
+  const v = k => esc(r && r[k] != null && r[k] !== 0 ? r[k] : '');
+  const vn = k => r && r[k] ? numIn(r[k]) : '';
+  openSheet(`${sheetHead(r ? t('editTitle') : t('newTitle'), t('save'), 'saveRec')}
+    <div class="seg"><button data-act="recType" data-v="fixed">${t('fixedCost')}</button><button data-act="recType" data-v="loan">${t('loanCredit')}</button></div>
     <div class="err" id="f-err"></div>
     <div class="group">
-      <div class="field"><label>Name</label><input id="r-name" placeholder="e.g. Rent, Car loan" value="${v('name')}"></div>
-      <div class="field" data-only="loan"><label>Loan number</label><input id="r-no" placeholder="Optional" value="${v('loanNumber')}"></div>
-      <div class="field"><label><span data-only="fixed">Amount per month</span><span data-only="loan">Monthly payment</span></label><input id="r-amt" class="num" inputmode="decimal" placeholder="0.00" value="${r ? amountAt(r, applyFrom) : ''}"></div>
-      <div class="field"><label>Day of month</label><input id="r-day" type="number" inputmode="numeric" min="1" max="31" value="${r ? r.day : 1}"></div>
-      <div class="field" data-only="fixed"><label>First month</label><input id="r-start" type="month" value="${r ? r.start : m}"></div>
-      <div class="field" data-only="fixed"><label>Last month</label><input id="r-end" type="month" value="${r && r.end ? r.end : ''}"></div>
-      ${r ? `<div class="field"><label>New amount applies from</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
+      <div class="field"><label>${t('name')}</label><input id="r-name" placeholder="${t('recNamePh')}" value="${v('name')}"></div>
+      <div class="field" data-only="loan"><label>${t('loanNumber')}</label><input id="r-no" placeholder="${t('optional')}" value="${v('loanNumber')}"></div>
+      <div class="field"><label><span data-only="fixed">${t('amountPerMonth')}</span><span data-only="loan">${t('monthlyPayment')}</span></label><input id="r-amt" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${r ? numIn(amountAt(r, applyFrom)) : ''}"></div>
+      <div class="field"><label>${t('dayOfMonth')}</label><input id="r-day" type="number" inputmode="numeric" min="1" max="31" value="${r ? r.day : 1}"></div>
+      <div class="field" data-only="fixed"><label>${t('firstMonth')}</label><input id="r-start" type="month" value="${r ? r.start : m}"></div>
+      <div class="field" data-only="fixed"><label>${t('lastMonth')}</label><input id="r-end" type="month" value="${r && r.end ? r.end : ''}"></div>
+      ${r ? `<div class="field"><label>${t('appliesFrom')}</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
     </div>
-    <div class="hint" data-only="fixed" style="padding:0 4px">Leave "Last month" empty if it keeps going.</div>
+    <div class="hint" data-only="fixed" style="padding:0 6px">${t('lastMonthHint')}</div>
     <div data-only="loan">
-      <h2>Loan details</h2>
+      <h3>${t('loanDetails')}</h3>
       <div class="group">
-        <div class="field"><label>Loan amount</label><input id="r-principal" class="num" inputmode="decimal" placeholder="Original amount" value="${v('principal')}"></div>
-        <div class="field"><label>Remaining credit sum</label><input id="r-bal" class="num" inputmode="decimal" placeholder="0.00" value="${v('balance')}"></div>
-        <div class="field"><label>Remaining sum as of</label><input id="r-bfrom" type="month" value="${r && r.balanceFrom ? r.balanceFrom : m}"></div>
-        <div class="field"><label>Start date</label><input id="r-lstart" type="date" value="${v('loanStart')}"></div>
-        <div class="field"><label>End date</label><input id="r-lend" type="date" value="${v('loanEnd')}"></div>
-        <div class="field"><label>Interest rate (% per year)</label><input id="r-rate" class="num" inputmode="decimal" placeholder="Optional" value="${v('rate')}"></div>
+        <div class="field"><label>${t('loanAmount')}</label><input id="r-principal" class="num" inputmode="decimal" placeholder="${t('originalAmount')}" value="${vn('principal')}"></div>
+        <div class="field"><label>${t('remaining')}</label><input id="r-bal" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${vn('balance')}"></div>
+        <div class="field"><label>${t('remainingAsOf')}</label><input id="r-bfrom" type="month" value="${r && r.balanceFrom ? r.balanceFrom : m}"></div>
+        <div class="field"><label>${t('startDate')}</label><input id="r-lstart" type="date" value="${v('loanStart')}"></div>
+        <div class="field"><label>${t('endDate')}</label><input id="r-lend" type="date" value="${v('loanEnd')}"></div>
+        <div class="field"><label>${t('ratePa')}</label><input id="r-rate" class="num" inputmode="decimal" placeholder="${t('optional')}" value="${vn('rate')}"></div>
       </div>
-      <div class="hint" style="padding:0 4px">Enter the remaining credit sum from your bank as of the month you choose, before that month's payment. Months left and progress are worked out from it. With the interest rate, each payment is split into interest and repayment so the balance stays accurate. With an end date, payments are counted until that date.</div>
+      <div class="hint" style="padding:0 6px">${t('loanHint')}</div>
     </div>
-    ${r ? '<div class="hint" style="padding:6px 4px 0">If the monthly amount changes, earlier months keep the old amount.</div>' : ''}
-    <h2>Category</h2>${chipsHTML(sheetState.cat, 'pickRecCat')}
-    ${r ? `<button class="btn danger" data-act="delRec">Delete ${r.kind === 'loan' ? 'loan' : 'recurring cost'}</button>` : ''}`);
+    ${r ? `<div class="hint" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}
+    <h3>${t('categoryLbl')}</h3>${chipsHTML(sheetState.cat, 'pickRecCat')}
+    ${r ? `<button class="btn danger" data-act="delRec">${r.kind === 'loan' ? t('deleteLoan') : t('deleteRec')}</button>` : ''}`);
   syncRecType();
 }
 function syncRecType() {
@@ -601,29 +903,27 @@ function syncRecType() {
   document.querySelectorAll('#sheet [data-act=recType]').forEach(b => b.classList.toggle('on', b.dataset.v === sheetState.type));
 }
 function saveRec() {
-  const err = t => { $('#f-err').textContent = t; $('#sheet').scrollTop = 0; };
-  const kind = sheetState.type;
-  const name = $('#r-name').value.trim(), amt = parseAmt($('#r-amt').value);
+  const err = x => { $('#f-err').textContent = x; $('#sheet').scrollTop = 0; };
+  const kind = sheetState.type, name = $('#r-name').value.trim(), amt = parseAmt($('#r-amt').value);
   const day = Math.min(31, Math.max(1, parseInt($('#r-day').value, 10) || 1));
   const old = sheetState.id ? S.recurring.find(x => x.id === sheetState.id) : null;
-  if (!name) return err('Give it a name.');
-  if (!(amt > 0)) return err('Enter the monthly amount.');
+  if (!name) return err(t('errName'));
+  if (!(amt > 0)) return err(t('errMonthly'));
   let fields;
   if (kind === 'fixed') {
     const start = $('#r-start').value, end = $('#r-end').value || null;
-    if (!/^\d{4}-\d\d$/.test(start)) return err('Pick the first month.');
-    if (end && end < start) return err('The last month is before the first month.');
+    if (!/^\d{4}-\d\d$/.test(start)) return err(t('errFirst'));
+    if (end && end < start) return err(t('errLastBefore'));
     fields = { start, end };
   } else {
     const bal = parseAmt($('#r-bal').value), principal = parseAmt($('#r-principal').value), rate = parseAmt($('#r-rate').value);
     const bfrom = $('#r-bfrom').value, lstart = $('#r-lstart').value || null, lend = $('#r-lend').value || null;
-    if (!(bal >= 0) || $('#r-bal').value.trim() === '') return err('Enter the remaining credit sum.');
-    if (!/^\d{4}-\d\d$/.test(bfrom)) return err('Pick the month the remaining sum is from.');
-    if (principal > 0 && bal > principal * 1.5) return err('The remaining sum is much higher than the loan amount. Please check both.');
-    if (lstart && lend && lend < lstart) return err('The end date is before the start date.');
-    if (lend && monthOf(lend) < bfrom) return err('The end date is before the month of the remaining sum.');
-    if (rate < 0 || rate > 50) return err('The interest rate looks off. Enter it as a yearly percentage, like 4.9.');
-    // payments are counted from the earlier of: the old first month, or the month of the remaining sum
+    if (!(bal >= 0) || $('#r-bal').value.trim() === '') return err(t('errRemaining'));
+    if (!/^\d{4}-\d\d$/.test(bfrom)) return err(t('errRemMonth'));
+    if (principal > 0 && bal > principal * 1.5) return err(t('errRemHigh'));
+    if (lstart && lend && lend < lstart) return err(t('errEndStart'));
+    if (lend && monthOf(lend) < bfrom) return err(t('errEndRem'));
+    if (rate < 0 || rate > 50) return err(t('errRate'));
     const start = old && old.kind === 'loan' && old.start < bfrom ? old.start : bfrom;
     fields = { start, end: null, balance: bal, balanceFrom: bfrom, principal: principal > 0 ? principal : 0,
       rate: rate > 0 ? rate : 0, loanNumber: $('#r-no').value.trim(), loanStart: lstart, loanEnd: lend };
@@ -636,144 +936,157 @@ function saveRec() {
       old.amounts.push({ from: old.amounts.length ? from : fields.start, amount: amt });
       old.amounts.sort((a, b) => a.from.localeCompare(b.from));
     }
-  } else {
-    S.recurring.push({ id: uid(), name, kind, day, categoryId: sheetState.cat, amounts: [{ from: fields.start, amount: amt }], skips: [], ...fields });
-  }
+  } else S.recurring.push({ id: uid(), name, kind, day, categoryId: sheetState.cat, amounts: [{ from: fields.start, amount: amt }], skips: [], ...fields });
   save(); closeSheet(); render();
 }
 function incomeSheet() {
   const m = UI.month, has = m in S.incomeOverrides;
   sheetState = { kind: 'income' };
-  openSheet(`<div class="sheet-h"><button data-act="close">Cancel</button><b>Income for ${esc(mLabel(m))}</b><button data-act="saveIncome">Save</button></div>
-    <div class="amtwrap"><input id="f-inc" class="amt num" inputmode="decimal" placeholder="0.00" value="${incomeFor(m) || ''}"></div>
-    <div class="hint" style="text-align:center">Use this for a month that's different, like a bonus or a smaller paycheck. Your usual income is ${money(S.settings.income || 0)}, which you can change in Settings.</div>
-    ${has ? '<button class="btn ghost" data-act="clearIncome">Use my usual income</button>' : ''}`);
+  openSheet(`${sheetHead(t('incomeFor', mLabel(m, 'name')), t('save'), 'saveIncome')}
+    <div class="amtwrap"><input id="f-inc" class="amtin num" inputmode="decimal" placeholder="${t('amountPh')}" value="${numIn(incomeFor(m))}"></div>
+    <div class="hint" style="text-align:center">${esc(t('incomeHint', money(S.settings.income || 0)))}</div>
+    ${has ? `<button class="btn ghost" data-act="clearIncome">${t('useUsual')}</button>` : ''}`);
   $('#f-inc').focus();
 }
 
-/* ---------- import / export ---------- */
+/* ================= import / export / photo ================= */
 async function shareOrDownload(text, name, type) {
   const blob = new Blob([text], { type });
-  try {
-    const file = new File([blob], name, { type });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return true; }
-  } catch (e) { if (e && e.name === 'AbortError') return false; }
+  try { const file = new File([blob], name, { type }); if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return true; } }
+  catch (e) { if (e && e.name === 'AbortError') return false; }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
   return true;
 }
 async function exportJSON() {
-  const ok = await shareOrDownload(JSON.stringify(S, null, 2), `balancy-backup-${todayISO()}.json`, 'application/json');
-  if (ok) { S.settings.lastBackup = Date.now(); save(); render(); }
+  if (await shareOrDownload(JSON.stringify(S, null, 2), `balancy-backup-${todayISO()}.json`, 'application/json')) { S.settings.lastBackup = Date.now(); save(); render(); }
 }
 function exportCSV() {
-  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
-  const lines = [['Date', 'Category', 'Description', 'Amount', 'Type'].join(',')];
+  const de = LANG === 'de', sep = de ? ';' : ',', q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const lines = [t('csvHead').join(sep)];
   const last = [thisMonth(), ...S.expenses.map(e => e.date.slice(0, 7))].sort().pop();
   for (let m = firstMonth(); m <= last; m = addM(m, 1))
     for (const e of monthEntries(m).slice().reverse()) {
       if (e.type === 'rec' && e.skipped) continue;
-      lines.push([e.date, q(catById(e.categoryId).name), q(e.note || ''), e.amount.toFixed(2), e.type === 'rec' ? (e.kind === 'loan' ? 'Loan' : 'Recurring') : 'Expense'].join(','));
+      const amt = de ? e.amount.toFixed(2).replace('.', ',') : e.amount.toFixed(2);
+      lines.push([e.date, q(catById(e.categoryId).name), q(e.note || ''), amt, e.type === 'rec' ? (e.kind === 'loan' ? t('csvLoan') : t('csvRec')) : t('csvExp')].join(sep));
     }
-  shareOrDownload(lines.join('\n'), `balancy-${todayISO()}.csv`, 'text/csv');
+  shareOrDownload('﻿' + lines.join('\n'), `balancy-${todayISO()}.csv`, 'text/csv');
 }
 $('#importFile').addEventListener('change', async ev => {
   const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
   try {
     const d = JSON.parse(await f.text());
     if (!d || d.version !== 1 || !Array.isArray(d.expenses) || !Array.isArray(d.recurring) || !Array.isArray(d.categories)) throw new Error('bad');
-    if (!confirm(`Restore this backup? It has ${d.expenses.length} expenses and ${d.recurring.length} recurring costs, and will replace what's on this phone now.`)) return;
-    S = migrate(d); save(); UI.month = thisMonth(); render();
-  } catch (e) { alert("That file doesn't look like a Balancy backup."); }
+    if (!confirm(t('cRestore', d.expenses.length, d.recurring.length))) return;
+    S = migrate(d); applyLang(); save(); UI.month = thisMonth(); render();
+  } catch (e) { alert(t('notBackup')); }
 });
+$('#photoFile').addEventListener('change', ev => {
+  const f = ev.target.files[0]; ev.target.value = ''; if (!f) return;
+  const url = URL.createObjectURL(f), img = new Image();
+  img.onload = () => {
+    const size = 320, cv = document.createElement('canvas'); cv.width = cv.height = size;
+    const s = Math.min(img.naturalWidth, img.naturalHeight);
+    cv.getContext('2d').drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, size, size);
+    S.profile.photo = cv.toDataURL('image/jpeg', 0.85); URL.revokeObjectURL(url); save(); render();
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); alert(t('photoFail')); };
+  img.src = url;
+});
+function setLang(v) {
+  const before = LANG; S.settings.lang = v; applyLang();
+  if (before !== LANG) for (const c of S.categories) { // rename built-in categories the user hasn't renamed
+    const def = DEFAULT_CATS.find(x => x.key === c.key);
+    if (def && (c.name === def.en || c.name === def.de)) c.name = def[LANG];
+  }
+}
 
-/* ---------- events ---------- */
+/* ================= events ================= */
 document.addEventListener('click', ev => {
   const tab = ev.target.closest('[data-tab]');
-  if (tab) { UI.tab = tab.dataset.tab; if (UI.tab === 'month' || UI.tab === 'trends') { /* keep chosen month */ } render(); window.scrollTo(0, 0); return; }
+  if (tab) { UI.tab = tab.dataset.tab; render(); window.scrollTo(0, 0); return; }
   const el = ev.target.closest('[data-act]'); if (!el) return;
   const id = el.dataset.id;
   switch (el.dataset.act) {
     case 'close': closeSheet(); break;
-    case 'prevM': UI.month = addM(UI.month, -1); render(); break;
-    case 'nextM': UI.month = addM(UI.month, 1); render(); break;
-    case 'toToday': UI.month = thisMonth(); render(); break;
+    case 'openSettings': UI.back = UI.tab; UI.tab = 'settings'; render(); window.scrollTo(0, 0); break;
+    case 'back': UI.tab = UI.back || 'budget'; render(); window.scrollTo(0, 0); break;
+    case 'goTx': UI.tab = 'tx'; render(); window.scrollTo(0, 0); break;
+    case 'toggleHide': S.settings.hide = !S.settings.hide; save(); render(); break;
     case 'newExp': expenseSheet(null); break;
     case 'editExp': expenseSheet(id); break;
-    case 'pickCat': case 'pickRecCat':
-      sheetState.cat = id; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break;
+    case 'pickCat': case 'pickRecCat': sheetState.cat = id; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break;
     case 'saveExp': saveExpense(); break;
-    case 'delExp': if (confirm('Delete this expense?')) { S.expenses = S.expenses.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
+    case 'delExp': if (confirm(t('cDelExpense'))) { S.expenses = S.expenses.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
+    case 'newCat': catSheet(null); break;
+    case 'editCat': catSheet(id); break;
+    case 'pickIcon': sheetState.icon = el.dataset.v; document.querySelectorAll('#c-icons button').forEach(b => b.classList.toggle('on', b === el)); break;
+    case 'pickColor': sheetState.color = el.dataset.v;
+      document.querySelectorAll('.swatches button').forEach(b => b.classList.toggle('on', b === el));
+      document.querySelectorAll('#c-icons button').forEach(b => b.style.color = sheetState.color); break;
+    case 'saveCat': saveCat(); break;
+    case 'delCat': {
+      const c = catById(id), used = S.expenses.some(e => e.categoryId === id) || S.recurring.some(r => r.categoryId === id);
+      if (S.categories.length <= 1) { alert(t('cOneCat')); break; }
+      if (!confirm(used ? t('cDelCatUsed', c.name) : t('cDelCat', c.name))) break;
+      S.categories = S.categories.filter(x => x.id !== id);
+      if (used) {
+        const fb = catByKey('other') || S.categories[S.categories.length - 1];
+        S.expenses.forEach(e => { if (e.categoryId === id) e.categoryId = fb.id; });
+        S.recurring.forEach(r => { if (r.categoryId === id) r.categoryId = fb.id; });
+      }
+      save(); closeSheet(); render(); break; }
     case 'recMenu': recMenu(id); break;
     case 'loanInfo': loanInfo(id); break;
     case 'toggleSkip': {
       const r = S.recurring.find(x => x.id === sheetState.id); r.skips = r.skips || [];
       r.skips = r.skips.includes(UI.month) ? r.skips.filter(x => x !== UI.month) : r.skips.concat(UI.month);
       save(); closeSheet(); render(); break; }
-    case 'newRec': recSheet(null); break;
+    case 'newRec': recSheet(null, el.dataset.kind); break;
     case 'editRec': recSheet(id); break;
     case 'recType': {
       sheetState.type = el.dataset.v; syncRecType();
-      if (!sheetState.id) { // suggest a matching category for new items
-        const want = sheetState.type === 'loan' ? 'loans' : 'housing', c = S.categories.find(x => x.name.toLowerCase() === want);
-        if (c) { sheetState.cat = c.id; document.querySelectorAll('#sheet [data-act=pickRecCat]').forEach(ch => ch.classList.toggle('on', ch.dataset.id === c.id)); }
-      }
+      if (!sheetState.id) { const c = catByKey(sheetState.type === 'loan' ? 'loans' : 'housing');
+        if (c) { sheetState.cat = c.id; document.querySelectorAll('#sheet [data-act=pickRecCat]').forEach(ch => ch.classList.toggle('on', ch.dataset.id === c.id)); } }
       break; }
     case 'saveRec': saveRec(); break;
-    case 'delRec': if (confirm('Delete this recurring cost? It will disappear from every month, including past ones.')) { S.recurring = S.recurring.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
+    case 'delRec': if (confirm(t('cDelRec'))) { S.recurring = S.recurring.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
     case 'editIncome': incomeSheet(); break;
     case 'saveIncome': { const v = parseAmt($('#f-inc').value); S.incomeOverrides[UI.month] = v >= 0 ? v : 0; save(); closeSheet(); render(); break; }
     case 'clearIncome': delete S.incomeOverrides[UI.month]; save(); closeSheet(); render(); break;
-    case 'addCat': S.categories.push({ id: uid(), name: 'New category', color: '#' + Math.floor(Math.random() * 0xaaaaaa + 0x222222).toString(16).padStart(6, '0'), budget: 0 }); save(); render(); break;
-    case 'delCat': {
-      const c = catById(id), used = S.expenses.some(e => e.categoryId === id) || S.recurring.some(r => r.categoryId === id);
-      if (S.categories.length <= 1) { alert('You need at least one category.'); break; }
-      if (!confirm(used ? `Delete "${c.name}"? Its expenses will move to another category.` : `Delete "${c.name}"?`)) break;
-      S.categories = S.categories.filter(x => x.id !== id);
-      if (used) {
-        let fb = S.categories.find(x => x.name.toLowerCase() === 'other') || S.categories[S.categories.length - 1];
-        S.expenses.forEach(e => { if (e.categoryId === id) e.categoryId = fb.id; });
-        S.recurring.forEach(r => { if (r.categoryId === id) r.categoryId = fb.id; });
-      }
-      save(); render(); break; }
+    case 'pickPhoto': $('#photoFile').click(); break;
+    case 'removePhoto': S.profile.photo = null; save(); render(); break;
     case 'exportJSON': exportJSON(); break;
     case 'importJSON': $('#importFile').click(); break;
     case 'exportCSV': exportCSV(); break;
-    case 'reset': if (confirm('Erase everything? This cannot be undone. Save a backup first if you might want it.')) { S = fresh(); save(); UI.month = thisMonth(); render(); } break;
+    case 'reset': if (confirm(t('cReset'))) { const lang = S.settings.lang; S = fresh(); S.settings.lang = lang; save(); UI.month = thisMonth(); UI.tab = 'budget'; render(); } break;
   }
 });
 document.addEventListener('change', ev => {
-  const el = ev.target;
-  if (el.dataset.set) {
-    const k = el.dataset.set;
-    if (k === 'rollover') S.settings.rollover = el.checked;
-    else if (k === 'income' || k === 'opening') { const v = parseAmt(el.value); S.settings[k] = isNaN(v) ? 0 : v; }
-    else if (k === 'startMonth') { if (/^\d{4}-\d\d$/.test(el.value)) S.settings.startMonth = el.value; }
-    else S.settings[k] = el.value;
-    save(); render();
-  } else if (el.dataset.cat) {
-    const c = S.categories.find(x => x.id === el.dataset.cat); if (!c) return;
-    if (el.dataset.f === 'budget') { const v = parseAmt(el.value); c.budget = v > 0 ? v : 0; }
-    else if (el.dataset.f === 'name') c.name = el.value.trim() || c.name;
-    else c.color = el.value;
-    save(); render();
-  }
+  const el = ev.target, k = el.dataset.set; if (!k) return;
+  if (k === 'rollover') S.settings.rollover = el.checked;
+  else if (k === 'income' || k === 'opening') { const v = parseAmt(el.value); S.settings[k] = isNaN(v) ? 0 : v; }
+  else if (k === 'startMonth') { if (/^\d{4}-\d\d$/.test(el.value)) S.settings.startMonth = el.value; }
+  else if (k === 'name') S.profile.name = el.value.trim();
+  else if (k === 'lang') setLang(el.value);
+  else S.settings[k] = el.value;
+  save(); render();
 });
 document.addEventListener('keydown', ev => {
   if (ev.key === 'Enter' && $('#sheet').classList.contains('on') && ev.target.tagName === 'INPUT') {
     ev.preventDefault();
-    if (sheetState.kind === 'exp') saveExpense(); else if (sheetState.kind === 'rec') saveRec();
-    else if (sheetState.kind === 'income') $('#sheet [data-act=saveIncome]').click();
+    ({ exp: saveExpense, rec: saveRec, cat: saveCat, income: () => $('#sheet [data-act=saveIncome]').click() }[sheetState.kind] || (() => {}))();
   }
+  if (ev.key === 'Enter' && ev.target.dataset && ev.target.dataset.set) ev.target.blur();
   if (ev.key === 'Escape') closeSheet();
 });
-// refresh when the app comes back to the foreground (e.g. a new day or month started)
 document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('#sheet').classList.contains('on')) render(); });
 
-/* ---------- boot ---------- */
+/* ================= boot ================= */
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
-try { if (!localStorage.getItem(KEY) && localStorage.getItem(OLD_KEY)) save(); } catch (e) {}
+try { if (!localStorage.getItem(KEY)) save(); } catch (e) {}
 render();
 </script>
 </body>
