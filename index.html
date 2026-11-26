@@ -144,7 +144,7 @@ nav.tabs .add svg{width:26px;height:26px}
 .mp-grid button.sel{background:var(--ink);color:var(--bg)}
 .mp-foot{display:flex;gap:8px;margin-top:12px}
 .mp-foot button{flex:1;padding:11px 0;border-radius:14px;background:var(--soft);font-size:15px;font-weight:600}
-.mbtn{flex:1;text-align:right;color:var(--ink);font-size:16px;padding:2px 0}
+.mbtn{flex:1;display:flex;justify-content:flex-end;text-align:right;color:var(--ink);font-size:16px;padding:2px 0;min-width:0}
 /* sheet */
 #backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
 #backdrop.on{opacity:1;pointer-events:auto}
@@ -245,7 +245,7 @@ en: {
   hello: n => n ? `Hi, ${n}!` : 'Hi there!', balance: 'Current balance', balancePast: m => `Left in ${m}`,
   hide: 'Hide amounts', show: 'Show amounts', income: 'Income', expense: 'Expenses',
   carried: x => `incl. ${x} carried over`, outOf: 'Out of', thisMonthOnly: 'this month only',
-  noIncome: 'Add your monthly income in Settings (tap your picture) to see what you have left.',
+  noIncome: 'No income entered for this month yet. Tap the Income card or the + button to add it.', addIncome: 'Add income', incomeName: 'Name', incomeNamePh: 'e.g. Salary, Sold item xyz', incSugg: ['Salary', 'Sold item', 'Refund', 'Bonus', 'Gift'], salaryName: 'Salary', tapToAdd: 'Tap to add income', noIncomeMonth: 'No income entered for this month yet.',
   daily: (x, n) => n > 1 ? `That's about ${x} a day for the remaining ${n} days.` : `That's ${x} for today, the last day of the month.`,
   dueSoon: x => `${x} of recurring costs are still due this month and already counted.`,
   category: 'Category', add: 'ADD', outOfAmt: (a, b) => `${a} out of ${b}`, leftAmt: x => `${x} left`, overAmt: x => `${x} over`,
@@ -286,10 +286,10 @@ en: {
   monthByMonth: 'Month by month', spentOf: (a, b) => `${a} spent of ${b} income`, left: 'left', nothingTracked: 'Nothing tracked in this period yet.',
   avgByCat: 'Average per month, by category', noSpending: 'No spending in this period.',
   settings: 'Settings', profile: 'Profile', yourName: 'Your name', namePh: 'Name', changePhoto: 'Choose photo', removePhoto: 'Remove photo',
-  general: 'General', language: 'Language', langAuto: 'Automatic (iPhone)', currency: 'Currency', money: 'Money', monthlyIncome: 'Usual monthly income (salary)',
+  general: 'General', language: 'Language', langAuto: 'System', currency: 'Currency', money: 'Money', monthlyIncome: 'Usual monthly income (salary)',
   rollover: 'Carry leftover to next month', rolloverHint: 'When this is on, whatever is left at the end of a month (or overspent) moves into the next month. Category budgets always start fresh.',
   trackingStart: 'Tracking starts', opening: 'Starting balance', openingHint: 'Money you already have when you start, counted as carried over into the first month.',
-  backup: 'Backup', lastBackup: x => `Last backup: ${x}`, never: 'never', backupHint: 'Your data lives only on this phone. Save a backup to Files or iCloud Drive now and then.',
+  backup: 'Backup', lastBackup: x => `Last backup: ${x}`, never: 'never', backupHint: 'Your data lives only on this device. Save a backup to Files, iCloud Drive or another safe place now and then.',
   saveBackup: 'Save backup', restore: 'Restore from backup', exportCsv: 'Export spreadsheet (CSV)', erase: 'Erase all data', footer: 'Balancy · works offline · no account needed',
   storageBlocked: 'Your browser is blocking storage, so changes will not be saved. Private Browsing can cause this.',
   cancel: 'Cancel', save: 'Save', close: 'Close', edit: 'Edit', done: 'Done',
@@ -313,7 +313,7 @@ en: {
   cDelExpense: 'Delete this expense?', cDelRec: 'Delete this? It will disappear from every month, including past ones.', cOneCat: 'You need at least one category.',
   cDelCatUsed: n => `Delete "${n}"? Its expenses will move to another category.`, cDelCat: n => `Delete "${n}"?`,
   cReset: 'Erase everything? This cannot be undone. Save a backup first if you might want it.',
-  cRestore: (a, b) => `Restore this backup? It has ${a} expenses and ${b} recurring costs, and will replace what's on this phone now.`,
+  cRestore: (a, b) => `Restore this backup? It has ${a} expenses and ${b} recurring costs, and will replace what's on this device now.`,
   notBackup: "That file doesn't look like a Balancy backup.", photoFail: "That photo couldn't be loaded. Try another one.",
   csvHead: ['Date', 'Category', 'Description', 'Amount', 'Type'], csvExp: 'Expense', csvRec: 'Recurring', csvLoan: 'Loan', prevMonth: 'Previous month', nextMonth: 'Next month', monthPick: 'Choose month'
 },
@@ -322,7 +322,7 @@ de: {
   hello: n => n ? `Hallo, ${n}!` : 'Hallo!', balance: 'Aktueller Stand', balancePast: m => `Übrig im ${m}`,
   hide: 'Beträge ausblenden', show: 'Beträge anzeigen', income: 'Einnahmen', expense: 'Ausgaben',
   carried: x => `inkl. ${x} Übertrag`, outOf: 'Von', thisMonthOnly: 'nur dieser Monat',
-  noIncome: 'Trag dein monatliches Einkommen in den Einstellungen ein (tippe auf dein Bild), um zu sehen, was übrig bleibt.',
+  noIncome: 'Für diesen Monat sind noch keine Einnahmen eingetragen. Tippe auf die Einnahmen-Karte oder auf +, um sie hinzuzufügen.', addIncome: 'Einnahme hinzufügen', incomeName: 'Bezeichnung', incomeNamePh: 'z. B. Gehalt, Verkauf xyz', incSugg: ['Gehalt', 'Verkauf', 'Erstattung', 'Bonus', 'Geschenk'], salaryName: 'Gehalt', tapToAdd: 'Tippen zum Hinzufügen', noIncomeMonth: 'Für diesen Monat noch keine Einnahmen eingetragen.',
   daily: (x, n) => n > 1 ? `Das sind etwa ${x} pro Tag für die restlichen ${n} Tage.` : `Das sind ${x} für heute, den letzten Tag im Monat.`,
   dueSoon: x => `${x} an Fixkosten sind diesen Monat noch fällig und schon eingerechnet.`,
   category: 'Kategorien', add: 'NEU', outOfAmt: (a, b) => `${a} von ${b}`, leftAmt: x => `${x} übrig`, overAmt: x => `${x} drüber`,
@@ -363,10 +363,10 @@ de: {
   monthByMonth: 'Monat für Monat', spentOf: (a, b) => `${a} ausgegeben von ${b} Einnahmen`, left: 'übrig', nothingTracked: 'In diesem Zeitraum noch nichts erfasst.',
   avgByCat: 'Durchschnitt pro Monat nach Kategorie', noSpending: 'Keine Ausgaben in diesem Zeitraum.',
   settings: 'Einstellungen', profile: 'Profil', yourName: 'Dein Name', namePh: 'Name', changePhoto: 'Foto auswählen', removePhoto: 'Foto entfernen',
-  general: 'Allgemein', language: 'Sprache', langAuto: 'Automatisch (iPhone)', currency: 'Währung', money: 'Geld', monthlyIncome: 'Übliches Monatseinkommen (Gehalt)',
+  general: 'Allgemein', language: 'Sprache', langAuto: 'System', currency: 'Währung', money: 'Geld', monthlyIncome: 'Übliches Monatseinkommen (Gehalt)',
   rollover: 'Rest in den nächsten Monat übertragen', rolloverHint: 'Wenn das an ist, wird das, was am Monatsende übrig ist (oder überzogen wurde), in den nächsten Monat übernommen. Kategorie-Budgets starten jeden Monat neu.',
   trackingStart: 'Erfassung ab', opening: 'Startguthaben', openingHint: 'Geld, das du zu Beginn schon hast. Es zählt als Übertrag in den ersten Monat.',
-  backup: 'Sicherung', lastBackup: x => `Letzte Sicherung: ${x}`, never: 'noch nie', backupHint: 'Deine Daten liegen nur auf diesem iPhone. Speichere ab und zu eine Sicherung in Dateien oder iCloud Drive.',
+  backup: 'Sicherung', lastBackup: x => `Letzte Sicherung: ${x}`, never: 'noch nie', backupHint: 'Deine Daten liegen nur auf diesem Gerät. Speichere ab und zu eine Sicherung in Dateien, iCloud Drive oder an einem anderen sicheren Ort.',
   saveBackup: 'Sicherung speichern', restore: 'Sicherung wiederherstellen', exportCsv: 'Tabelle exportieren (CSV)', erase: 'Alle Daten löschen', footer: 'Balancy · funktioniert offline · kein Konto nötig',
   storageBlocked: 'Dein Browser blockiert den Speicher, Änderungen werden nicht gesichert. Das kann am privaten Surfen liegen.',
   cancel: 'Abbrechen', save: 'Sichern', close: 'Schließen', edit: 'Bearbeiten', done: 'Fertig',
@@ -390,7 +390,7 @@ de: {
   cDelExpense: 'Diese Ausgabe löschen?', cDelRec: 'Wirklich löschen? Der Eintrag verschwindet aus allen Monaten, auch aus vergangenen.', cOneCat: 'Du brauchst mindestens eine Kategorie.',
   cDelCatUsed: n => `„${n}“ löschen? Die Ausgaben werden in eine andere Kategorie verschoben.`, cDelCat: n => `„${n}“ löschen?`,
   cReset: 'Alles löschen? Das lässt sich nicht rückgängig machen. Speichere vorher eine Sicherung, falls du sie noch brauchst.',
-  cRestore: (a, b) => `Diese Sicherung wiederherstellen? Sie enthält ${a} Ausgaben und ${b} Fixkosten und ersetzt alles, was jetzt auf diesem iPhone ist.`,
+  cRestore: (a, b) => `Diese Sicherung wiederherstellen? Sie enthält ${a} Ausgaben und ${b} Fixkosten und ersetzt alles, was jetzt auf diesem Gerät ist.`,
   notBackup: 'Diese Datei ist keine Balancy-Sicherung.', photoFail: 'Das Foto konnte nicht geladen werden. Probier ein anderes.',
   csvHead: ['Datum', 'Kategorie', 'Beschreibung', 'Betrag', 'Art'], csvExp: 'Ausgabe', csvRec: 'Fixkosten', csvLoan: 'Kredit', prevMonth: 'Vorheriger Monat', nextMonth: 'Nächster Monat', monthPick: 'Monat wählen'
 }};
@@ -479,6 +479,16 @@ function fresh() {
 function migrate(d) {
   d.incomeOverrides = d.incomeOverrides || {};
   d.incomes = Array.isArray(d.incomes) ? d.incomes : [];
+  if ((d.settings.income > 0) || Object.keys(d.incomeOverrides).length) {
+    const de = d.settings.lang === 'de' || (d.settings.lang !== 'en' && (navigator.language || '').toLowerCase().startsWith('de'));
+    let f = d.settings.startMonth || thisMonth(); for (const e of d.expenses) if (e.date.slice(0, 7) < f) f = e.date.slice(0, 7);
+    const months = new Set(Object.keys(d.incomeOverrides)); if (d.settings.income > 0) for (let x = f; x <= thisMonth(); x = addM(x, 1)) months.add(x);
+    for (const x of months) {
+      const amt = x in d.incomeOverrides ? d.incomeOverrides[x] : (x >= f ? d.settings.income : 0);
+      if (amt > 0) d.incomes.push({ id: uid(), amount: amt, date: x + '-01', note: de ? 'Gehalt' : 'Salary' });
+    }
+    d.settings.income = 0; d.incomeOverrides = {};
+  }
   d.profile = d.profile || { name: '', photo: null };
   d.settings.lang = d.settings.lang || 'auto';
   if (!Array.isArray(d.recGroups) || !d.recGroups.length) d.recGroups = defaultGroups();
@@ -656,7 +666,7 @@ function monthEntries(m) {
 function firstMonth() { let f = S.settings.startMonth || thisMonth(); for (const e of S.expenses.concat(S.incomes)) { const m = e.date.slice(0, 7); if (m < f) f = m; } return f; }
 const monthIncomes = m => S.incomes.filter(x => x.date.slice(0, 7) === m).sort((a, b) => b.date.localeCompare(a.date));
 const extraIncome = m => r2(monthIncomes(m).reduce((a, x) => a + x.amount, 0));
-function incomeFor(m) { if (m in S.incomeOverrides) return S.incomeOverrides[m]; return m < firstMonth() ? 0 : (S.settings.income || 0); }
+function incomeFor(m) { return 0; } // all income is entered as named entries now
 function baseTotals(m) {
   let rec = 0, exp = 0;
   for (const e of monthEntries(m)) e.type === 'rec' ? rec += e.amount : exp += e.amount;
@@ -759,7 +769,7 @@ function viewBudget() {
     if (tt.left > 0) notes.push(t('daily', money(tt.left / daysLeft), daysLeft));
     if (due > 0) notes.push(t('dueSoon', money(due)));
   }
-  if (!S.settings.income && !(m in S.incomeOverrides)) notes.push(t('noIncome'));
+  if (!extraIncome(m)) notes.push(t('noIncome'));
   const bs = budgetSpend(m), spend = bs.map, inst = bs.inst, all = id => (spend[id] || 0) + (inst[id] || 0);
   const cats = S.categories.slice().sort((a, b) => {
     const rank = c => c.budget ? 0 : all(c.id) ? 1 : 2, ra = rank(a), rb = rank(b);
@@ -790,9 +800,9 @@ function viewBudget() {
       <button class="eye" data-act="toggleHide" aria-label="${S.settings.hide ? t('show') : t('hide')}">${uisvg(S.settings.hide ? 'eyeoff' : 'eye', 2)}</button></div></div>
     <div class="duo">
       <button class="tile inc" data-act="editIncome"><span class="ring">${uisvg('down', 2.2)}</span>
-        <span class="t1">${t('income')}${m in S.incomeOverrides ? ` <span class="tag">${t('thisMonthOnly')}</span>` : ''}</span>
+        <span class="t1">${t('income')}</span>
         <span class="t2 num">${moneyRound(tt.income)}</span>
-        <span class="t3">${[tt.extra ? esc(t('extraIncome', moneyRound(tt.extra))) : '', tt.carry ? esc(t('carried', moneyRound(tt.carry))) : ''].filter(Boolean).join('<br>') || '&nbsp;'}</span></button>
+        <span class="t3">${tt.carry ? esc(t('carried', moneyRound(tt.carry))) : (tt.income ? '&nbsp;' : esc(t('tapToAdd')))}</span></button>
       <button class="tile exp" data-act="goTx"><span class="ring">${uisvg('up', 2.2)}</span>
         <span class="t1">${t('expense')}</span>
         <span class="t2 num">${moneyRound(tt.spent)}</span>
@@ -953,7 +963,6 @@ function viewSettings() {
 
     <h3>${t('money')}</h3>
     <div class="group">
-      <div class="field"><label>${t('monthlyIncome')}</label><input class="num" inputmode="decimal" data-set="income" value="${numIn(st.income)}" placeholder="0"></div>
       <div class="field"><label>${t('rollover')}</label><input type="checkbox" data-set="rollover" ${st.rollover ? 'checked' : ''}></div>
     </div>
     <div class="hint" style="padding:0 6px">${t('rolloverHint')}</div>
@@ -992,9 +1001,10 @@ function expenseSheet(id, presetCat, mode = 'exp') {
     <div class="err" id="f-err"></div>
     <div data-mode="exp">${chipsHTML(sheetState.cat, 'pickCat')}</div>
     <div class="group">
-      <div class="field"><label>${t('note')}</label><input id="f-note" placeholder="${t('optional')}" data-ph-exp="${t('optional')}" data-ph-inc="${t('incomeNotePh')}" value="${esc(e ? e.note : '')}"></div>
+      <div class="field"><label><span data-mode="exp">${t('note')}</span><span data-mode="inc">${t('incomeName')}</span></label><input id="f-note" placeholder="${t('optional')}" data-ph-exp="${t('optional')}" data-ph-inc="${t('incomeNamePh')}" value="${esc(e ? e.note : '')}"></div>
       <div class="field"><label>${t('date')}</label><input id="f-date" type="date" value="${date}"></div>
     </div>
+    <div class="chips" data-mode="inc">${t('incSugg').map(n => `<button class="chip" data-act="incName" data-v="${esc(n)}" style="padding-left:12px">${esc(n)}</button>`).join('')}</div>
     ${e ? `<button class="btn danger" data-act="delExp">${mode === 'inc' ? t('deleteIncome') : t('deleteExpense')}</button>` : ''}`);
   syncEntryMode();
   if (!e) $('#f-amt').focus();
@@ -1208,16 +1218,12 @@ function saveGroup() {
   save(); closeSheet(); render();
 }
 function incomeSheet() {
-  const m = UI.month, has = m in S.incomeOverrides;
+  const m = UI.month, list = monthIncomes(m);
   sheetState = { kind: 'income' };
-  openSheet(`${sheetHead(t('incomeFor', mLabel(m, 'name')), t('save'), 'saveIncome')}
-    <h3>${t('salaryLbl')}</h3>
-    <div class="amtwrap" style="padding-top:0"><input id="f-inc" class="amtin num" inputmode="decimal" placeholder="${t('amountPh')}" value="${numIn(incomeFor(m))}"></div>
-    <div class="hint" style="text-align:center">${esc(t('incomeHint', money(S.settings.income || 0)))}</div>
-    ${has ? `<button class="btn ghost" data-act="clearIncome">${t('useUsual')}</button>` : ''}
-    <h3>${t('otherIncome')} <span>${extraIncome(m) ? '+' + money(extraIncome(m)) : ''}</span></h3>
-    <div class="card">${monthIncomes(m).length ? txListHTML(monthIncomes(m).map(x => ({ ...x, type: 'inc' }))) : `<div class="empty">${t('noOtherIncome')}</div>`}</div>
-    <button class="btn ghost" data-act="newInc">+ ${t('addOtherIncome')}</button>`);
+  openSheet(`${sheetHead(t('incomeFor', mLabel(m, 'name')))}
+    <div class="amtwrap" style="padding-top:0"><span class="big num">${moneyBig(extraIncome(m))}</span></div>
+    <button class="btn" data-act="newInc">+ ${t('addIncome')}</button>
+    <div class="card" style="margin-top:14px">${list.length ? txListHTML(list.map(x => ({ ...x, type: 'inc' }))) : `<div class="empty">${t('noIncomeMonth')}</div>`}</div>`);
 }
 
 /* ================= import / export / photo ================= */
@@ -1324,6 +1330,7 @@ document.addEventListener('click', ev => {
       save(); closeSheet(); render(); break; }
     case 'newRec': recSheet(null, el.dataset.group); break;
     case 'newGroup': groupSheet(null); break;
+    case 'incName': { const n = $('#f-note'); n.value = el.dataset.v; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break; }
     case 'entryMode': sheetState.mode = el.dataset.v; syncEntryMode(); $('#f-amt').focus(); break;
     case 'editInc': expenseSheet(id, null, 'inc'); break;
     case 'newInc': expenseSheet(null, null, 'inc'); break;
