@@ -129,6 +129,22 @@ nav.tabs button.on{color:#fff;font-weight:700}
 nav.tabs button.on .ico{background:#fff;color:#111}
 nav.tabs .add{flex:none;width:56px;height:56px;border-radius:28px;background:var(--pill);color:#111;margin:-30px 4px 0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);border:4px solid var(--bg)}
 nav.tabs .add svg{width:26px;height:26px}
+/* month picker */
+#mpback{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:30;opacity:0;pointer-events:none;transition:opacity .15s}
+#mpback.on{opacity:1;pointer-events:auto}
+#mpicker{position:fixed;left:50%;top:50%;z-index:31;width:min(340px,92vw);background:var(--bg);border-radius:24px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);
+  transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;transition:all .15s}
+#mpicker.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.mp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.mp-head b{font-size:20px}
+.mp-head button{width:40px;height:40px;border-radius:20px;background:var(--soft);font-size:22px}
+.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mp-grid button{padding:12px 0;border-radius:14px;background:var(--soft);font-size:16px;font-weight:600;border:2px solid transparent}
+.mp-grid button.now{border-color:var(--line)}
+.mp-grid button.sel{background:var(--ink);color:var(--bg)}
+.mp-foot{display:flex;gap:8px;margin-top:12px}
+.mp-foot button{flex:1;padding:11px 0;border-radius:14px;background:var(--soft);font-size:15px;font-weight:600}
+.mbtn{flex:1;text-align:right;color:var(--ink);font-size:16px;padding:2px 0}
 /* sheet */
 #backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
 #backdrop.on{opacity:1;pointer-events:auto}
@@ -186,6 +202,8 @@ input.amtin{width:100%;text-align:center;font-size:46px;font-weight:800;border:0
 <nav class="tabs" id="tabs"></nav>
 <div id="backdrop" data-act="close"></div>
 <div id="sheet" role="dialog" aria-modal="true"></div>
+<div id="mpback" data-act="mpClose"></div>
+<div id="mpicker" role="dialog" aria-modal="true"></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <input type="file" id="photoFile" accept="image/*" hidden>
 
@@ -237,6 +255,10 @@ en: {
   recTitle: 'Recurring', recIn: m => `Recurring costs in ${m}`,
   recHint: 'These are counted in every month automatically. Tap one under Transactions to skip it for a single month.',
   fixedCosts: 'Fixed costs', fixedEmpty: 'Rent, insurance, phone, subscriptions…', loans: 'Loans & credits', loansEmpty: 'Add a loan to see how much you still owe.',
+  entryExpense: 'Expense', entryIncome: 'Income', newIncome: 'New income', editIncomeT: 'Edit income', incomeNotePh: 'e.g. Sold bike, bonus',
+  deleteIncome: 'Delete income', cDelIncome: 'Delete this income?', incomeTag: 'Income', extraIncome: x => `incl. ${x} other income`, salaryLbl: 'Salary / regular income',
+  otherIncome: 'Other income', addOtherIncome: 'Add other income', noOtherIncome: 'No other income this month.', incomeOf: x => `Income ${x}`, csvInc: 'Income',
+  thisMonthBtn: 'This month', clearMonth: 'Clear', notSet: 'Not set', prevYear: 'Previous year', nextYear: 'Next year',
   instExtra: x => `+ ${x} instalments, not in budget`, instOnly: x => `${x} instalments · not counted in budgets`, loanCatNote: 'Loans and instalment plans always go into the Loans category and don\'t count against budgets.',
   finalPayment: 'Final payment', pausedMonths: 'Paused months', addPause: 'Pause', noPauses: 'No paused months.',
   pauseHint: 'No payment is due in a paused month and the plan moves back by one month. If there is an interest rate, interest keeps running during the pause.',
@@ -264,7 +286,7 @@ en: {
   monthByMonth: 'Month by month', spentOf: (a, b) => `${a} spent of ${b} income`, left: 'left', nothingTracked: 'Nothing tracked in this period yet.',
   avgByCat: 'Average per month, by category', noSpending: 'No spending in this period.',
   settings: 'Settings', profile: 'Profile', yourName: 'Your name', namePh: 'Name', changePhoto: 'Choose photo', removePhoto: 'Remove photo',
-  general: 'General', language: 'Language', langAuto: 'Automatic (iPhone)', currency: 'Currency', money: 'Money', monthlyIncome: 'Monthly income',
+  general: 'General', language: 'Language', langAuto: 'Automatic (iPhone)', currency: 'Currency', money: 'Money', monthlyIncome: 'Usual monthly income (salary)',
   rollover: 'Carry leftover to next month', rolloverHint: 'When this is on, whatever is left at the end of a month (or overspent) moves into the next month. Category budgets always start fresh.',
   trackingStart: 'Tracking starts', opening: 'Starting balance', openingHint: 'Money you already have when you start, counted as carried over into the first month.',
   backup: 'Backup', lastBackup: x => `Last backup: ${x}`, never: 'never', backupHint: 'Your data lives only on this phone. Save a backup to Files or iCloud Drive now and then.',
@@ -310,6 +332,10 @@ de: {
   recTitle: 'Fixkosten', recIn: m => `Fixkosten im ${m}`,
   recHint: 'Diese Beträge werden jeden Monat automatisch eingerechnet. Tippe unter Buchungen darauf, um einen Monat auszusetzen.',
   fixedCosts: 'Laufende Kosten', fixedEmpty: 'Miete, Versicherung, Handy, Abos …', loans: 'Kredite & Darlehen', loansEmpty: 'Füge einen Kredit hinzu, um zu sehen, wie viel du noch schuldest.',
+  entryExpense: 'Ausgabe', entryIncome: 'Einnahme', newIncome: 'Neue Einnahme', editIncomeT: 'Einnahme bearbeiten', incomeNotePh: 'z. B. Fahrrad verkauft, Bonus',
+  deleteIncome: 'Einnahme löschen', cDelIncome: 'Diese Einnahme löschen?', incomeTag: 'Einnahme', extraIncome: x => `inkl. ${x} weitere Einnahmen`, salaryLbl: 'Gehalt / regelmäßiges Einkommen',
+  otherIncome: 'Weitere Einnahmen', addOtherIncome: 'Weitere Einnahme hinzufügen', noOtherIncome: 'Diesen Monat keine weiteren Einnahmen.', incomeOf: x => `Einnahmen ${x}`, csvInc: 'Einnahme',
+  thisMonthBtn: 'Dieser Monat', clearMonth: 'Leeren', notSet: 'Nicht gesetzt', prevYear: 'Vorheriges Jahr', nextYear: 'Nächstes Jahr',
   instExtra: x => `+ ${x} Raten, nicht im Budget`, instOnly: x => `${x} Raten · zählen nicht zum Budget`, loanCatNote: 'Kredite und Ratenkäufe landen immer in der Kategorie Kredite und zählen nicht zu den Budgets.',
   finalPayment: 'Schlussrate', pausedMonths: 'Pausierte Monate', addPause: 'Pausieren', noPauses: 'Keine Pausen.',
   pauseHint: 'In einem pausierten Monat ist keine Rate fällig, der Plan verschiebt sich um einen Monat. Gibt es einen Zinssatz, laufen die Zinsen in der Pause weiter.',
@@ -337,7 +363,7 @@ de: {
   monthByMonth: 'Monat für Monat', spentOf: (a, b) => `${a} ausgegeben von ${b} Einnahmen`, left: 'übrig', nothingTracked: 'In diesem Zeitraum noch nichts erfasst.',
   avgByCat: 'Durchschnitt pro Monat nach Kategorie', noSpending: 'Keine Ausgaben in diesem Zeitraum.',
   settings: 'Einstellungen', profile: 'Profil', yourName: 'Dein Name', namePh: 'Name', changePhoto: 'Foto auswählen', removePhoto: 'Foto entfernen',
-  general: 'Allgemein', language: 'Sprache', langAuto: 'Automatisch (iPhone)', currency: 'Währung', money: 'Geld', monthlyIncome: 'Monatliches Einkommen',
+  general: 'Allgemein', language: 'Sprache', langAuto: 'Automatisch (iPhone)', currency: 'Währung', money: 'Geld', monthlyIncome: 'Übliches Monatseinkommen (Gehalt)',
   rollover: 'Rest in den nächsten Monat übertragen', rolloverHint: 'Wenn das an ist, wird das, was am Monatsende übrig ist (oder überzogen wurde), in den nächsten Monat übernommen. Kategorie-Budgets starten jeden Monat neu.',
   trackingStart: 'Erfassung ab', opening: 'Startguthaben', openingHint: 'Geld, das du zu Beginn schon hast. Es zählt als Übertrag in den ersten Monat.',
   backup: 'Sicherung', lastBackup: x => `Letzte Sicherung: ${x}`, never: 'noch nie', backupHint: 'Deine Daten liegen nur auf diesem iPhone. Speichere ab und zu eine Sicherung in Dateien oder iCloud Drive.',
@@ -448,10 +474,11 @@ function fresh() {
     settings: { currency: 'EUR', income: 0, opening: 0, rollover: true, startMonth: thisMonth(), lastBackup: null, lang: 'auto', hide: false },
     incomeOverrides: {},
     categories: DEFAULT_CATS.map(c => ({ id: uid(), key: c.key, name: c[LANG] || c.en, color: c.color, icon: c.icon, budget: 0 })),
-    expenses: [], recurring: [], recGroups: defaultGroups() };
+    expenses: [], incomes: [], recurring: [], recGroups: defaultGroups() };
 }
 function migrate(d) {
   d.incomeOverrides = d.incomeOverrides || {};
+  d.incomes = Array.isArray(d.incomes) ? d.incomes : [];
   d.profile = d.profile || { name: '', photo: null };
   d.settings.lang = d.settings.lang || 'auto';
   if (!Array.isArray(d.recGroups) || !d.recGroups.length) d.recGroups = defaultGroups();
@@ -626,12 +653,15 @@ function monthEntries(m) {
   out.sort((a, b) => b.date.localeCompare(a.date) || (a.type === 'rec') - (b.type === 'rec'));
   return (entryCache[m] = out);
 }
-function firstMonth() { let f = S.settings.startMonth || thisMonth(); for (const e of S.expenses) { const m = e.date.slice(0, 7); if (m < f) f = m; } return f; }
+function firstMonth() { let f = S.settings.startMonth || thisMonth(); for (const e of S.expenses.concat(S.incomes)) { const m = e.date.slice(0, 7); if (m < f) f = m; } return f; }
+const monthIncomes = m => S.incomes.filter(x => x.date.slice(0, 7) === m).sort((a, b) => b.date.localeCompare(a.date));
+const extraIncome = m => r2(monthIncomes(m).reduce((a, x) => a + x.amount, 0));
 function incomeFor(m) { if (m in S.incomeOverrides) return S.incomeOverrides[m]; return m < firstMonth() ? 0 : (S.settings.income || 0); }
 function baseTotals(m) {
   let rec = 0, exp = 0;
   for (const e of monthEntries(m)) e.type === 'rec' ? rec += e.amount : exp += e.amount;
-  return { income: incomeFor(m), rec: r2(rec), exp: r2(exp), spent: r2(rec + exp) };
+  const salary = incomeFor(m), extra = extraIncome(m);
+  return { income: r2(salary + extra), salary, extra, rec: r2(rec), exp: r2(exp), spent: r2(rec + exp) };
 }
 function carryInto(m) {
   if (m in carryCache) return carryCache[m];
@@ -666,8 +696,7 @@ function avatarHTML(cls = '') {
 function monthPill() {
   const m = UI.month, cur = m === thisMonth(), sameYear = m.slice(0, 4) === thisMonth().slice(0, 4);
   const label = sameYear ? mLabel(m, 'short').replace('.', '') : mLabel(m, 'short').replace('.', '') + ' ' + m.slice(2, 4);
-  return `<label class="mpill ${cur ? '' : 'past'}" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}
-    <input type="month" id="monthInput" value="${m}"></label>`;
+  return `<button class="mpill ${cur ? '' : 'past'}" data-act="pickViewMonth" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}</button>`;
 }
 function header(title, withMonth = true) {
   if (UI.tab === 'settings') return `<div class="top"><button class="backbtn" data-act="back" aria-label="${t('close')}">‹</button><div class="hello">${esc(title)}</div></div>`;
@@ -686,7 +715,37 @@ function render() {
   const v = { budget: viewBudget, tx: viewTx, recurring: viewRecurring, trends: viewTrends, settings: viewSettings }[UI.tab]();
   $('#hdr').innerHTML = v.header;
   $('#view').innerHTML = (storageOK ? '' : `<div class="banner">${t('storageBlocked')}</div>`) + v.body;
-  const mi = $('#monthInput'); if (mi) mi.addEventListener('change', () => { if (/^\d{4}-\d\d$/.test(mi.value)) { UI.month = mi.value; render(); } });
+  enhanceMonths($('#view'));
+}
+/* Month picker: works the same in every browser (desktop Safari/Firefox have no native month field) */
+let mpState = null;
+function openMonthPicker(value, onPick, allowClear) {
+  const v = /^\d{4}-\d\d$/.test(value || '') ? value : thisMonth();
+  mpState = { year: +v.slice(0, 4), value: value || '', onPick, allowClear };
+  drawMonthPicker(); $('#mpicker').classList.add('on'); $('#mpback').classList.add('on');
+}
+function drawMonthPicker() {
+  const y = mpState.year, cur = thisMonth();
+  const cells = Array.from({ length: 12 }, (_, i) => { const k = y + '-' + pad(i + 1);
+    return `<button data-act="mpPick" data-v="${k}" class="${k === mpState.value ? 'sel' : ''} ${k === cur ? 'now' : ''}">${esc(mLabel(k, 'short').replace('.', ''))}</button>`; }).join('');
+  $('#mpicker').innerHTML = `<div class="mp-head"><button data-act="mpYear" data-v="-1" aria-label="${t('prevYear')}">‹</button><b>${y}</b><button data-act="mpYear" data-v="1" aria-label="${t('nextYear')}">›</button></div>
+    <div class="mp-grid">${cells}</div>
+    <div class="mp-foot"><button data-act="mpPick" data-v="${cur}">${t('thisMonthBtn')}</button>${mpState.allowClear ? `<button data-act="mpPick" data-v="">${t('clearMonth')}</button>` : ''}<button data-act="mpClose">${t('cancel')}</button></div>`;
+}
+function closeMonthPicker() { $('#mpicker').classList.remove('on'); $('#mpback').classList.remove('on'); mpState = null; }
+function monthBtnLabel(v) { return v ? mLabel(v) : t('notSet'); }
+// turn every <input type="month"> into a button that opens the picker; the input stays (hidden) and keeps the value
+function enhanceMonths(root) {
+  root.querySelectorAll('input[type=month]').forEach(inp => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'mbtn'; btn.textContent = monthBtnLabel(inp.value);
+    const optional = !inp.value || inp.id === 'r-end';
+    inp.type = 'hidden'; inp.after(btn);
+    btn.addEventListener('click', ev => { ev.stopPropagation(); openMonthPicker(inp.value, v => {
+      inp.value = v; btn.textContent = monthBtnLabel(v);
+      inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true }));
+    }, optional); });
+  });
 }
 
 function viewBudget() {
@@ -733,7 +792,7 @@ function viewBudget() {
       <button class="tile inc" data-act="editIncome"><span class="ring">${uisvg('down', 2.2)}</span>
         <span class="t1">${t('income')}${m in S.incomeOverrides ? ` <span class="tag">${t('thisMonthOnly')}</span>` : ''}</span>
         <span class="t2 num">${moneyRound(tt.income)}</span>
-        <span class="t3">${tt.carry ? esc(t('carried', moneyRound(tt.carry))) : '&nbsp;'}</span></button>
+        <span class="t3">${[tt.extra ? esc(t('extraIncome', moneyRound(tt.extra))) : '', tt.carry ? esc(t('carried', moneyRound(tt.carry))) : ''].filter(Boolean).join('<br>') || '&nbsp;'}</span></button>
       <button class="tile exp" data-act="goTx"><span class="ring">${uisvg('up', 2.2)}</span>
         <span class="t1">${t('expense')}</span>
         <span class="t2 num">${moneyRound(tt.spent)}</span>
@@ -746,6 +805,10 @@ function viewBudget() {
 }
 
 function itemHTML(e) {
+  if (e.type === 'inc') return `<button class="item" data-act="editInc" data-id="${e.id}">
+    <span class="icon" style="${tint('#3f8f5a')}">${svg('cash')}</span>
+    <span class="mid"><div class="t">${esc(e.note || t('incomeTag'))}</div><div class="sub">${t('incomeTag')}</div></span>
+    <span class="amt num" style="color:#2f8a4c">${S.settings.hide ? money(e.amount) : '+' + money(e.amount)}</span></button>`;
   const c = catById(e.categoryId), title = e.note ? esc(e.note) : esc(c.name);
   const upcoming = e.type === 'rec' && !e.skipped && e.date > todayISO();
   let tags = '';
@@ -764,8 +827,9 @@ function txListHTML(entries) {
   return html;
 }
 function viewTx() {
-  const m = UI.month, entries = monthEntries(m), tt = totals(m);
-  const body = `<div class="balance"><div class="lbl">${t('expense')}<span class="hint">${esc(mLabel(m))}</span></div>
+  const m = UI.month, tt = totals(m);
+  const entries = monthEntries(m).concat(monthIncomes(m).map(x => ({ ...x, type: 'inc' }))).sort((a, b) => b.date.localeCompare(a.date) || (a.type === 'inc') - (b.type === 'inc'));
+  const body = `<div class="balance"><div class="lbl">${t('expense')}<span class="hint">${esc(mLabel(m))}${tt.extra ? ' · ' + esc(t('incomeOf', '+' + money(tt.extra))) : ''}</span></div>
       <div class="amt"><span class="big num">${moneyBig(tt.spent)}</span></div></div>
     <div class="card">${entries.length ? txListHTML(entries) : `<div class="empty">${t('noTx')}</div>`}</div>`;
   return { header: header(t('transactions')), body };
@@ -911,34 +975,49 @@ function viewSettings() {
 
 /* ================= sheets ================= */
 let sheetState = {}, lastCat = null;
-function openSheet(html) { $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0; $('#sheet').classList.add('on'); $('#backdrop').classList.add('on'); }
+function openSheet(html) { $('#sheet').innerHTML = html; enhanceMonths($('#sheet')); $('#sheet').scrollTop = 0; $('#sheet').classList.add('on'); $('#backdrop').classList.add('on'); }
 function closeSheet() { $('#sheet').classList.remove('on'); $('#backdrop').classList.remove('on'); sheetState = {}; if (document.activeElement) document.activeElement.blur(); }
 const sheetHead = (title, right, rightAct, rightId) => `<div class="sheet-h"><button data-act="close">${t(right ? 'cancel' : 'close')}</button><b>${esc(title)}</b>${right ? `<button data-act="${rightAct}" ${rightId ? `data-id="${rightId}"` : ''}>${right}</button>` : '<span style="min-width:72px"></span>'}</div>`;
 function chipsHTML(sel, act) {
   return `<div class="chips">${S.categories.map(c => `<button class="chip ${c.id === sel ? 'on' : ''}" data-act="${act}" data-id="${c.id}"><span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>${esc(c.name)}</button>`).join('')}</div>`;
 }
-function expenseSheet(id, presetCat) {
-  const e = id ? S.expenses.find(x => x.id === id) : null;
+function expenseSheet(id, presetCat, mode = 'exp') {
+  const e = id ? (mode === 'inc' ? S.incomes : S.expenses).find(x => x.id === id) : null;
   const date = e ? e.date : (UI.month === thisMonth() ? todayISO() : UI.month + '-01');
-  sheetState = { kind: 'exp', id: e ? e.id : null, cat: e ? e.categoryId : (presetCat || lastCat || S.categories[0]?.id) };
-  openSheet(`${sheetHead(e ? t('editExpense') : t('newExpense'), t('save'), 'saveExp')}
+  sheetState = { kind: 'exp', mode, id: e ? e.id : null, cat: e && mode === 'exp' ? e.categoryId : (presetCat || lastCat || S.categories[0]?.id) };
+  const title = mode === 'inc' ? (e ? t('editIncomeT') : t('newIncome')) : (e ? t('editExpense') : t('newExpense'));
+  openSheet(`${sheetHead(title, t('save'), 'saveExp')}
+    ${e ? '' : `<div class="seg"><button data-act="entryMode" data-v="exp">${t('entryExpense')}</button><button data-act="entryMode" data-v="inc">${t('entryIncome')}</button></div>`}
     <div class="amtwrap"><input id="f-amt" class="amtin num" inputmode="decimal" placeholder="${t('amountPh')}" autocomplete="off" value="${e ? numIn(e.amount) : ''}"></div>
     <div class="err" id="f-err"></div>
-    ${chipsHTML(sheetState.cat, 'pickCat')}
+    <div data-mode="exp">${chipsHTML(sheetState.cat, 'pickCat')}</div>
     <div class="group">
-      <div class="field"><label>${t('note')}</label><input id="f-note" placeholder="${t('optional')}" value="${esc(e ? e.note : '')}"></div>
+      <div class="field"><label>${t('note')}</label><input id="f-note" placeholder="${t('optional')}" data-ph-exp="${t('optional')}" data-ph-inc="${t('incomeNotePh')}" value="${esc(e ? e.note : '')}"></div>
       <div class="field"><label>${t('date')}</label><input id="f-date" type="date" value="${date}"></div>
     </div>
-    ${e ? `<button class="btn danger" data-act="delExp">${t('deleteExpense')}</button>` : ''}`);
+    ${e ? `<button class="btn danger" data-act="delExp">${mode === 'inc' ? t('deleteIncome') : t('deleteExpense')}</button>` : ''}`);
+  syncEntryMode();
   if (!e) $('#f-amt').focus();
+}
+function syncEntryMode() {
+  const m = sheetState.mode;
+  document.querySelectorAll('#sheet [data-mode]').forEach(el => el.style.display = el.dataset.mode === m ? '' : 'none');
+  document.querySelectorAll('#sheet [data-act=entryMode]').forEach(b => b.classList.toggle('on', b.dataset.v === m));
+  const n = $('#f-note'); if (n) n.placeholder = m === 'inc' ? n.dataset.phInc : n.dataset.phExp;
+  if (!sheetState.id) { const h = $('#sheet .sheet-h b'); if (h) h.textContent = m === 'inc' ? t('newIncome') : t('newExpense'); }
 }
 function saveExpense() {
   const amt = parseAmt($('#f-amt').value), date = $('#f-date').value, note = $('#f-note').value.trim();
   if (!(amt > 0)) { $('#f-err').textContent = t('errAmount'); return; }
   if (!/^\d{4}-\d\d-\d\d$/.test(date)) { $('#f-err').textContent = t('errDate'); return; }
-  if (sheetState.id) Object.assign(S.expenses.find(x => x.id === sheetState.id), { amount: amt, date, note, categoryId: sheetState.cat });
-  else S.expenses.push({ id: uid(), amount: amt, date, note, categoryId: sheetState.cat });
-  lastCat = sheetState.cat;
+  if (sheetState.mode === 'inc') {
+    if (sheetState.id) Object.assign(S.incomes.find(x => x.id === sheetState.id), { amount: amt, date, note });
+    else S.incomes.push({ id: uid(), amount: amt, date, note });
+  } else {
+    if (sheetState.id) Object.assign(S.expenses.find(x => x.id === sheetState.id), { amount: amt, date, note, categoryId: sheetState.cat });
+    else S.expenses.push({ id: uid(), amount: amt, date, note, categoryId: sheetState.cat });
+    lastCat = sheetState.cat;
+  }
   save(); closeSheet(); UI.month = date.slice(0, 7); render();
 }
 function catSheet(id) {
@@ -1132,10 +1211,13 @@ function incomeSheet() {
   const m = UI.month, has = m in S.incomeOverrides;
   sheetState = { kind: 'income' };
   openSheet(`${sheetHead(t('incomeFor', mLabel(m, 'name')), t('save'), 'saveIncome')}
-    <div class="amtwrap"><input id="f-inc" class="amtin num" inputmode="decimal" placeholder="${t('amountPh')}" value="${numIn(incomeFor(m))}"></div>
+    <h3>${t('salaryLbl')}</h3>
+    <div class="amtwrap" style="padding-top:0"><input id="f-inc" class="amtin num" inputmode="decimal" placeholder="${t('amountPh')}" value="${numIn(incomeFor(m))}"></div>
     <div class="hint" style="text-align:center">${esc(t('incomeHint', money(S.settings.income || 0)))}</div>
-    ${has ? `<button class="btn ghost" data-act="clearIncome">${t('useUsual')}</button>` : ''}`);
-  $('#f-inc').focus();
+    ${has ? `<button class="btn ghost" data-act="clearIncome">${t('useUsual')}</button>` : ''}
+    <h3>${t('otherIncome')} <span>${extraIncome(m) ? '+' + money(extraIncome(m)) : ''}</span></h3>
+    <div class="card">${monthIncomes(m).length ? txListHTML(monthIncomes(m).map(x => ({ ...x, type: 'inc' }))) : `<div class="empty">${t('noOtherIncome')}</div>`}</div>
+    <button class="btn ghost" data-act="newInc">+ ${t('addOtherIncome')}</button>`);
 }
 
 /* ================= import / export / photo ================= */
@@ -1153,13 +1235,16 @@ async function exportJSON() {
 function exportCSV() {
   const de = LANG === 'de', sep = de ? ';' : ',', q = v => '"' + String(v).replace(/"/g, '""') + '"';
   const lines = [t('csvHead').join(sep)];
-  const last = [thisMonth(), ...S.expenses.map(e => e.date.slice(0, 7))].sort().pop();
-  for (let m = firstMonth(); m <= last; m = addM(m, 1))
+  const last = [thisMonth(), ...S.expenses.concat(S.incomes).map(e => e.date.slice(0, 7))].sort().pop();
+  const fmtA = a => de ? a.toFixed(2).replace('.', ',') : a.toFixed(2);
+  for (let m = firstMonth(); m <= last; m = addM(m, 1)) {
+    for (const x of monthIncomes(m).slice().reverse()) lines.push([x.date, '', q(x.note || ''), fmtA(x.amount), t('csvInc')].join(sep));
     for (const e of monthEntries(m).slice().reverse()) {
       if (e.type === 'rec' && e.skipped) continue;
       const amt = de ? e.amount.toFixed(2).replace('.', ',') : e.amount.toFixed(2);
-      lines.push([e.date, q(catById(e.categoryId).name), q(e.note || ''), amt, e.type === 'rec' ? (e.kind === 'loan' ? t('csvLoan') : t('csvRec')) : t('csvExp')].join(sep));
+      lines.push([e.date, q(catById(e.categoryId).name), q(e.note || ''), '-' + amt, e.type === 'rec' ? (e.kind === 'loan' ? t('csvLoan') : t('csvRec')) : t('csvExp')].join(sep));
     }
+  }
   shareOrDownload('﻿' + lines.join('\n'), `balancy-${todayISO()}.csv`, 'text/csv');
 }
 $('#importFile').addEventListener('change', async ev => {
@@ -1211,7 +1296,8 @@ document.addEventListener('click', ev => {
     case 'editExp': expenseSheet(id); break;
     case 'pickCat': case 'pickRecCat': sheetState.cat = id; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break;
     case 'saveExp': saveExpense(); break;
-    case 'delExp': if (confirm(t('cDelExpense'))) { S.expenses = S.expenses.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
+    case 'delExp': if (sheetState.mode === 'inc') { if (confirm(t('cDelIncome'))) { S.incomes = S.incomes.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } }
+      else if (confirm(t('cDelExpense'))) { S.expenses = S.expenses.filter(x => x.id !== sheetState.id); save(); closeSheet(); render(); } break;
     case 'newCat': catSheet(null); break;
     case 'editCat': catSheet(id); break;
     case 'pickIcon': sheetState.icon = el.dataset.v; document.querySelectorAll('#c-icons button').forEach(b => b.classList.toggle('on', b === el)); break;
@@ -1238,6 +1324,13 @@ document.addEventListener('click', ev => {
       save(); closeSheet(); render(); break; }
     case 'newRec': recSheet(null, el.dataset.group); break;
     case 'newGroup': groupSheet(null); break;
+    case 'entryMode': sheetState.mode = el.dataset.v; syncEntryMode(); $('#f-amt').focus(); break;
+    case 'editInc': expenseSheet(id, null, 'inc'); break;
+    case 'newInc': expenseSheet(null, null, 'inc'); break;
+    case 'pickViewMonth': openMonthPicker(UI.month, v => { if (v) { UI.month = v; render(); } }, false); break;
+    case 'mpYear': mpState.year += +el.dataset.v; drawMonthPicker(); break;
+    case 'mpPick': { const cb = mpState.onPick, v = el.dataset.v; closeMonthPicker(); cb(v); break; }
+    case 'mpClose': closeMonthPicker(); break;
     case 'addPause': { const v = $('#r-pause').value; if (/^\d{4}-\d\d$/.test(v) && !sheetState.skips.includes(v)) sheetState.skips.push(v); renderPauses(); updateLoanPreview(); break; }
     case 'rmPause': sheetState.skips = sheetState.skips.filter(x => x !== el.dataset.v); renderPauses(); updateLoanPreview(); break;
     case 'editGroup': groupSheet(id); break;
@@ -1289,7 +1382,7 @@ document.addEventListener('keydown', ev => {
     ({ exp: saveExpense, rec: saveRec, cat: saveCat, group: saveGroup, income: () => $('#sheet [data-act=saveIncome]').click() }[sheetState.kind] || (() => {}))();
   }
   if (ev.key === 'Enter' && ev.target.dataset && ev.target.dataset.set) ev.target.blur();
-  if (ev.key === 'Escape') closeSheet();
+  if (ev.key === 'Escape') { if (mpState) closeMonthPicker(); else closeSheet(); }
 });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('#sheet').classList.contains('on')) render(); });
 
