@@ -46,6 +46,13 @@ main{padding:0 16px calc(110px + env(safe-area-inset-bottom));max-width:640px;ma
 .mpill svg{width:14px;height:14px}
 .mpill input{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px}
 .mpill.past{border-color:var(--ink)}
+.calbtn{flex:none;width:58px;height:58px;border:1.5px solid var(--line);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;background:var(--card);
+  box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.calbtn .rings{display:none}
+.calbtn .cm{height:22px;display:grid;place-items:center;background:var(--soft);font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.calbtn .cy{flex:1;display:grid;place-items:center;font-weight:800;font-size:17px;letter-spacing:-.01em}
+.calbtn.other{border-color:var(--pill)}
+.calbtn.other .cm{background:var(--pill);color:var(--pill-ink)}
 .todaybtn{display:flex;align-items:center;gap:4px;background:var(--pill);color:var(--pill-ink);border-radius:22px;padding:8px 12px;font-size:14px;font-weight:700;flex:none}
 .todaybtn svg{width:16px;height:16px}
 .backbtn{width:40px;height:40px;border-radius:20px;background:var(--soft);display:grid;place-items:center;font-size:24px;flex:none}
@@ -319,7 +326,7 @@ en: {
   onDayEach: (x, d) => `${x} on day ${d} of each month`, unskip: m => `Count it again in ${m}`, skip: m => `Skip it in ${m}`,
   editLoan: 'Edit entry', editRec: 'Edit recurring cost', newTitle: 'New', editTitle: 'Edit', fixedCost: 'Monthly cost', loanCredit: 'Instalments / loan',
   name: 'Name', recNamePh: 'e.g. Rent, Car loan', amountPerMonth: 'Amount per month', dayOfMonth: 'Day of month', firstMonth: 'First month', lastMonth: 'Last month',
-  appliesFrom: 'New amount applies from', lastMonthHint: 'Leave "Last month" empty if it keeps going.', loanDetails: 'Loan details', originalAmount: 'Original amount',
+  appliesFrom: 'Change applies from', changeHint: 'Price going up or down? Enter the new amount and pick the month it starts. Earlier months keep the old amount.', priceChanges: 'Price changes', sinceM: m => `since ${m}`, fromM: m => `from ${m}`, nextChange: (x, m) => `→ ${x} from ${m}`, lastMonthHint: 'Leave "Last month" empty if it keeps going.', loanDetails: 'Loan details', originalAmount: 'Original amount',
   remainingAsOf: 'Remaining sum as of', ratePa: 'Interest rate (% per year)',
   loanHint: 'Enter the remaining credit sum from your bank for the month you choose, before that month\'s payment. Months left and progress are worked out from it. With the interest rate, each payment is split into interest and repayment so the balance stays accurate. With an end date, payments are counted until that date.',
   amountChangeHint: 'If the monthly amount changes, earlier months keep the old amount.', categoryLbl: 'Category', deleteLoan: 'Delete entry', deleteRec: 'Delete recurring cost',
@@ -398,7 +405,7 @@ de: {
   onDayEach: (x, d) => `${x} am ${d}. jedes Monats`, unskip: m => `Im ${m} wieder einrechnen`, skip: m => `Im ${m} aussetzen`,
   editLoan: 'Eintrag bearbeiten', editRec: 'Fixkosten bearbeiten', newTitle: 'Neu', editTitle: 'Bearbeiten', fixedCost: 'Monatliche Kosten', loanCredit: 'Raten / Kredit',
   name: 'Name', recNamePh: 'z. B. Miete, Autokredit', amountPerMonth: 'Betrag pro Monat', dayOfMonth: 'Tag im Monat', firstMonth: 'Erster Monat', lastMonth: 'Letzter Monat',
-  appliesFrom: 'Neuer Betrag gilt ab', lastMonthHint: 'Lass „Letzter Monat“ leer, wenn es unbefristet ist.', loanDetails: 'Kreditdetails', originalAmount: 'Ursprünglicher Betrag',
+  appliesFrom: 'Änderung gilt ab', changeHint: 'Ändert sich der Preis, z. B. die Miete? Trag den neuen Betrag ein und wähle den Monat, ab dem er gilt. Frühere Monate behalten den alten Betrag.', priceChanges: 'Preisänderungen', sinceM: m => `seit ${m}`, fromM: m => `ab ${m}`, nextChange: (x, m) => `→ ${x} ab ${m}`, lastMonthHint: 'Lass „Letzter Monat“ leer, wenn es unbefristet ist.', loanDetails: 'Kreditdetails', originalAmount: 'Ursprünglicher Betrag',
   remainingAsOf: 'Restschuld zum', ratePa: 'Zinssatz (% p. a.)',
   loanHint: 'Trag die Restschuld laut Bank für den gewählten Monat ein, vor der Rate dieses Monats. Daraus werden verbleibende Monate und Fortschritt berechnet. Mit Zinssatz wird jede Rate in Zinsen und Tilgung aufgeteilt, damit die Restschuld stimmt. Mit Enddatum werden Raten bis zu diesem Datum gezählt.',
   amountChangeHint: 'Ändert sich der Betrag, behalten frühere Monate den alten Betrag.', categoryLbl: 'Kategorie', deleteLoan: 'Eintrag löschen', deleteRec: 'Fixkosten löschen',
@@ -440,20 +447,51 @@ const IC = {
   dots: '<path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3.2"/>',
   coffee: '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5V6M12 3.5V6"/>',
   gift: '<path d="M4 9h16v4H4zM5.5 13v7.5h13V13M12 9v11.5M12 9c-1.5-3.5-5-4-5-1.5S10 9 12 9zm0 0c1.5-3.5 5-4 5-1.5S14 9 12 9z"/>',
-  plane: '<path d="M21 3.5L3 11l7 2.5 2.5 7zM10 13.5l11-10"/>',
+  plane: '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
   book: '<path d="M5 19.5V5.5A2 2 0 0 1 7 3.5h12v13H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/>',
   phone: '<path d="M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3zM11 18h2"/>',
   bolt: '<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',
   shirt: '<path d="M8.5 4L4 6.5l1.5 4 2-.8V20h9V9.7l2 .8 1.5-4L15.5 4a3.5 3.5 0 0 1-7 0z"/>',
-  piggy: '<path d="M4.5 11.5a7 6 0 0 1 12.8-3.4H20v3.6l-1.6 1.1V16l-2 .6V19h-2.6v-2H9.6v2H7v-2.8a6 6 0 0 1-2.5-4.7zM15 10.5h.01"/>',
+  piggy: '<path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"/><path d="M2 9v1c0 1.1.9 2 2 2h1M16 10.5h.01"/>',
   cash: '<path d="M3 7h18v10H3zM6.5 10v4M17.5 10v4"/><circle cx="12" cy="12" r="2.5"/>',
   gym: '<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>',
   paw: '<circle cx="7" cy="10" r="1.6"/><circle cx="10.5" cy="6.5" r="1.6"/><circle cx="14.5" cy="6.5" r="1.6"/><circle cx="18" cy="10" r="1.6"/><path d="M8.5 17.5c0-2.5 1.8-5 3.5-5s3.5 2.5 3.5 5c0 1.6-1.5 2-3.5 1.4-2 .6-3.5.2-3.5-1.4z"/>',
   kid: '<circle cx="12" cy="7" r="3"/><path d="M6 21v-3a6 6 0 0 1 12 0v3"/>',
   tv: '<path d="M3.5 6.5h17v11h-17zM8.5 21h7M12 17.5V21"/>',
+  suitcase: '<rect x="3.5" y="7.5" width="17" height="12" rx="2"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17M10.5 11v3h3v-3"/>',
+  palm: '<path d="M12.5 21c0-4.5.4-8.5 1.5-12"/><path d="M14 9c-1.5-3-5-4-8-2.5 3 0 5 1 6 3M14 9c1-3 4.5-4 7-2-2.5.3-4.5 1.3-5.5 3M14 9c3 0 5.5 2 6 5-2-1.5-4-2-5.5-2.2M14 9c-3 .5-5 3-5 5.5 1.5-1.8 3-2.8 4.5-3.2M4 21h16"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  coins: '<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4M16.71 13.88l.7.71-2.82 2.82"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  card: '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6 15h4"/>',
+  shield: '<path d="M12 21.5s8-4 8-10V5l-8-3-8 3v6.5c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  receipt: '<path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8zM14 2.5V8h5.5M8.5 13h7M8.5 17h4.5"/>',
+  droplet: '<path d="M12 21.5a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5S5 12.5 5 14.5a7 7 0 0 0 7 7z"/>',
+  wifi: '<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 20 0M12 19.5h.01"/>',
+  laptop: '<path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0l1.3 2.5a1 1 0 0 1-.9 1.5H3.6a1 1 0 0 1-.9-1.5L4 16"/>',
+  fuel: '<path d="M3 21.5h11M4.5 9h8M13 21.5V4.5a2 2 0 0 0-2-2H6.5a2 2 0 0 0-2 2v17M13 12.5h2a2 2 0 0 1 2 2v2a1.8 1.8 0 0 0 3.5 0V9.8a2 2 0 0 0-.6-1.4L17 5.5"/>',
+  parking: '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M9.5 16.5v-9h3.5a3 3 0 0 1 0 6H9.5"/>',
+  bus: '<rect x="4" y="3.5" width="16" height="14" rx="2.5"/><path d="M4 10.5h16M8 17.5v2.5M16 17.5v2.5M7.5 14h.01M16.5 14h.01M9 6.5h6"/>',
+  train: '<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 10.5h14M12 3v7.5M8.5 21l1.5-4M15.5 21l-1.5-4M8.5 13.8h.01M15.5 13.8h.01"/>',
+  bike: '<circle cx="5.5" cy="17" r="3.5"/><circle cx="18.5" cy="17" r="3.5"/><circle cx="14.5" cy="5" r="1.2"/><path d="M12 17v-3.5l-3-3 4-3 2 3h2.5"/>',
+  pill: '<path d="M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7zM8.5 8.5l7 7"/>',
+  cap: '<path d="M2 9.5l10-5 10 5-10 5zM6 11.5v5c3 2.7 9 2.7 12 0v-5M22 9.5v5.5"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  gamepad: '<rect x="2.5" y="6.5" width="19" height="11" rx="4"/><path d="M6.5 12h4M8.5 10v4M15 11h.01M17.5 13h.01"/>',
+  camera: '<path d="M14.5 4.5h-5L7.5 7H4.5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h15a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.2"/>',
+  scissors: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/>',
+  wine: '<path d="M8 21.5h8M12 15v6.5M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-7.5H9C7.5 6 7 8 7 10a5 5 0 0 0 5 5z"/>',
+  beer: '<path d="M6 8.5h10v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2zM16 11h1.5a2.5 2.5 0 0 1 0 5H16M9.5 12v6M12.5 12v6M6 8.5a2.5 2.5 0 0 1 1-4.8 3 3 0 0 1 5-.7 2.8 2.8 0 0 1 4.2 2.5A2 2 0 0 1 16 8.5"/>',
+  baby: '<circle cx="12" cy="13" r="8"/><path d="M9.5 12h.01M14.5 12h.01M10 16c1.2.8 2.8.8 4 0M12 5c0-1.5 1-2.5 2.5-2.5"/>',
+  tree: '<path d="M12 21.5v-3.5M7 18h10l-3-4h2l-4-5h2l-4-6-4 6h2l-4 5h2z"/>',
   tools: '<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5zM14.5 6.5L17 4"/>'
 };
-const ICON_KEYS = Object.keys(IC);
+const ICON_KEYS = ['cart', 'food', 'coffee', 'wine', 'beer', 'bag', 'shirt', 'gift',
+  'home', 'bolt', 'droplet', 'wifi', 'phone', 'tv', 'laptop', 'tools', 'shield', 'receipt',
+  'car', 'fuel', 'parking', 'bus', 'train', 'bike',
+  'plane', 'suitcase', 'palm', 'sun', 'star', 'music', 'gamepad', 'camera', 'book', 'gym',
+  'heart', 'pill', 'scissors', 'baby', 'kid', 'paw', 'cap',
+  'piggy', 'coins', 'target', 'cash', 'card', 'bank', 'repeat', 'tree', 'dots'].filter(k => IC[k]);
 const svg = (k, sw = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${IC[k] || IC.dots}</svg>`;
 const UI_IC = {
   wallet: '<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5zM15.5 12h2"/><path d="M4 9h16"/>',
@@ -729,10 +767,10 @@ function avatarHTML(cls = '') {
   return `<span class="avatar ${cls}">${ini ? esc(ini) : uisvg('person', 2)}</span>`;
 }
 function monthPill() {
-  const m = UI.month, cur = m === thisMonth(), sameYear = m.slice(0, 4) === thisMonth().slice(0, 4);
-  const label = sameYear ? mLabel(m, 'short').replace('.', '') : mLabel(m, 'short').replace('.', '') + ' ' + m.slice(2, 4);
-  return (cur ? '' : `<button class="todaybtn" data-act="goToday" aria-label="${esc(t('backTodayAria', mLabel(thisMonth(), 'name')))}" title="${esc(t('backTodayAria', mLabel(thisMonth(), 'name')))}">${uisvg('back', 2.2)}<span>${esc(mLabel(thisMonth(), 'short').replace('.', ''))}</span></button>`) +
-    `<button class="mpill ${cur ? '' : 'past'}" data-act="pickViewMonth" aria-label="${t('monthPick')}">${esc(label)} ${uisvg('caret')}</button>`;
+  const m = UI.month, cur = m === thisMonth();
+  const mon = toDate(m).toLocaleDateString(LOCALE, { month: 'short' }).replace('.', '').slice(0, 3).toUpperCase();
+  return `<button class="calbtn ${cur ? '' : 'other'}" data-act="pickViewMonth" aria-label="${esc(t('monthPick') + ': ' + mLabel(m))}" title="${esc(mLabel(m))}">
+    <span class="cm">${esc(mon)}</span><span class="cy">${m.slice(0, 4)}</span></button>`;
 }
 function header(title, withMonth = true) {
   if (UI.tab === 'settings') return `<div class="top"><button class="backbtn" data-act="back" aria-label="${t('close')}">‹</button><div class="hello">${esc(title)}</div></div>`;
@@ -874,10 +912,10 @@ function viewTx() {
 }
 
 function fixedItemHTML(r, m) {
-  const c = catById(r.categoryId), active = recActive(r, m);
+  const c = catById(r.categoryId), active = recActive(r, m), nx = r.amounts.find(x => x.from > m);
   const status = r.start > m ? t('starts', mLabel(r.start)) : (!active ? t('ended', mLabel(r.end)) : (r.end ? t('until', mLabel(r.end)) : t('ongoing')));
   return `<button class="item" data-act="editRec" data-id="${r.id}"><span class="icon" style="${tint(c.color)}">${svg(c.icon)}</span>
-    <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">${t('day', r.day)} · ${esc(status)}</div></span>
+    <span class="mid"><div class="t">${esc(r.name)}</div><div class="sub">${t('day', r.day)} · ${esc(status)}</div>${nx ? `<div class="sub" style="color:var(--ink)">${esc(t('nextChange', money(nx.amount), mLabel(nx.from)))}</div>` : ''}</span>
     <span class="amt num">${money(amountAt(r, m < r.start ? r.start : m))}</span></button>`;
 }
 function loanCardHTML(r, m) {
@@ -1139,6 +1177,7 @@ function recSheet(id, groupId) {
   const v = k => esc(r && r[k] != null && r[k] !== 0 ? r[k] : '');
   const lp = loanPrefill(r, m);
   sheetState.skips = r ? (r.skips || []).slice() : [];
+  sheetState.amounts = r && r.kind !== 'loan' ? r.amounts.map(x => ({ ...x })) : null;
   openSheet(`${sheetHead(r ? t('editTitle') : t('newTitle'), t('save'), 'saveRec')}
     <div class="seg"><button data-act="recType" data-v="fixed">${t('fixedCost')}</button><button data-act="recType" data-v="loan">${t('loanCredit')}</button></div>
     <div class="err" id="f-err"></div>
@@ -1146,12 +1185,13 @@ function recSheet(id, groupId) {
       <div class="field"><label>${t('name')}</label><input id="r-name" placeholder="${t('recNamePh')}" value="${v('name')}"></div>
       <div class="field" data-only="loan"><label>${t('loanNumber')}</label><input id="r-no" placeholder="${t('optional')}" value="${v('loanNumber')}"></div>
       <div class="field" data-only="fixed"><label>${t('amountPerMonth')}</label><input id="r-amt" class="num" inputmode="decimal" placeholder="${t('amountPh')}" value="${r && r.kind !== 'loan' ? numIn(amountAt(r, applyFrom)) : ''}"></div>
+      ${r && r.kind !== 'loan' ? `<div class="field" data-only="fixed"><label>${t('appliesFrom')}</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
       <div class="field"><label>${t('dayOfMonth')}</label><input id="r-day" type="number" inputmode="numeric" min="1" max="31" value="${r ? r.day : 1}"></div>
       <div class="field" data-only="fixed"><label>${t('firstMonth')}</label><input id="r-start" type="month" value="${r ? r.start : m}"></div>
       <div class="field" data-only="fixed"><label>${t('lastMonth')}</label><input id="r-end" type="month" value="${r && r.end ? r.end : ''}"></div>
-      ${r ? `<div class="field" data-only="fixed"><label>${t('appliesFrom')}</label><input id="r-from" type="month" value="${applyFrom}"></div>` : ''}
     </div>
-    <div class="hint" data-only="fixed" style="padding:0 6px">${t('lastMonthHint')}</div>
+    <div class="hint" data-only="fixed" style="padding:0 6px">${r && r.kind !== 'loan' ? t('changeHint') + ' ' : ''}${t('lastMonthHint')}</div>
+    ${r && r.kind !== 'loan' ? `<div data-only="fixed"><h3>${t('priceChanges')}</h3><div class="card" id="amt-list"></div></div>` : ''}
     <div data-only="loan">
       <h3>${t('loanDetails')}</h3>
       <div class="group">
@@ -1170,12 +1210,21 @@ function recSheet(id, groupId) {
       <div class="chips" id="pause-list"></div>
       <div class="hint" style="padding:0 6px">${t('pauseHint')}</div>
     </div>
-    ${r && r.kind !== 'loan' ? `<div class="hint" data-only="fixed" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}    ${r ? `<div class="hint" style="padding:8px 6px 0">${t('amountChangeHint')}</div>` : ''}
     <h3>${t('group')}</h3><div class="chips">${S.recGroups.map(x => `<button class="chip ${x.id === sheetState.group ? 'on' : ''}" data-act="pickGroup" data-id="${x.id}" style="padding-left:12px">${esc(x.name)}</button>`).join('')}</div>
     <div data-only="fixed"><h3>${t('categoryLbl')}</h3>${chipsHTML(sheetState.cat, 'pickRecCat')}</div>
     <div class="hint" data-only="loan" style="padding:12px 6px 0">${t('loanCatNote')}</div>
     ${r ? `<button class="btn danger" data-act="delRec">${r.kind === 'loan' ? t('deleteLoan') : t('deleteRec')}</button>` : ''}`);
-  syncRecType(); renderPauses();
+  syncRecType(); renderPauses(); renderAmounts();
+}
+function renderAmounts() {
+  const el = $('#amt-list'); if (!el || !sheetState.amounts) return;
+  const all = sheetState.amounts.slice().sort((a, b) => a.from.localeCompare(b.from)), now = thisMonth();
+  // older prices stay saved (past months keep them) but are not listed once a newer one applies
+  const current = all.filter(x => x.from <= now).pop() || all[0];
+  const list = [current, ...all.filter(x => x.from > now && x !== current)];
+  el.innerHTML = list.map(x => { const future = x.from > now;
+    return `<div class="row"><span>${esc(future ? t('fromM', mLabel(x.from)) : t('sinceM', mLabel(x.from)))}${future ? ` <span class="tag">${t('upcoming')}</span>` : ''}</span>
+    <span style="display:flex;align-items:center;gap:12px"><b class="num">${money(x.amount)}</b>${future ? `<button data-act="rmAmount" data-v="${x.from}" aria-label="×" style="font-size:20px;color:var(--danger)">×</button>` : ''}</span></div>`; }).join('');
 }
 function renderPauses() {
   const el = $('#pause-list'); if (!el) return;
@@ -1204,8 +1253,9 @@ function saveRec() {
       const wasLoan = old.kind === 'loan', from = wasLoan ? start : (($('#r-from') && $('#r-from').value) || start);
       Object.assign(old, base, { start, end, term: 0, principal: 0, shipping: 0, rate: 0, payment: 0, balance: null, balanceFrom: null, loanStart: null, loanEnd: null });
       if (wasLoan) old.amounts = [{ from: start, amount: amt }];
-      else if (amountAt(old, from) !== amt) {
-        old.amounts = old.amounts.filter(x => x.from < from);
+      else if (sheetState.amounts) old.amounts = sheetState.amounts.slice().sort((a, b) => a.from.localeCompare(b.from));
+      if (!wasLoan && amountAt(old, from) !== amt) {
+        old.amounts = old.amounts.filter(x => x.from !== from);
         old.amounts.push({ from: old.amounts.length ? from : start, amount: amt });
         old.amounts.sort((a, b) => a.from.localeCompare(b.from));
       }
@@ -1360,7 +1410,6 @@ document.addEventListener('click', ev => {
     case 'newRec': recSheet(null, el.dataset.group); break;
     case 'newGroup': groupSheet(null); break;
     case 'incName': { const n = $('#f-note'); n.value = el.dataset.v; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el)); break; }
-    case 'goToday': { const dir = UI.month < thisMonth() ? 1 : -1; UI.month = addM(thisMonth(), -dir); stepMonth(dir); break; }
     case 'toggleHidden': UI.showHidden = !UI.showHidden; render(); break;
     case 'entryMode': sheetState.mode = el.dataset.v; syncEntryMode(); $('#f-amt').focus(); break;
     case 'editInc': expenseSheet(id, null, 'inc'); break;
@@ -1369,6 +1418,7 @@ document.addEventListener('click', ev => {
     case 'mpYear': mpState.year += +el.dataset.v; drawMonthPicker(); break;
     case 'mpPick': { const cb = mpState.onPick, v = el.dataset.v; closeMonthPicker(); cb(v); break; }
     case 'mpClose': closeMonthPicker(); break;
+    case 'rmAmount': sheetState.amounts = sheetState.amounts.filter(x => x.from !== el.dataset.v); renderAmounts(); break;
     case 'addPause': { const v = $('#r-pause').value; if (/^\d{4}-\d\d$/.test(v) && !sheetState.skips.includes(v)) sheetState.skips.push(v); renderPauses(); updateLoanPreview(); break; }
     case 'rmPause': sheetState.skips = sheetState.skips.filter(x => x !== el.dataset.v); renderPauses(); updateLoanPreview(); break;
     case 'editGroup': groupSheet(id); break;
