@@ -129,6 +129,10 @@ nav.tabs button.on{color:#fff;font-weight:700}
 nav.tabs button.on .ico{background:#fff;color:#111}
 nav.tabs .add{flex:none;width:56px;height:56px;border-radius:28px;background:var(--pill);color:#111;margin:-30px 4px 0;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25);border:4px solid var(--bg)}
 nav.tabs .add svg{width:26px;height:26px}
+/* month swipe */
+@keyframes inR{from{transform:translateX(28px);opacity:.3}to{transform:none;opacity:1}}
+@keyframes inL{from{transform:translateX(-28px);opacity:.3}to{transform:none;opacity:1}}
+main.swR{animation:inR .22s ease-out} main.swL{animation:inL .22s ease-out}
 /* month picker */
 #mpback{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:30;opacity:0;pointer-events:none;transition:opacity .15s}
 #mpback.on{opacity:1;pointer-events:auto}
@@ -1392,6 +1396,30 @@ document.addEventListener('keydown', ev => {
   if (ev.key === 'Escape') { if (mpState) closeMonthPicker(); else closeSheet(); }
 });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && !$('#sheet').classList.contains('on')) render(); });
+
+/* ================= swipe between months ================= */
+const MONTH_TABS = ['budget', 'tx', 'trends'];
+function stepMonth(dir) {
+  if (!MONTH_TABS.includes(UI.tab)) return;
+  UI.month = addM(UI.month, dir); render();
+  const v = $('#view'); v.classList.remove('swR', 'swL'); void v.offsetWidth; v.classList.add(dir > 0 ? 'swR' : 'swL');
+}
+let sw = null;
+document.addEventListener('touchstart', ev => {
+  if (ev.touches.length !== 1 || $('#sheet').classList.contains('on') || mpState || !MONTH_TABS.includes(UI.tab)) { sw = null; return; }
+  const tch = ev.touches[0];
+  if (ev.target.closest('#tabs, #sheet, #mpicker') || tch.clientX < 24 || tch.clientX > innerWidth - 24) { sw = null; return; } // leave screen edges to the browser
+  sw = { x: tch.clientX, y: tch.clientY, t: Date.now() };
+}, { passive: true });
+document.addEventListener('touchend', ev => {
+  if (!sw) return;
+  const tch = ev.changedTouches[0], dx = tch.clientX - sw.x, dy = tch.clientY - sw.y, quick = Date.now() - sw.t < 700; sw = null;
+  if (quick && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) stepMonth(dx < 0 ? 1 : -1);
+}, { passive: true });
+document.addEventListener('keydown', ev => {
+  if ((ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') && !$('#sheet').classList.contains('on') && !mpState && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))
+    stepMonth(ev.key === 'ArrowRight' ? 1 : -1);
+});
 
 /* ================= boot ================= */
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
